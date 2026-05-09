@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD BANGUN RUANG SISI DATAR - Halaman Utama</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        /* Container utama */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tombol Home Floating */
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, var(--comic-yellow), var(--light-orange));
+            border: 4px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-decoration: none;
+            color: var(--dark-blue);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .home-button::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 15px 15px;
+            background-position: 0 0, 7.5px 7.5px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1) rotate(-10deg);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--light-orange), var(--primary-orange));
+        }
+
+        .home-button:active {
+            transform: scale(0.95) rotate(0deg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .home-button i {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .home-tooltip {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .home-tooltip::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--dark-blue);
+        }
+
+        .home-button:hover .home-tooltip {
+            opacity: 1;
+            visibility: visible;
+            top: 75px;
+        }
+
+        /* Tombol Bantuan (Question Mark) */
+        .help-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--comic-blue), var(--light-blue));
+            border: 4px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            color: var(--white);
+            animation: float 3s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+
+        .help-button::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 15px 15px;
+            background-position: 0 0, 7.5px 7.5px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .help-button:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--light-blue), var(--primary-blue));
+        }
+
+        .help-button:active {
+            transform: scale(0.95) rotate(0deg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .help-button i {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .help-tooltip {
+            position: absolute;
+            top: 70px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .help-tooltip::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--dark-blue);
+        }
+
+        .help-button:hover .help-tooltip {
+            opacity: 1;
+            visibility: visible;
+            top: 75px;
+        }
+
+        /* Tombol Musik */
+        .music-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #e91e63, #9c27b0);
+            border: 4px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            color: var(--white);
+            animation: float 3s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        .music-button::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 15px 15px;
+            background-position: 0 0, 7.5px 7.5px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .music-button:hover {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #9c27b0, #673ab7);
+        }
+
+        .music-button:active {
+            transform: scale(0.95) rotate(0deg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .music-button i {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .music-tooltip {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .music-tooltip::before {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--dark-blue);
+        }
+
+        .music-button:hover .music-tooltip {
+            opacity: 1;
+            visibility: visible;
+            bottom: 75px;
+        }
+
+        /* Animasi musik aktif */
+        .music-button.playing i {
+            animation: musicPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Header dengan logo */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease;
+        }
+
+        .logo-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .logo-container img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            filter: drop-shadow(5px 5px 0 rgba(0, 0, 0, 0.3));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .title {
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.5rem;
+            color: var(--comic-yellow);
+            font-weight: 700;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Container untuk tombol Mulai */
+        .levels-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        /* Tombol Mulai yang Menonjol */
+        .btn-mulai {
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: 6px solid var(--dark-blue);
+            border-radius: 30px;
+            padding: 2rem 4rem;
+            min-width: 300px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            animation: pulse-large 2s infinite;
+        }
+
+        .btn-mulai::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        .btn-mulai:hover {
+            transform: translateY(-8px) scale(1.05) rotate(-2deg);
+            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, var(--primary-orange), var(--comic-yellow));
+            color: var(--dark-blue);
+            animation: none;
+        }
+
+        .btn-mulai:active {
+            transform: translateY(0) scale(0.95) rotate(0deg);
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-mulai .level-icon {
+            font-size: 5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .btn-mulai .level-text {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 2rem 0;
+            color: var(--white);
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        .developer-info {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .nim-info {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Modal Petunjuk Penggunaan */
+        .help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .help-modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .help-modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 5px solid var(--comic-yellow);
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .help-modal.show .help-modal-content {
+            transform: scale(1);
+        }
+
+        /* Efek burst di modal content */
+        .help-modal-content::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Efek ledakan di modal header */
+        .help-modal-header {
+            position: relative;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .help-modal-header::before {
+            content: "PETUNJUK!";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--primary-red);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.8;
+        }
+
+        .help-modal-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .help-modal-subtitle {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Tombol Close Modal */
+        .help-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .help-modal-close:hover {
+            background: var(--dark-red);
+            transform: rotate(90deg);
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        /* Petunjuk Items */
+        .help-items {
+            margin: 2rem 0;
+        }
+
+        .help-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .help-item:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .help-icon {
+            background: linear-gradient(135deg, var(--comic-yellow), var(--light-orange));
+            color: var(--dark-blue);
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1.5rem;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            font-size: 1.5rem;
+        }
+
+        .help-text {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Tombol OK Modal */
+        .help-modal-button {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            margin: 0 auto;
+        }
+
+        .help-modal-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Ikon berterbangan */
+        .floating-icon {
+            position: fixed;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            opacity: 0.7;
+            animation: floatAround 15s linear infinite;
+            z-index: 0;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 30%;
+            left: 5%;
+            animation-duration: 18s;
+            animation-delay: 4s;
+        }
+
+        .floating-icon:nth-child(4) {
+            bottom: 20%;
+            right: 10%;
+            animation-duration: 22s;
+            animation-delay: 6s;
+        }
+
+        .floating-icon:nth-child(5) {
+            top: 50%;
+            left: 50%;
+            animation-duration: 30s;
+            animation-delay: 8s;
+        }
+
+        .floating-icon:nth-child(6) {
+            top: 70%;
+            left: 80%;
+            animation-duration: 17s;
+            animation-delay: 10s;
+        }
+
+        /* Animasi */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes pulse-large {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.45);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, -50px) rotate(90deg);
+            }
+            50% {
+                transform: translate(-50px, -100px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-100px, 50px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .btn-mulai {
+                min-width: 250px;
+                padding: 1.5rem 3rem;
+            }
+
+            .btn-mulai .level-icon {
+                font-size: 4rem;
+            }
+
+            .btn-mulai .level-text {
+                font-size: 2rem;
+            }
+
+            .home-button, .help-button, .music-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .home-button i, .help-button i, .music-button i {
+                font-size: 1.2rem;
+            }
+
+            .help-modal-content {
+                padding: 1.5rem;
+            }
+
+            .help-modal-title {
+                font-size: 2rem;
+            }
+
+            .help-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .help-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .logo-container img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .btn-mulai {
+                min-width: 200px;
+                padding: 1.2rem 2.5rem;
+            }
+
+            .btn-mulai .level-icon {
+                font-size: 3rem;
+            }
+
+            .btn-mulai .level-text {
+                font-size: 1.8rem;
+            }
+
+            .developer-info {
+                font-size: 1rem;
+            }
+
+            .nim-info {
+                font-size: 0.9rem;
+            }
+
+            .home-button, .help-button, .music-button {
+                width: 45px;
+                height: 45px;
+                top: 15px;
+            }
+
+            .home-button {
+                left: 15px;
+            }
+
+            .help-button {
+                right: 15px;
+            }
+
+            .music-button {
+                bottom: 15px;
+                left: 15px;
+            }
+
+            .home-button i, .help-button i, .music-button i {
+                font-size: 1rem;
+            }
+
+            .home-tooltip, .help-tooltip, .music-tooltip {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .help-modal-content {
+                padding: 1rem;
+            }
+
+            .help-modal-title {
+                font-size: 1.8rem;
+            }
+
+            .help-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ikon berterbangan -->
+    <i class="fas fa-star floating-icon"></i>
+    <i class="fas fa-calculator floating-icon"></i>
+    <i class="fas fa-shapes floating-icon"></i>
+    <i class="fas fa-ruler floating-icon"></i>
+    <i class="fas fa-cube floating-icon"></i>
+    <i class="fas fa-graduation-cap floating-icon"></i>
+
+    <!-- Tombol Home -->
+    <!-- <a href="index.html" class="home-button">
+        <i class="fas fa-home"></i>
+        <span class="home-tooltip">Kembali ke Beranda</span>
+    </a> -->
+
+    <!-- Tombol Bantuan (Question Mark) -->
+    <button class="help-button" id="helpButton" aria-label="Petunjuk Penggunaan">
+        <i class="fas fa-question"></i>
+        <span class="help-tooltip">Petunjuk Penggunaan</span>
+    </button>
+
+    <!-- Tombol Musik -->
+    <button class="music-button" id="musicButton" aria-label="Musik">
+        <i class="fas fa-music" id="musicIcon"></i>
+        <span class="music-tooltip" id="musicTooltip">Musik: Dimatikan</span>
+    </button>
+
+    <!-- Audio Background -->
+    <audio id="backgroundMusic" loop>
+        <source src="BackSound.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo E-LKPD Bangun Ruang Sisi Datar">
+            </div>
+            <h1 class="title">E-LKPD BANGUN RUANG SISI DATAR</h1>
+            <p class="subtitle">Petualangan Seru Dunia Matematika!</p>
+        </header>
+
+        <!-- Container tombol Mulai -->
+        <main class="levels-container">
+            <!-- Tombol Mulai menuju ke myunit.html -->
+            <a href="myunit.html" class="btn-mulai">
+                <i class="fas fa-play-circle level-icon"></i>
+                <span class="level-text">MULAI !</span>
+            </a>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="developer-info">Dikembangkan oleh Atala Project</p>
+            <p class="nim-info">Atala Project</p>
+        </footer>
+    </div>
+
+    <!-- Modal Petunjuk Penggunaan -->
+    <div class="help-modal" id="helpModal">
+        <div class="help-modal-content">
+            <button class="help-modal-close" id="helpModalClose" aria-label="Tutup">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="help-modal-header">
+                <h2 class="help-modal-title">CARA PENGGUNAAN MEDIA</h2>
+                <p class="help-modal-subtitle">Panduan lengkap untuk menggunakan E-LKPD Bangun Ruang Sisi Datar</p>
+            </div>
+
+            <div class="help-items">
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="help-text">Tombol X untuk keluar dari halaman</div>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="help-text">Jika ada inputan, silakan diisi dengan jawaban yang benar</div>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="help-text">Jika ada game, baca terlebih dahulu arahan permainannya</div>
+                </div>
+
+                <div class="help-item">
+                    <div class="help-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="help-text">Tombol musik untuk mengaktifkan/mematikan musik latar</div>
+                </div>
+            </div>
+
+            <button class="help-modal-button" id="helpModalButton">
+                <i class="fas fa-check"></i>
+                MENGERTI
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Elemen DOM
+            const helpButton = document.getElementById('helpButton');
+            const helpModal = document.getElementById('helpModal');
+            const helpModalClose = document.getElementById('helpModalClose');
+            const helpModalButton = document.getElementById('helpModalButton');
+
+            // Elemen Musik
+            const musicButton = document.getElementById('musicButton');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const musicIcon = document.getElementById('musicIcon');
+            const musicTooltip = document.getElementById('musicTooltip');
+
+            // Status musik (default: mati)
+            let isMusicPlaying = false;
+
+            // Cek apakah ini pertama kali membuka halaman
+            const isFirstVisit = localStorage.getItem('firstVisit') === null;
+
+            // Tampilkan modal jika pertama kali membuka
+            if (isFirstVisit) {
+                setTimeout(() => {
+                    helpModal.classList.add('show');
+                }, 1000);
+
+                // Tandai bahwa pengguna sudah pernah mengunjungi halaman
+                localStorage.setItem('firstVisit', 'false');
+            }
+
+            // Event Listeners untuk tombol bantuan
+            helpButton.addEventListener('click', function () {
+                helpModal.classList.add('show');
+            });
+
+            helpModalClose.addEventListener('click', function () {
+                helpModal.classList.remove('show');
+            });
+
+            helpModalButton.addEventListener('click', function () {
+                helpModal.classList.remove('show');
+            });
+
+            // Tutup modal jika klik di luar modal content
+            helpModal.addEventListener('click', function (e) {
+                if (e.target === helpModal) {
+                    helpModal.classList.remove('show');
+                }
+            });
+
+            // Event Listener untuk tombol musik
+            musicButton.addEventListener('click', function () {
+                if (isMusicPlaying) {
+                    // Hentikan musik
+                    backgroundMusic.pause();
+                    musicIcon.className = 'fas fa-music';
+                    musicTooltip.textContent = 'Musik: Dimatikan';
+                    musicButton.classList.remove('playing');
+                    isMusicPlaying = false;
+                } else {
+                    // Mainkan musik
+                    backgroundMusic.play().catch(e => {
+                        console.error("Error playing audio:", e);
+                        // Tampilkan pesan jika audio tidak dapat diputar
+                        musicTooltip.textContent = 'Error: Tidak dapat memutar musik';
+                        setTimeout(() => {
+                            musicTooltip.textContent = 'Musik: Dimatikan';
+                        }, 2000);
+                    });
+                    musicIcon.className = 'fas fa-pause';
+                    musicTooltip.textContent = 'Musik: Dimainkan';
+                    musicButton.classList.add('playing');
+                    isMusicPlaying = true;
+                }
+            });
+
+            // Efek hover pada tombol home
+            const homeButton = document.querySelector('.home-button');
+
+            homeButton.addEventListener('click', function (e) {
+                this.style.transform = 'scale(0.9) rotate(0deg)';
+
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+
+            // Efek hover pada tombol bantuan
+            helpButton.addEventListener('click', function (e) {
+                this.style.transform = 'scale(0.9) rotate(0deg)';
+
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+
+            // Efek hover pada tombol musik
+            musicButton.addEventListener('click', function (e) {
+                this.style.transform = 'scale(0.9) rotate(0deg)';
+
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+
+            // Tambahkan lebih banyak floating icons secara dinamis
+            function createRandomIcon() {
+                const icons = ['fa-star', 'fa-calculator', 'fa-shapes', 'fa-ruler', 'fa-cube', 'fa-graduation-cap', 'fa-book', 'fa-pencil-ruler', 'fa-chart-line', 'fa-square-root-alt', 'fa-music'];
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                const iconElement = document.createElement('i');
+                iconElement.className = `fas ${randomIcon} floating-icon`;
+                iconElement.style.top = Math.random() * 100 + '%';
+                iconElement.style.left = Math.random() * 100 + '%';
+                iconElement.style.animationDuration = (15 + Math.random() * 15) + 's';
+                iconElement.style.animationDelay = Math.random() * 5 + 's';
+                iconElement.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+                document.body.appendChild(iconElement);
+
+                // Hapus icon setelah animasi selesai
+                setTimeout(() => {
+                    iconElement.remove();
+                }, 30000);
+            }
+
+            // Buat 3 icon tambahan setiap 5 detik
+            setInterval(createRandomIcon, 5000);
+
+            // Efek parallax pada scroll
+            window.addEventListener('scroll', function () {
+                const scrolled = window.pageYOffset;
+                const floatingIcons = document.querySelectorAll('.floating-icon');
+
+                floatingIcons.forEach((icon, index) => {
+                    const speed = 0.5 + (index * 0.1);
+                    icon.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+
+            // Animasi masuk untuk elemen Mulai
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            const btnMulai = document.querySelector('.btn-mulai');
+            if (btnMulai) {
+                btnMulai.style.opacity = '0';
+                btnMulai.style.transform = 'translateY(20px)';
+                btnMulai.style.transition = 'all 0.5s ease';
+                observer.observe(btnMulai);
+            }
+        });
+    </script>
+</body>
+
+</html>

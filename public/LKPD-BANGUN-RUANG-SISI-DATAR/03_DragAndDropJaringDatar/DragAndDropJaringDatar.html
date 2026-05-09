@@ -1,0 +1,1337 @@
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD Level 3 - Jaring-Jaring Bangun Ruang</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            padding: 1rem;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            display: none;
+            /* Sembunyikan dulu */
+        }
+
+        .game-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Efek komik di container */
+        .game-container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Tombol Close */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 3px 3px 0 #000;
+            font-size: 1.2rem;
+        }
+
+        .close-btn:hover {
+            background-color: var(--dark-red);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.9), rgba(255, 78, 80, 0.9));
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek ledakan komik di header */
+        .header-section::before {
+            content: "BAM!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+
+        .main-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: white;
+            font-weight: 500;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .level-indicator {
+            display: inline-block;
+            background: var(--comic-yellow);
+            color: var(--dark-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            box-shadow: 2px 2px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+
+        /* --- STYLE UNTUK MATERI PEMBELAJARAN --- */
+        .learning-material {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 3px solid var(--comic-blue);
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .learning-material::after {
+            content: "INFO!";
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--comic-blue);
+            transform: rotate(10deg);
+            text-shadow: 1px 1px 0 #000;
+            opacity: 0.7;
+        }
+
+        .learning-material h2 {
+            font-family: 'Bangers', cursive;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .definition {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        /* Navigasi Tab Simulasi */
+        .sim-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sim-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary-blue);
+            background: white;
+            color: var(--primary-blue);
+            border-radius: 25px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .sim-btn:hover {
+            transform: translateY(-2px);
+            background: #eef;
+        }
+
+        .sim-btn.active {
+            background: var(--comic-yellow);
+            color: var(--dark-blue);
+            border-color: var(--dark-blue);
+            box-shadow: 3px 3px 0 #000;
+            transform: scale(1.05);
+        }
+
+        /* Container GeoGebra */
+        .geogebra-content {
+            position: relative;
+            width: 100%;
+            /* Membuat container lebih lebar */
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 2px solid #333;
+            display: none;
+            /* Hidden by default controlled by JS */
+        }
+
+        .geogebra-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .geogebra-iframe-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            /* Aspect ratio disesuaikan agar tidak terlalu gepeng atau tinggi */
+            padding-bottom: 60%;
+            transition: transform 0.3s ease;
+            transform-origin: top center;
+        }
+
+        .geogebra-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Kontrol Zoom Custom */
+        .zoom-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .zoom-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000;
+            transition: all 0.2s;
+        }
+
+        .zoom-icon-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-orange);
+        }
+
+        /* --- AKHIR STYLE MATERI PEMBELAJARAN --- */
+
+        .instructions {
+            background: linear-gradient(135deg, rgba(249, 212, 35, 0.2), rgba(255, 78, 80, 0.2));
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--comic-yellow);
+            position: relative;
+        }
+
+        .instructions h3 {
+            font-family: 'Bangers', cursive;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .game-area {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nets-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .categories-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .section-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .nets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            border: 2px dashed var(--primary-blue);
+            min-height: 300px;
+        }
+
+        .net-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .net-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .net-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .net-img {
+            width: 120px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+        }
+
+        .net-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--dark-blue);
+        }
+
+        .category-box {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 3px solid var(--primary-red);
+            min-height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek burst di pojok kanan atas category box */
+        .category-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, transparent 50%, var(--comic-yellow) 50%);
+            border-radius: 0 15px 0 0;
+        }
+
+        .category-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--primary-red);
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .category-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            min-height: 100px;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            border: 2px dashed var(--light-red);
+        }
+
+        .category-items.drag-over {
+            background: rgba(255, 235, 59, 0.3);
+            border-color: var(--comic-yellow);
+        }
+
+        .category-items.invalid-drop {
+            animation: shake 0.5s;
+            border-color: var(--dark-red);
+        }
+
+        .dropped-net {
+            background: var(--light-blue);
+            border-radius: 10px;
+            padding: 0.5rem;
+            text-align: center;
+            box-shadow: 1px 1px 0 #000;
+            animation: dropIn 0.3s ease;
+            cursor: grab;
+        }
+
+        .dropped-net:hover {
+            transform: translateY(-3px);
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        @keyframes dropIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .dropped-net img {
+            width: 80px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .dropped-net .net-name {
+            font-size: 0.8rem;
+            color: white;
+            margin-top: 0.25rem;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .control-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+        }
+
+        .check-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+        }
+
+        .reset-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Modal untuk kode masuk */
+        .code-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .code-modal.hide {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Efek ledakan di modal kode */
+        .modal-content::before {
+            content: "CODE!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+
+        .code-icon {
+            font-size: 4rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .code-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .code-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid var(--primary-red);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.2);
+        }
+
+        .code-input.incorrect {
+            border-color: var(--dark-red);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .submit-code-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .submit-code-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Modal Success */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .success-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .success-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Efek ledakan di modal success */
+        .success-content::before {
+            content: "WOW!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        .success-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .success-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-box {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .next-level-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+
+        .next-level-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .game-area {
+                flex-direction: column;
+            }
+
+            .nets-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .geogebra-iframe-container {
+                padding-bottom: 100%;
+                /* Lebih tinggi di mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="code-modal" id="codeModal">
+        <div class="modal-content">
+            <div class="code-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <h2 class="code-title">MASUKKAN KODE</h2>
+            <p class="code-message">Masukkan kode dari Level 2 untuk melanjutkan ke Level 3</p>
+            <div class="code-input-group">
+                <input type="text" class="code-input" id="codeInput" placeholder="KODE" maxlength="20">
+            </div>
+            <button class="submit-code-btn" id="submitCodeBtn">
+                <i class="fas fa-unlock"></i>
+                Buka Level 3
+            </button>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <!-- <button class="close-btn" id="closeBtn" title="Kembali ke LKPD">
+            <i class="fas fa-times"></i>
+        </button> -->
+
+        <header class="header-section">
+            <div class="level-indicator">LEVEL 3</div>
+            <h1 class="main-title">E-LKPD INTERAKTIF</h1>
+            <p class="subtitle">Jaring-Jaring Bangun Ruang Sisi Datar</p>
+        </header>
+
+        <main>
+            <section class="learning-material">
+                <h2><i class="fas fa-shapes"></i> Laboratorium Jaring-Jaring</h2>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Selamat datang di Lab Virtual!</strong><br>
+                            Di sini kamu bisa melihat bagaimana bangun ruang dibuka menjadi jaring-jaring.
+                            Klik tombol di bawah ini untuk memulai eksperimen!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center my-3">
+                    <button id="toggleSimBtn" class="control-btn check-btn" style="width: auto;">
+                        <i class="fas fa-box-open"></i> Buka Laboratorium Simulasi
+                    </button>
+                </div>
+
+                <div id="simulationWrapper" style="display: none; animation: fadeIn 0.5s;">
+
+                    <div class="sim-nav">
+                        <button class="sim-btn active" data-target="sim-kubus">Kubus</button>
+                        <button class="sim-btn" data-target="sim-balok">Balok</button>
+                        <button class="sim-btn" data-target="sim-prisma">Prisma</button>
+                        <button class="sim-btn" data-target="sim-limas">Limas</button>
+                    </div>
+
+                    <p class="text-center mb-2 text-muted"><small><i>Gunakan tombol + / - untuk zoom, atau geser slider
+                                pada simulasi!</i></small></p>
+
+                    <div id="sim-kubus" class="geogebra-content active">
+                        <div class="geogebra-iframe-container" id="container-kubus">
+                            <iframe class="geogebra-iframe" scrolling="no"
+                                title="Animasi Model-Model Jaring-Jaring Kubus"
+                                src="https://www.geogebra.org/material/iframe/id/krytaxf6/width/900/height/550/border/888888/sfsb/true/smb/false/stb/false/stbh/false/ai/false/asb/false/sri/true/rc/false/ld/false/sdz/true/ctl/false"
+                                allowfullscreen> </iframe>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-icon-btn" onclick="zoomIn('container-kubus')"><i
+                                    class="fas fa-plus"></i></button>
+                            <button class="zoom-icon-btn" onclick="zoomOut('container-kubus')"><i
+                                    class="fas fa-minus"></i></button>
+                            <button class="zoom-icon-btn" onclick="toggleFullscreen('sim-kubus')"><i
+                                    class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="sim-balok" class="geogebra-content">
+                        <div class="geogebra-iframe-container" id="container-balok">
+                            <iframe class="geogebra-iframe" scrolling="no" title="JARING-JARING BALOK"
+                                src="https://www.geogebra.org/material/iframe/id/peykvudz/width/1358/height/654/border/888888/sfsb/true/smb/false/stb/false/stbh/false/ai/false/asb/false/sri/true/rc/false/ld/false/sdz/true/ctl/false"
+                                allowfullscreen> </iframe>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-icon-btn" onclick="zoomIn('container-balok')"><i
+                                    class="fas fa-plus"></i></button>
+                            <button class="zoom-icon-btn" onclick="zoomOut('container-balok')"><i
+                                    class="fas fa-minus"></i></button>
+                            <button class="zoom-icon-btn" onclick="toggleFullscreen('sim-balok')"><i
+                                    class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="sim-prisma" class="geogebra-content">
+                        <div class="geogebra-iframe-container" id="container-prisma">
+                            <iframe class="geogebra-iframe" scrolling="no" title="Jari Prisma"
+                                src="https://www.geogebra.org/material/iframe/id/mnxdmcmy/width/700/height/400/border/888888/sfsb/true/smb/false/stb/false/stbh/false/ai/false/asb/false/sri/true/rc/false/ld/false/sdz/true/ctl/false"
+                                allowfullscreen> </iframe>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-icon-btn" onclick="zoomIn('container-prisma')"><i
+                                    class="fas fa-plus"></i></button>
+                            <button class="zoom-icon-btn" onclick="zoomOut('container-prisma')"><i
+                                    class="fas fa-minus"></i></button>
+                            <button class="zoom-icon-btn" onclick="toggleFullscreen('sim-prisma')"><i
+                                    class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="sim-limas" class="geogebra-content">
+                        <div class="geogebra-iframe-container" id="container-limas">
+                            <iframe class="geogebra-iframe" scrolling="no" title="JARING-JARING LIMAS"
+                                src="https://www.geogebra.org/material/iframe/id/tzfhbaca/width/1336/height/549/border/888888/sfsb/true/smb/false/stb/false/stbh/false/ai/false/asb/false/sri/true/rc/false/ld/false/sdz/true/ctl/false"
+                                allowfullscreen> </iframe>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-icon-btn" onclick="zoomIn('container-limas')"><i
+                                    class="fas fa-plus"></i></button>
+                            <button class="zoom-icon-btn" onclick="zoomOut('container-limas')"><i
+                                    class="fas fa-minus"></i></button>
+                            <button class="zoom-icon-btn" onclick="toggleFullscreen('sim-limas')"><i
+                                    class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            <section class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> Petunjuk Permainan</h3>
+                <p>1. Perhatikan gambar jaring-jaring bangun ruang di sebelah kiri</p>
+                <p>2. Seret (drag) setiap jaring-jaring ke kategori bangun ruang yang sesuai</p>
+                <p>3. Klasifikasi jaring-jaring menjadi Kubus, Balok, Prisma, dan Limas</p>
+                <p>4. Klik tombol "Periksa Jawaban" untuk melihat hasilnya</p>
+            </section>
+
+            <section class="game-area">
+                <div class="nets-container">
+                    <h2 class="section-title">Jaring-Jaring Bangun Ruang</h2>
+                    <div class="nets-grid" id="netsGrid">
+                    </div>
+                </div>
+
+                <div class="categories-container">
+                    <h2 class="section-title">Kategori Bangun Ruang</h2>
+
+                    <div class="category-box">
+                        <h3 class="category-title">Kubus</h3>
+                        <div class="category-items" id="kubusCategory" data-category="kubus">
+                        </div>
+                    </div>
+
+                    <div class="category-box">
+                        <h3 class="category-title">Balok</h3>
+                        <div class="category-items" id="balokCategory" data-category="balok">
+                        </div>
+                    </div>
+
+                    <div class="category-box">
+                        <h3 class="category-title">Prisma</h3>
+                        <div class="category-items" id="prismaCategory" data-category="prisma">
+                        </div>
+                    </div>
+
+                    <div class="category-box">
+                        <h3 class="category-title">Limas</h3>
+                        <div class="category-items" id="limasCategory" data-category="limas">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="control-buttons">
+                <button class="control-btn check-btn" id="checkBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Periksa Jawaban
+                </button>
+                <button class="control-btn reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i>
+                    Reset
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 class="success-title">YEY KAMU BENAR!</h2>
+            <p class="success-message">Selamat! Kamu telah berhasil mengklasifikasikan semua jaring-jaring dengan benar.
+            </p>
+            <div class="code-box">matrixjuara</div>
+            <p class="success-message">Gunakan kode ini untuk melanjutkan ke level selanjutnya</p>
+            <button class="next-level-btn" id="nextLevelBtn">
+                <i class="fas fa-arrow-right"></i>
+                Lanjut ke Level 4
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- LOGIKA ZOOM GLOBAL ---
+        let zoomLevels = {
+            'container-kubus': 1,
+            'container-balok': 1,
+            'container-prisma': 1,
+            'container-limas': 1
+        };
+
+        function zoomIn(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                zoomLevels[containerId] += 0.1;
+                container.style.transform = `scale(${zoomLevels[containerId]})`;
+            }
+        }
+
+        function zoomOut(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                zoomLevels[containerId] = Math.max(0.5, zoomLevels[containerId] - 0.1);
+                container.style.transform = `scale(${zoomLevels[containerId]})`;
+            }
+        }
+
+        function toggleFullscreen(wrapperId) {
+            const elem = document.getElementById(wrapperId).querySelector('iframe');
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Data jaring-jaring bangun ruang (Sample images)
+            const nets = [
+                // KUBUS
+                { id: 'kubus1', name: '', image: 'kubus.png', category: 'kubus' },
+                // BALOK
+                { id: 'balok1', name: '', image: 'balok.png', category: 'balok' },
+                // PRISMA
+                { id: 'prisma_segitiga1', name: '', image: 'prisma.png', category: 'prisma' },
+                // LIMAS
+                { id: 'limas_segitiga1', name: '', image: 'limas.png', category: 'limas' },
+            ];
+
+            // State permainan
+            let gameState = {
+                nets: [...nets],
+                droppedNets: {
+                    kubus: [],
+                    balok: [],
+                    prisma: [],
+                    limas: []
+                }
+            };
+
+            // Elemen DOM
+            const codeModal = document.getElementById('codeModal');
+            const gameContainer = document.getElementById('gameContainer');
+            const codeInput = document.getElementById('codeInput');
+            const submitCodeBtn = document.getElementById('submitCodeBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const netsGrid = document.getElementById('netsGrid');
+            const kubusCategory = document.getElementById('kubusCategory');
+            const balokCategory = document.getElementById('balokCategory');
+            const prismaCategory = document.getElementById('prismaCategory');
+            const limasCategory = document.getElementById('limasCategory');
+            const checkBtn = document.getElementById('checkBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const successModal = document.getElementById('successModal');
+            const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+            // Kode yang benar
+            const correctCode = 'matrixgembira';
+            const nextLevelCode = 'matrixjuara';
+
+            // Inisialisasi permainan
+            function initGame() {
+                renderNets();
+                setupDragAndDrop();
+                setupEventListeners();
+            }
+
+            // Render jaring-jaring
+            function renderNets() {
+                netsGrid.innerHTML = '';
+                // Acak urutan jaring-jaring
+                const shuffledNets = [...gameState.nets].sort(() => Math.random() - 0.5);
+
+                shuffledNets.forEach(net => {
+                    const netElement = createNetElement(net);
+                    netsGrid.appendChild(netElement);
+                });
+            }
+
+            // Membuat elemen jaring-jaring
+            function createNetElement(net) {
+                const div = document.createElement('div');
+                div.className = 'net-item';
+                div.draggable = true;
+                div.dataset.netId = net.id;
+                div.dataset.category = net.category;
+
+                // Gunakan placeholder jika gambar tidak ditemukan
+                div.innerHTML = `
+                    <img src="${net.image}" onerror="this.src='https://via.placeholder.com/120x100?text=${net.category}'" alt="${net.name}" class="net-img">
+                    <div class="net-name">${net.name}</div>
+                `;
+
+                return div;
+            }
+
+            // Setup drag and drop
+            function setupDragAndDrop() {
+                let draggedElement = null;
+
+                // Event Delegation untuk dragstart
+                document.addEventListener('dragstart', function (e) {
+                    if (e.target.classList.contains('net-item') || e.target.classList.contains('dropped-net')) {
+                        draggedElement = e.target;
+                        e.target.classList.add('dragging');
+                        e.dataTransfer.effectAllowed = 'move';
+                    }
+                });
+
+                // Event Delegation untuk dragend
+                document.addEventListener('dragend', function (e) {
+                    if (e.target.classList.contains('net-item') || e.target.classList.contains('dropped-net')) {
+                        e.target.classList.remove('dragging');
+                    }
+                });
+
+                // Setup for category boxes and the main grid
+                const dropZones = [kubusCategory, balokCategory, prismaCategory, limasCategory, netsGrid];
+
+                dropZones.forEach(zone => {
+                    zone.addEventListener('dragover', function (e) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        if (zone.classList.contains('category-items')) {
+                            zone.classList.add('drag-over');
+                        }
+                    });
+
+                    zone.addEventListener('dragleave', function (e) {
+                        if (e.target === zone) {
+                            zone.classList.remove('drag-over');
+                        }
+                    });
+
+                    zone.addEventListener('drop', function (e) {
+                        e.preventDefault();
+                        if (zone.classList.contains('category-items')) {
+                            zone.classList.remove('drag-over');
+                        }
+
+                        if (draggedElement) {
+                            const netId = draggedElement.dataset.netId;
+                            const netCategory = draggedElement.dataset.category;
+                            const targetCategory = zone.dataset.category;
+
+                            // Validasi: Jika zona drop adalah kategori, periksa kecocokan
+                            if (targetCategory && netCategory !== targetCategory) {
+                                zone.classList.add('invalid-drop');
+                                setTimeout(() => {
+                                    zone.classList.remove('invalid-drop');
+                                }, 500);
+                                draggedElement = null; // Batalkan drag
+                                return;
+                            }
+
+                            // Pindahkan elemen
+                            zone.appendChild(draggedElement);
+
+                            // Update state logic here if needed for scoring
+
+                            draggedElement = null;
+                        }
+                    });
+                });
+            }
+
+            // Setup event listeners
+            function setupEventListeners() {
+                // Submit kode
+                submitCodeBtn.addEventListener('click', validateCode);
+                codeInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        validateCode();
+                    }
+                });
+
+                // Event listener untuk tombol close
+                closeBtn.addEventListener('click', function () {
+                    window.close();
+                });
+
+                // --- LOGIKA SIMULASI (OPEN/CLOSE & TAB NAVIGASI) ---
+                const toggleSimBtn = document.getElementById('toggleSimBtn');
+                const simWrapper = document.getElementById('simulationWrapper');
+                const simTabs = document.querySelectorAll('.sim-btn');
+                const simContents = document.querySelectorAll('.geogebra-content');
+
+                // 1. Toggle Open/Close Lab
+                if (toggleSimBtn && simWrapper) {
+                    toggleSimBtn.addEventListener('click', function () {
+                        if (simWrapper.style.display === 'none') {
+                            // Buka Simulasi
+                            simWrapper.style.display = 'block';
+                            toggleSimBtn.innerHTML = '<i class="fas fa-times-circle"></i> Tutup Laboratorium';
+                            toggleSimBtn.classList.remove('check-btn');
+                            toggleSimBtn.classList.add('reset-btn');
+                            simWrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            // Tutup Simulasi
+                            simWrapper.style.display = 'none';
+                            toggleSimBtn.innerHTML = '<i class="fas fa-box-open"></i> Buka Laboratorium Simulasi';
+                            toggleSimBtn.classList.remove('reset-btn');
+                            toggleSimBtn.classList.add('check-btn');
+                        }
+                    });
+                }
+
+                // 2. Tab Navigation Logic (Kubus, Balok, dll)
+                simTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        // Hapus active class dari semua tab dan content
+                        simTabs.forEach(t => t.classList.remove('active'));
+                        simContents.forEach(c => c.classList.remove('active'));
+
+                        // Tambah active class ke tab yang diklik
+                        tab.classList.add('active');
+
+                        // Tampilkan konten yang sesuai
+                        const targetId = tab.getAttribute('data-target');
+                        document.getElementById(targetId).classList.add('active');
+                    });
+                });
+
+                // Game Control Buttons
+                checkBtn.addEventListener('click', checkAnswers);
+                resetBtn.addEventListener('click', resetGame);
+                nextLevelBtn.addEventListener('click', function () {
+                    window.location.href = "../04_InteraktifSoal/InteraktifSoal.html";
+                });
+            }
+
+            // Validasi kode
+            function validateCode() {
+                const enteredCode = codeInput.value.trim().toLowerCase();
+
+                if (enteredCode === correctCode) {
+                    codeModal.classList.add('hide');
+                    gameContainer.classList.add('show');
+                } else {
+                    codeInput.classList.add('incorrect');
+                    setTimeout(() => {
+                        codeInput.classList.remove('incorrect');
+                    }, 1000);
+                    alert("Kode salah! Coba 'matrixgembira'");
+                }
+            }
+
+            // Memeriksa jawaban (Sederhana: Cek jumlah anak di setiap kategori)
+            function checkAnswers() {
+                // Logika pemeriksaan sederhana: 
+                // Kita anggap benar jika setiap kategori terisi minimal 1 item yang benar
+                // (Karena validasi drag-drop sudah mencegah salah masuk kamar)
+
+                let isComplete = true;
+                const categories = [kubusCategory, balokCategory, prismaCategory, limasCategory];
+
+                categories.forEach(cat => {
+                    if (cat.children.length === 0) isComplete = false;
+                });
+
+                // Cek apakah masih ada item di grid utama
+                if (netsGrid.children.length > 0) isComplete = false;
+
+                if (isComplete) {
+                    successModal.classList.add('show');
+                } else {
+                    alert('Lengkapi semua jaring-jaring ke dalam kotaknya!');
+                }
+            }
+
+            // Reset permainan
+            function resetGame() {
+                kubusCategory.innerHTML = '';
+                balokCategory.innerHTML = '';
+                prismaCategory.innerHTML = '';
+                limasCategory.innerHTML = '';
+                renderNets();
+            }
+
+            // Jalankan permainan
+            initGame();
+        });
+    </script>
+</body>
+
+</html>

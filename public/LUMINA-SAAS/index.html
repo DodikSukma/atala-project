@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina | AI Content Scheduler SAAS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        lumina: {
+                            900: '#0f172a', // Background
+                            800: '#1e293b', // Cards
+                            700: '#334155', // Borders
+                            accent: '#8b5cf6', // Violet
+                            accentHover: '#7c3aed',
+                            glow: '#c4b5fd',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .grid-bg {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-lumina-900 text-slate-300 font-sans h-screen flex overflow-hidden selection:bg-lumina-accent selection:text-white relative">
+
+    <!-- Background Decoration -->
+    <div class="absolute inset-0 grid-bg pointer-events-none -z-20"></div>
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-lumina-accent/20 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-lumina-700 bg-lumina-900/50 backdrop-blur flex flex-col z-20">
+        <div class="h-20 flex items-center px-6 border-b border-lumina-700">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-violet-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-violet-500/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <span class="font-bold text-xl text-white tracking-tight">Lumina<span class="text-violet-400">.ai</span></span>
+            </div>
+        </div>
+
+        <div class="p-4 flex-1 overflow-y-auto">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 ml-2">Menu Utama</div>
+            <nav class="space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-violet-500/10 text-violet-400 font-medium border border-violet-500/20">
+                    <i class="fa-solid fa-border-all w-5"></i> Dashboard
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-lumina-800 transition-colors font-medium">
+                    <i class="fa-regular fa-calendar-check w-5"></i> Jadwal Konten
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-lumina-800 transition-colors font-medium">
+                    <i class="fa-solid fa-wand-magic-sparkles w-5"></i> AI Generator
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-lumina-800 transition-colors font-medium">
+                    <i class="fa-solid fa-chart-line w-5"></i> Analytics
+                </a>
+            </nav>
+
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-8 mb-4 ml-2">Pengaturan</div>
+            <nav class="space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-lumina-800 transition-colors font-medium">
+                    <i class="fa-solid fa-link w-5"></i> Integrasi Sosial
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-lumina-800 transition-colors font-medium">
+                    <i class="fa-solid fa-gear w-5"></i> Akun
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-4 border-t border-lumina-700">
+            <div class="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-xl p-4 relative overflow-hidden group cursor-pointer">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-white/20 rounded-bl-full -z-0 transition-transform group-hover:scale-110"></div>
+                <div class="relative z-10">
+                    <p class="text-xs text-white/80 font-medium mb-1">Paket Pro</p>
+                    <p class="text-sm font-bold text-white mb-3">Tingkatkan Limit AI</p>
+                    <button class="bg-white text-violet-700 text-xs font-bold py-1.5 px-3 rounded-lg w-full">Upgrade Sekarang</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col z-10 relative">
+        <!-- Topbar -->
+        <header class="h-20 flex items-center justify-between px-8 border-b border-lumina-700 bg-lumina-900/30 backdrop-blur">
+            <h1 class="text-2xl font-semibold text-white">Overview</h1>
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <i class="fa-regular fa-bell text-slate-400 hover:text-white text-xl cursor-pointer transition-colors"></i>
+                    <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-pink-500 rounded-full border-2 border-lumina-900"></div>
+                </div>
+                <div class="flex items-center gap-3 pl-6 border-l border-lumina-700 cursor-pointer group">
+                    <div class="text-right hidden md:block">
+                        <p class="text-sm font-semibold text-white">Atala Project</p>
+                        <p class="text-xs text-slate-400">Admin</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Atala+Project&background=8b5cf6&color=fff" alt="Profile" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-violet-500 transition-all">
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8">
+            <div class="max-w-6xl mx-auto">
+                
+                <!-- Welcome Banner -->
+                <div class="glass-card rounded-2xl p-8 mb-8 flex flex-col md:flex-row items-center justify-between border-l-4 border-l-violet-500">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Selamat Datang, Atala! 👋</h2>
+                        <p class="text-slate-400 text-sm">AI Lumina telah menganalisis audiens Anda. Saat yang tepat untuk memposting adalah jam <strong class="text-white">19:00 WIB</strong>.</p>
+                    </div>
+                    <button class="mt-4 md:mt-0 bg-white text-lumina-900 px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-pen-nib"></i> Buat Post Baru
+                    </button>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Stat 1 -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span class="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md">
+                                <i class="fa-solid fa-arrow-trend-up"></i> 12.5%
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1">24.5K</h3>
+                        <p class="text-sm text-slate-400 font-medium">Total Followers</p>
+                    </div>
+                    
+                    <!-- Stat 2 -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <span class="flex items-center gap-1 text-xs font-semibold text-pink-400 bg-pink-500/10 px-2 py-1 rounded-md">
+                                <i class="fa-solid fa-arrow-trend-up"></i> 8.2%
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1">1,245</h3>
+                        <p class="text-sm text-slate-400 font-medium">Avg. Engagement</p>
+                    </div>
+
+                    <!-- Stat 3 -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-violet-500/20 text-violet-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <span class="flex items-center gap-1 text-xs font-semibold text-slate-400 bg-slate-800 px-2 py-1 rounded-md">
+                                Sisa: 45
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1">12</h3>
+                        <p class="text-sm text-slate-400 font-medium">AI Post Generated</p>
+                    </div>
+                </div>
+
+                <!-- Main Section Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- AI Generator Demo (Takes 2 columns) -->
+                    <div class="lg:col-span-2 glass-card rounded-2xl p-6 flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-violet-400"></i> AI Magic Writer
+                            </h3>
+                            <button class="text-xs bg-lumina-800 hover:bg-lumina-700 px-3 py-1.5 rounded-lg text-slate-300 transition-colors border border-lumina-700">Clear</button>
+                        </div>
+                        
+                        <div class="flex-1 flex flex-col gap-4">
+                            <textarea class="w-full bg-lumina-900/50 border border-lumina-700 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-violet-500 transition-colors resize-none h-24" placeholder="Topik apa yang ingin Anda bahas hari ini? (Contoh: 5 Tips Produktivitas WFH)"></textarea>
+                            
+                            <div class="flex gap-3">
+                                <select class="bg-lumina-900/50 border border-lumina-700 rounded-xl px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-violet-500">
+                                    <option>Tone: Profesional</option>
+                                    <option>Tone: Kasual</option>
+                                    <option>Tone: Humoris</option>
+                                </select>
+                                <select class="bg-lumina-900/50 border border-lumina-700 rounded-xl px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-violet-500">
+                                    <option>Platform: Instagram</option>
+                                    <option>Platform: Twitter/X</option>
+                                    <option>Platform: LinkedIn</option>
+                                </select>
+                            </div>
+
+                            <button class="w-full bg-gradient-to-r from-violet-600 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transition-shadow">
+                                Generate Draft
+                            </button>
+
+                            <!-- Dummy Result -->
+                            <div class="mt-4 p-4 rounded-xl bg-lumina-800/50 border border-lumina-700 border-dashed">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-semibold text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-check-circle"></i> Draft Siap</span>
+                                    <div class="flex gap-2">
+                                        <button class="text-slate-400 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+                                        <button class="text-slate-400 hover:text-white"><i class="fa-solid fa-rotate-right"></i></button>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-slate-300 font-light leading-relaxed">
+                                    Kerja dari rumah (WFH) kadang bikin fokus buyar? 🤯 <br><br>
+                                    Ini 5 hacks jitu yang bikin produktivitas kamu melonjak tajam: <br>
+                                    1. 🍅 Teknik Pomodoro (25 menit kerja, 5 menit rehat)<br>
+                                    2. 🛏️ Jangan pernah kerja di atas kasur!<br>
+                                    3. 🎧 Dengerin playlist Lo-Fi Beats<br>
+                                    <br>
+                                    Mana yang sering kamu lakuin? Komen di bawah ya! 👇<br>
+                                    #Produktivitas #WFHHacks #TipsKarir
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Schedule -->
+                    <div class="glass-card rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                            <i class="fa-regular fa-calendar-check text-pink-400"></i> Jadwal Mendatang
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Schedule Item 1 -->
+                            <div class="bg-lumina-800/80 p-4 rounded-xl border border-lumina-700 flex gap-4 items-start group hover:border-violet-500/50 transition-colors">
+                                <div class="w-10 h-10 rounded-full bg-[#E1306C]/20 text-[#E1306C] flex items-center justify-center shrink-0">
+                                    <i class="fa-brands fa-instagram text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white mb-1 group-hover:text-violet-400 transition-colors">5 Tips Produktivitas WFH</p>
+                                    <p class="text-xs text-slate-400 mb-2 flex items-center gap-1"><i class="fa-regular fa-clock"></i> Hari ini, 19:00</p>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">Scheduled</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Schedule Item 2 -->
+                            <div class="bg-lumina-800/80 p-4 rounded-xl border border-lumina-700 flex gap-4 items-start group hover:border-violet-500/50 transition-colors">
+                                <div class="w-10 h-10 rounded-full bg-[#0077B5]/20 text-[#0077B5] flex items-center justify-center shrink-0">
+                                    <i class="fa-brands fa-linkedin-in text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white mb-1 group-hover:text-violet-400 transition-colors">Insight Industri Q3 2024</p>
+                                    <p class="text-xs text-slate-400 mb-2 flex items-center gap-1"><i class="fa-regular fa-clock"></i> Besok, 09:00</p>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">Needs Review</span>
+                                </div>
+                            </div>
+
+                            <button class="w-full text-xs font-semibold text-violet-400 hover:text-white mt-2 transition-colors">Lihat Semua Jadwal &rarr;</button>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <footer class="mt-12 text-center text-xs text-slate-500 pb-4">
+                    &copy; 2026 Lumina AI. Developed by Atala Project.
+                </footer>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+Level 2 : matrixhebat
+Level 3 : matrixgembira
+Level 4 : matrixjuara
+Level 5 : matrixmaster
+
+kunci jawaban Scene Game
+Slide 1: Perkenalan Soal & Data
+Pertanyaan: Yang harus kita hitung adalah...
+Jawaban: Luas permukaan atap
+
+Pilihan jawaban:
+❌ Volume atap
+✅ Luas permukaan atap
+❌ Keliling alas
+Slide 2: Langkah 1: Hitung Luas Alas
+Pertanyaan: Luas alas = a × a = ? m² (dengan a = 6)
+Jawaban: 36
+
+Perhitungan: 6 × 6 = 36 m²
+Slide 3: Keliling Alas & Konsep Sisi Miring
+Pertanyaan: Keliling alas = 4 × a = ? m (dengan a = 6)
+Jawaban: 24
+
+Perhitungan: 4 × 6 = 24 m
+Slide 4: Hitung Luas Semua Sisi Miring
+Pertanyaan: Masukkan K_alas = 24 dan s = 5. Hitung 1/2 × 24 × 5.
+Jawaban:
+
+Input 1 (Keliling alas): 24
+Input 2 (s): 5
+Input 3 (hasil): 60
+Perhitungan: 1/2 × 24 × 5 = 60 m²
+Slide 5: Penjumlahan & Kesimpulan
+Pertanyaan: Total luas atap = 36 + 60 = ? m²
+Jawaban: 96
+
+Perhitungan: 36 + 60 = 96 m²
+Ringkasan Perhitungan Lengkap:
+Luas alas = a × a = 6 × 6 = 36 m²
+Keliling alas = 4 × a = 4 × 6 = 24 m
+Luas semua sisi miring = 1/2 × Keliling alas × s = 1/2 × 24 × 5 = 60 m²
+Total luas permukaan atap = Luas alas + Luas sisi miring = 36 + 60 = 96 m²

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e3c72">
+    <title>E-LKPD Materi - Bangun Ruang Sisi Datar</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Bangers & Comic Neue -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Comic Neue"', 'cursive'],
+                        bangers: ['"Bangers"', 'cursive'],
+                    },
+                    colors: {
+                        comic: {
+                            blue: '#1e3c72',
+                            darkblue: '#0f2444',
+                            red: '#ff4e50',
+                            orange: '#f9d423',
+                            yellow: '#ffeb3b',
+                            cyan: '#00bcd4',
+                            green: '#2ecc71'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- 1. Comic Background (Sesuai index.html) --- */
+        body {
+            background: linear-gradient(135deg, #1e3c72, #ff4e50, #f9d423);
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        /* --- 2. Scrollbar Cantik --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.2); }
+        ::-webkit-scrollbar-thumb { background: #ff4e50; border-radius: 10px; border: 2px solid #0f2444; }
+
+        /* --- 3. Loading Animation (Fun) --- */
+        .loader-dots div {
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+            background-color: #ff4e50;
+            border: 2px solid #0f2444;
+        }
+        .loader-dots div:nth-child(1) { left: 8px; animation: loader-dots1 0.6s infinite; }
+        .loader-dots div:nth-child(2) { left: 8px; animation: loader-dots2 0.6s infinite; }
+        .loader-dots div:nth-child(3) { left: 32px; animation: loader-dots2 0.6s infinite; }
+        .loader-dots div:nth-child(4) { left: 56px; animation: loader-dots3 0.6s infinite; }
+        @keyframes loader-dots1 { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes loader-dots3 { 0% { transform: scale(1); } 100% { transform: scale(0); } }
+        @keyframes loader-dots2 { 0% { transform: translate(0, 0); } 100% { transform: translate(24px, 0); } }
+
+        /* --- 4. Sidebar Transitions --- */
+        .subunit-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .subunit-wrapper.open { grid-template-rows: 1fr; }
+        .subunit-inner { overflow: hidden; }
+
+        /* --- 5. Music Visualizer --- */
+        .bar {
+            width: 4px;
+            background: #fff;
+            border: 1px solid #0f2444;
+            animation: equalize 1s infinite;
+        }
+        .bar:nth-child(1) { height: 10px; animation-delay: -0.2s; }
+        .bar:nth-child(2) { height: 16px; animation-delay: -0.4s; }
+        .bar:nth-child(3) { height: 12px; animation-delay: -0.6s; }
+        @keyframes equalize { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.5); } }
+
+        /* Pola Halftone untuk Modal/Elemen */
+        .halftone-bg {
+            background-image: radial-gradient(#ffeb3b 25%, transparent 25%), radial-gradient(#ffeb3b 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased h-screen overflow-hidden flex flex-col font-sans">
+
+    <!-- Header Comic Style -->
+    <header class="h-20 bg-white border-b-4 border-comic-darkblue z-40 flex items-center justify-between px-4 md:px-6 flex-shrink-0 shadow-[0_6px_0_rgba(15,36,68,0.3)]">
+        <div class="flex items-center gap-4">
+            <button id="menuBtn" class="w-12 h-12 rounded-xl bg-comic-yellow border-4 border-comic-darkblue text-comic-darkblue shadow-[4px_4px_0_#0f2444] flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0_#0f2444] active:translate-y-1 active:shadow-[2px_2px_0_#0f2444]">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            
+            <div class="flex flex-col">
+                <!-- <span class="text-[11px] font-bold text-white tracking-widest uppercase bg-comic-red border-2 border-comic-darkblue px-3 py-0.5 rounded-full w-fit shadow-[2px_2px_0_#0f2444]">E-LKPD Matematika</span> -->
+                <h1 class="font-bangers text-comic-darkblue text-xl md:text-3xl leading-none truncate max-w-[200px] md:max-w-lg mt-1 tracking-wider" id="headerTitle">
+                    Loading...
+                </h1>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button id="musicBtn" class="group w-12 h-12 rounded-full bg-comic-cyan border-4 border-comic-darkblue text-white shadow-[4px_4px_0_#0f2444] flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0_#0f2444] active:translate-y-1 active:shadow-[2px_2px_0_#0f2444]">
+                <i class="fas fa-music text-lg group-hover:animate-spin"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/60 z-50 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
+    
+    <!-- Sidebar Comic Style -->
+    <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-[85vw] md:w-96 bg-white border-r-4 border-comic-darkblue z-50 transform -translate-x-full transition-transform duration-300 shadow-[15px_0_0_rgba(0,0,0,0.2)] flex flex-col rounded-r-3xl overflow-hidden">
+        
+        <!-- Sidebar Header -->
+        <div class="p-6 bg-gradient-to-br from-comic-red to-comic-orange border-b-4 border-comic-darkblue relative overflow-hidden">
+            <div class="absolute inset-0 halftone-bg opacity-30"></div>
+            
+            <div class="relative z-10 flex justify-between items-start">
+                <div>
+                    <h2 class="text-3xl font-bangers text-white tracking-wider text-shadow-[2px_2px_0_#0f2444]" style="text-shadow: 2px 2px 0px #0f2444;">DAFTAR MATERI</h2>
+                    <p class="text-white font-bold text-sm mt-1 bg-comic-darkblue/20 w-fit px-2 py-1 rounded-lg">Semangat belajar hari ini! 🚀</p>
+                </div>
+                <button id="closeSidebar" class="w-10 h-10 bg-comic-yellow border-2 border-comic-darkblue rounded-full text-comic-darkblue flex items-center justify-center shadow-[3px_3px_0_#0f2444] hover:-translate-y-1 hover:shadow-[5px_5px_0_#0f2444] transition-all">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="mt-6 relative z-10">
+                <div class="flex justify-between text-xs font-bold mb-2 text-white" style="text-shadow: 1px 1px 0px #0f2444;">
+                    <span>PROGRESS KAMU</span>
+                    <span id="progressText" class="bg-comic-yellow text-comic-darkblue px-2 py-0.5 rounded-md border-2 border-comic-darkblue shadow-[2px_2px_0_#0f2444] text-shadow-none">0%</span>
+                </div>
+                <div class="h-4 w-full bg-white border-2 border-comic-darkblue rounded-full overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
+                    <div class="h-full bg-comic-cyan w-[0%] transition-all duration-1000 border-r-2 border-comic-darkblue relative" id="overallProgress">
+                        <div class="absolute inset-0 bg-white/20 w-full" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.3) 10px, rgba(255,255,255,0.3) 20px);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Content -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50" id="unitList">
+            <!-- Units will be injected here -->
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t-4 border-comic-darkblue bg-comic-blue">
+            <a href="index.html" class="flex items-center justify-center gap-3 w-full py-3 rounded-xl bg-comic-yellow border-4 border-comic-darkblue text-comic-darkblue font-bangers text-xl tracking-wider hover:bg-comic-orange hover:-translate-y-1 transition-all shadow-[4px_4px_0_#0f2444] hover:shadow-[6px_6px_0_#0f2444] group">
+                <i class="fas fa-home group-hover:-rotate-12 transition-transform text-2xl"></i> KEMBALI KE HOME
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 relative p-3 md:p-6 overflow-hidden flex flex-col">
+        
+        <div id="loadingState" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-opacity duration-300">
+            <div class="loader-dots relative w-20 h-6 mb-4">
+                <div class="w-4 h-4 rounded-full absolute top-1"></div>
+                <div class="w-4 h-4 rounded-full absolute top-1"></div>
+                <div class="w-4 h-4 rounded-full absolute top-1"></div>
+                <div class="w-4 h-4 rounded-full absolute top-1"></div>
+            </div>
+            <p class="font-bangers text-3xl tracking-wider text-comic-red mt-2" style="text-shadow: 2px 2px 0px #0f2444;">MEMUAT MATERI...</p>
+        </div>
+
+        <div class="w-full h-full border-4 border-comic-darkblue shadow-[8px_8px_0_rgba(15,36,68,0.6)] md:shadow-[12px_12px_0_rgba(15,36,68,0.6)] bg-white rounded-2xl overflow-hidden relative">
+            <iframe id="embedFrame" class="w-full h-full border-0" allowfullscreen></iframe>
+        </div>
+
+    </main>
+
+    <audio id="bgMusic" loop>
+        <source src="BackSound.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // --- 1. Data Materi ---
+        const units = [
+            { 
+                id: 0, 
+                title: "Informasi E-LKPD", 
+                icon: "fa-info-circle",
+                color: "text-blue-600",
+                bg: "bg-blue-100",
+                subunits: [
+                    { id: '', title: "Informasi E-LKPD", embed: "00_TujuanPembelajaran/index.html", icon: "fa-book-open" }
+                ]
+            },    
+            { 
+                id: 1, 
+                title: "Misi Pembelajaran", 
+                icon: "fa-rocket",
+                color: "text-purple-600",
+                bg: "bg-purple-100",
+                subunits: [
+                    { id: 1, title: "MISI 1", embed: "01_DragAndDrop/DragAndDrop.html", icon: "fa-hand-pointer" },
+                    { id: 2, title: "MISI 2", embed: "02_FillTheBlank/FillTheBlank.html", icon: "fa-keyboard" },
+                    { id: 3, title: "MISI 3", embed: "03_DragAndDropJaringDatar/DragAndDropJaringDatar.html", icon: "fa-box-open" },
+                    { id: 4, title: "MISI 4", embed: "04_InteraktifSoal/InteraktifSoal.html", icon: "fa-question-circle" },
+                    { id: 5, title: "MISI 5", embed: "05_Volume/Volume.html", icon: "fa-cube" },
+                    { id: 6, title: "MISI 6", embed: "05_SceneGame/SceneGame.html", icon: "fa-gamepad" }
+                ]
+            },
+            { 
+                id: 2, 
+                title: "Uji Kompetensi", 
+                icon: "fa-trophy",
+                color: "text-comic-red",
+                bg: "bg-red-100",
+                subunits: [
+                    { id: '', title: "Uji Kompetensi", embed: "06_UjiKompetensi/UjiKompetensi.html", icon: "fa-medal" }
+                ]
+            },
+            { 
+                id: 3, 
+                title: "Profil Pengembang", 
+                icon: "fa-user-astronaut",
+                color: "text-comic-darkblue",
+                bg: "bg-slate-200",
+                subunits: [
+                    { id: '', title: "Profil Pengembang", embed: "08_Profil/profil.html", icon: "fa-id-badge" }
+                ]
+            }
+        ];
+
+        // --- 2. State Management ---
+        let state = {
+            currentUnitIndex: 0,
+            currentSubunitIndex: 0,
+            isPlaying: false
+        };
+
+        // --- 3. DOM Elements ---
+        const els = {
+            menuBtn: document.getElementById('menuBtn'),
+            closeSidebar: document.getElementById('closeSidebar'),
+            sidebar: document.getElementById('sidebar'),
+            sidebarOverlay: document.getElementById('sidebarOverlay'),
+            unitList: document.getElementById('unitList'),
+            embedFrame: document.getElementById('embedFrame'),
+            headerTitle: document.getElementById('headerTitle'),
+            loadingState: document.getElementById('loadingState'),
+            musicBtn: document.getElementById('musicBtn'),
+            audio: document.getElementById('bgMusic'),
+            overallProgress: document.getElementById('overallProgress'),
+            progressText: document.getElementById('progressText')
+        };
+
+        // --- 4. Initialization ---
+        function init() {
+            renderSidebar();
+            loadContent(0, 0); // Load materi pertama
+            setupListeners();
+            updateProgress();
+        }
+
+        // --- 5. Render Sidebar (Comic Style) ---
+        function renderSidebar() {
+            els.unitList.innerHTML = '';
+            
+            units.forEach((unit, uIndex) => {
+                const isActiveUnit = uIndex === state.currentUnitIndex;
+                
+                // Card Utama
+                const card = document.createElement('div');
+                card.className = `group bg-white rounded-2xl border-2 border-comic-darkblue overflow-hidden transition-all duration-300 shadow-[4px_4px_0_#0f2444] mb-4 hover:shadow-[6px_6px_0_#0f2444] hover:-translate-y-1 ${isActiveUnit ? 'ring-4 ring-comic-cyan/30' : ''}`;
+                
+                // Header Unit
+                const header = document.createElement('div');
+                header.className = `p-4 flex items-center justify-between cursor-pointer border-b-2 border-transparent ${isActiveUnit ? 'bg-comic-yellow border-comic-darkblue' : 'hover:bg-slate-100'}`;
+                header.onclick = () => toggleSubunits(uIndex);
+
+                header.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl ${unit.bg} ${unit.color} border-2 border-comic-darkblue flex items-center justify-center shadow-[2px_2px_0_#0f2444] group-hover:rotate-6 transition-transform duration-300 flex-shrink-0">
+                            <i class="fas ${unit.icon} text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-comic-darkblue text-base leading-tight">${unit.title}</div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white border-2 border-comic-darkblue flex items-center justify-center transition-transform duration-300 shadow-[2px_2px_0_#0f2444] flex-shrink-0 ${isActiveUnit ? 'rotate-180 bg-comic-red text-white' : 'text-slate-600'}" id="arrow-${uIndex}">
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </div>
+                `;
+
+                // Subunits (Accordion)
+                const subWrapper = document.createElement('div');
+                subWrapper.className = `subunit-wrapper ${isActiveUnit ? 'open' : ''}`;
+                subWrapper.id = `subwrapper-${uIndex}`;
+
+                const subInner = document.createElement('div');
+                subInner.className = `subunit-inner bg-white p-3 space-y-2 ${isActiveUnit ? 'border-t-2 border-comic-darkblue' : ''}`;
+
+                unit.subunits.forEach((sub, sIndex) => {
+                    const subItem = document.createElement('button');
+                    const isActive = isActiveUnit && sIndex === state.currentSubunitIndex;
+                    
+                    subItem.className = `w-full text-left px-4 py-3 rounded-xl text-sm font-bold flex items-center gap-3 transition-all duration-200 border-2 ${
+                        isActive 
+                        ? 'bg-comic-red text-white border-comic-darkblue shadow-[4px_4px_0_#0f2444] transform translate-x-1' 
+                        : 'bg-white border-slate-200 text-slate-600 hover:bg-comic-yellow hover:border-comic-darkblue hover:shadow-[3px_3px_0_#0f2444] hover:text-comic-darkblue'
+                    }`;
+                    
+                    subItem.innerHTML = `
+                        <i class="fas ${sub.icon || (isActive ? 'fa-star' : 'fa-circle')} text-sm ${isActive ? 'text-comic-yellow' : 'text-slate-400'}"></i>
+                        <span>${sub.title}</span>
+                    `;
+                    
+                    subItem.onclick = (e) => {
+                        e.stopPropagation();
+                        loadContent(uIndex, sIndex);
+                        if(window.innerWidth < 768) toggleSidebar(false);
+                    };
+                    subInner.appendChild(subItem);
+                });
+
+                subWrapper.appendChild(subInner);
+                card.appendChild(header);
+                card.appendChild(subWrapper);
+                els.unitList.appendChild(card);
+            });
+        }
+
+        // --- 6. Logic Functions ---
+        function toggleSubunits(uIndex) {
+            const wrapper = document.getElementById(`subwrapper-${uIndex}`);
+            const arrow = document.getElementById(`arrow-${uIndex}`);
+            
+            wrapper.classList.toggle('open');
+            arrow.classList.toggle('rotate-180');
+            arrow.classList.toggle('bg-comic-red');
+            arrow.classList.toggle('text-white');
+        }
+
+        function loadContent(uIndex, sIndex) {
+            state.currentUnitIndex = uIndex;
+            state.currentSubunitIndex = sIndex;
+            
+            const unit = units[uIndex];
+            const subunit = unit.subunits[sIndex];
+
+            // Animasi Loading
+            els.loadingState.classList.remove('opacity-0', 'pointer-events-none');
+            
+            // Update Title
+            els.headerTitle.innerHTML = `${subunit.title}`;
+            
+            // Load Iframe
+            els.embedFrame.src = subunit.embed;
+            els.embedFrame.onload = () => {
+                setTimeout(() => {
+                    els.loadingState.classList.add('opacity-0', 'pointer-events-none');
+                }, 600);
+            };
+
+            // Update Sidebar UI
+            renderSidebar();
+            updateProgress();
+        }
+
+        function toggleSidebar(show) {
+            if (show) {
+                els.sidebar.classList.remove('-translate-x-full');
+                els.sidebarOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                els.sidebar.classList.add('-translate-x-full');
+                els.sidebarOverlay.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function toggleMusic() {
+            state.isPlaying = !state.isPlaying;
+            if (state.isPlaying) {
+                els.audio.play().catch(() => {
+                    alert("Browser memblokir pemutaran otomatis. Silakan interaksi dengan halaman dulu.");
+                    state.isPlaying = false;
+                });
+                els.musicBtn.innerHTML = '<div class="flex items-end gap-[2px] h-4"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>';
+                els.musicBtn.classList.add('bg-comic-orange');
+                els.musicBtn.classList.remove('bg-comic-cyan');
+            } else {
+                els.audio.pause();
+                els.musicBtn.innerHTML = '<i class="fas fa-music text-lg"></i>';
+                els.musicBtn.classList.add('bg-comic-cyan');
+                els.musicBtn.classList.remove('bg-comic-orange');
+            }
+        }
+
+        function updateProgress() {
+            let total = 0;
+            let current = 0;
+            let found = false;
+
+            units.forEach((u, uIdx) => {
+                u.subunits.forEach((s, sIdx) => {
+                    total++;
+                    if (uIdx === state.currentUnitIndex && sIdx === state.currentSubunitIndex) found = true;
+                    if (!found) current++;
+                });
+            });
+
+            const percent = Math.round(((current + 1) / total) * 100);
+            els.overallProgress.style.width = `${percent}%`;
+            els.progressText.textContent = `${percent}%`;
+        }
+
+        // --- 7. Event Listeners ---
+        function setupListeners() {
+            els.menuBtn.onclick = () => toggleSidebar(true);
+            els.closeSidebar.onclick = () => toggleSidebar(false);
+            els.sidebarOverlay.onclick = () => toggleSidebar(false);
+            els.musicBtn.onclick = toggleMusic;
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+    </script>
+</body>
+</html>

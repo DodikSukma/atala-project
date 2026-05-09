@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengembang - Micro-Learning Matematika</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+            --purple: #9c27b0;
+            --dark-purple: #4a148c;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        /* Container utama */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tombol Close */
+        .close-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: 4px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-decoration: none;
+            color: var(--white);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .close-button::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 15px 15px;
+            background-position: 0 0, 7.5px 7.5px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .close-button:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--dark-red), #8b0000);
+        }
+
+        .close-button:active {
+            transform: scale(0.95) rotate(0deg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .close-button i {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .close-tooltip {
+            position: absolute;
+            top: 70px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .close-tooltip::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--dark-blue);
+        }
+
+        .close-button:hover .close-tooltip {
+            opacity: 1;
+            visibility: visible;
+            top: 75px;
+        }
+
+        /* Profil Card */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border: 5px solid var(--comic-yellow);
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.8s ease;
+        }
+
+        .profile-card::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .profile-image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid var(--comic-yellow);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid var(--white);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .profile-badge i {
+            font-size: 1.5rem;
+        }
+
+        .profile-name {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .profile-title {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px dashed var(--primary-blue);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-icon {
+            background: linear-gradient(135deg, var(--comic-yellow), var(--light-orange));
+            color: var(--dark-blue);
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1.5rem;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .info-icon i {
+            font-size: 1.5rem;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-family: 'Bangers', cursive;
+            font-size: 1rem;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Dosen Pembimbing Section */
+        .dosen-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px dashed var(--purple);
+        }
+
+        .dosen-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--purple);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .dosen-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .dosen-item {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(103, 58, 183, 0.1));
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 2px solid var(--purple);
+            transition: all 0.3s ease;
+        }
+
+        .dosen-item:hover {
+            transform: translateX(5px);
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .dosen-number {
+            background: var(--purple);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-family: 'Bangers', cursive;
+            flex-shrink: 0;
+        }
+
+        .dosen-name {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+
+        /* Ikon berterbangan */
+        .floating-icon {
+            position: fixed;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            opacity: 0.7;
+            animation: floatAround 15s linear infinite;
+            z-index: 0;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 30%;
+            left: 5%;
+            animation-duration: 18s;
+            animation-delay: 4s;
+        }
+
+        .floating-icon:nth-child(4) {
+            bottom: 20%;
+            right: 10%;
+            animation-duration: 22s;
+            animation-delay: 6s;
+        }
+
+        .floating-icon:nth-child(5) {
+            top: 50%;
+            left: 50%;
+            animation-duration: 30s;
+            animation-delay: 8s;
+        }
+
+        .floating-icon:nth-child(6) {
+            top: 70%;
+            left: 80%;
+            animation-duration: 17s;
+            animation-delay: 10s;
+        }
+
+        /* Animasi */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(100px, -50px) rotate(90deg);
+            }
+
+            50% {
+                transform: translate(-50px, -100px) rotate(180deg);
+            }
+
+            75% {
+                transform: translate(-100px, 50px) rotate(270deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .profile-name {
+                font-size: 2rem;
+            }
+
+            .profile-title {
+                font-size: 1rem;
+            }
+
+            .profile-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .close-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .close-button i {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .profile-card {
+                padding: 1.5rem;
+            }
+
+            .profile-name {
+                font-size: 1.8rem;
+            }
+
+            .profile-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .info-icon {
+                margin-right: 0;
+            }
+
+            .dosen-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .close-button {
+                width: 45px;
+                height: 45px;
+                top: 15px;
+                right: 15px;
+            }
+
+            .close-button i {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ikon berterbangan -->
+    <i class="fas fa-star floating-icon"></i>
+    <i class="fas fa-calculator floating-icon"></i>
+    <i class="fas fa-shapes floating-icon"></i>
+    <i class="fas fa-ruler floating-icon"></i>
+    <i class="fas fa-cube floating-icon"></i>
+    <i class="fas fa-graduation-cap floating-icon"></i>
+
+    <!-- Tombol Close -->
+    <!-- <button class="close-button" onclick="closeWindow()">
+        <i class="fas fa-times"></i>
+        <span class="close-tooltip">Tutup</span>
+    </button> -->
+
+    <div class="main-container">
+        <div class="profile-card">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-image-container">
+                    <img src="profil.png" alt="Profil Pengembang" class="profile-image">
+                    <div class="profile-badge">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                </div>
+                <h1 class="profile-name">Atala Project</h1>
+                <p class="profile-title">Pengembang E-LKPD BANGUN RUANG SISI DATAR</p>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="profile-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">NIM</div>
+                        <div class="info-value">Atala Project</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Jurusan</div>
+                        <div class="info-value">Matematika</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Program Studi</div>
+                        <div class="info-value">Pendidikan Matematika</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dosen Pembimbing -->
+            <div class="dosen-section">
+                <h2 class="dosen-title">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Dosen Pembimbing
+                </h2>
+                <div class="dosen-list">
+                    <div class="dosen-item">
+                        <div class="dosen-number">1</div>
+                        <div class="dosen-name">Atala Project</div>
+                    </div>
+                    <div class="dosen-item">
+                        <div class="dosen-number">2</div>
+                        <div class="dosen-name">Atala Project</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Efek hover pada tombol close
+            const closeButton = document.querySelector('.close-button');
+
+            closeButton.addEventListener('click', function (e) {
+                // Efek klik
+                this.style.transform = 'scale(0.9) rotate(0deg)';
+
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+
+            // Tambahkan lebih banyak floating icons secara dinamis
+            function createRandomIcon() {
+                const icons = ['fa-star', 'fa-calculator', 'fa-shapes', 'fa-ruler', 'fa-cube', 'fa-graduation-cap', 'fa-book', 'fa-pencil-ruler', 'fa-chart-line', 'fa-square-root-alt', 'fa-user-graduate', 'fa-brain'];
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                const iconElement = document.createElement('i');
+                iconElement.className = `fas ${randomIcon} floating-icon`;
+                iconElement.style.top = Math.random() * 100 + '%';
+                iconElement.style.left = Math.random() * 100 + '%';
+                iconElement.style.animationDuration = (15 + Math.random() * 15) + 's';
+                iconElement.style.animationDelay = Math.random() * 5 + 's';
+                iconElement.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+                document.body.appendChild(iconElement);
+
+                // Hapus icon setelah animasi selesai
+                setTimeout(() => {
+                    iconElement.remove();
+                }, 30000);
+            }
+
+            // Buat 3 icon tambahan setiap 5 detik
+            setInterval(createRandomIcon, 5000);
+
+            // Efek parallax pada scroll
+            window.addEventListener('scroll', function () {
+                const scrolled = window.pageYOffset;
+                const floatingIcons = document.querySelectorAll('.floating-icon');
+
+                floatingIcons.forEach((icon, index) => {
+                    const speed = 0.5 + (index * 0.1);
+                    icon.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
+
+            // Animasi masuk untuk elemen profil
+            const profileCard = document.querySelector('.profile-card');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe profile card
+            profileCard.style.opacity = '0';
+            profileCard.style.transform = 'translateY(30px)';
+            profileCard.style.transition = 'all 0.8s ease';
+            observer.observe(profileCard);
+
+        });
+
+        function closeWindow() {
+            window.close();
+        }
+    </script>
+</body>
+
+</html>

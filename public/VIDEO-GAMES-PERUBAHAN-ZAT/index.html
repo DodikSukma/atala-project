@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 Ayo Memahami Energi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #C0B3A0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-10px) rotate(-2deg);
+            }
+
+            40%,
+            80% {
+                transform: translateX(10px) rotate(2deg);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes flashGreen {
+            0% {
+                background-color: rgba(34, 197, 94, 0);
+            }
+
+            50% {
+                background-color: rgba(34, 197, 94, 0.4);
+            }
+
+            100% {
+                background-color: rgba(34, 197, 94, 0);
+            }
+        }
+
+        .flash-green-overlay {
+            animation: flashGreen 1s ease-out;
+        }
+
+        @keyframes flashRed {
+            0% {
+                background-color: rgba(239, 68, 68, 0);
+            }
+
+            50% {
+                background-color: rgba(239, 68, 68, 0.4);
+            }
+
+            100% {
+                background-color: rgba(239, 68, 68, 0);
+            }
+        }
+
+        .flash-red-overlay {
+            animation: flashRed 1s ease-out;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-pop {
+            animation: pop 0.3s ease-out;
+        }
+
+        @keyframes lightning {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            10% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            20% {
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .lightning-effect {
+            animation: lightning 0.5s ease-out forwards;
+        }
+
+        @keyframes float-icon {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+
+        .animate-float {
+            animation: float-icon 4s ease-in-out infinite;
+        }
+
+        .btn-3d {
+            transition: all 0.1s;
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-3d:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-3d-red {
+            box-shadow: 0 8px 0 #991b1b;
+        }
+
+        .btn-3d-red:active {
+            box-shadow: 0 0px 0 #991b1b;
+        }
+
+        .btn-3d-green {
+            box-shadow: 0 8px 0 #166534;
+        }
+
+        .btn-3d-green:active {
+            box-shadow: 0 0px 0 #166534;
+        }
+
+        .btn-answer {
+            box-shadow: 0 6px 0 #ca8a04;
+        }
+
+        .btn-answer:active {
+            box-shadow: 0 0px 0 #ca8a04;
+            transform: translateY(6px);
+        }
+
+        .btn-premium-play {
+            background: linear-gradient(180deg, #fef08a 0%, #ea580c 100%);
+            box-shadow: 0 8px 0 #c2410c, 0 15px 25px rgba(234, 88, 12, 0.4);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-premium-play:active {
+            transform: translateY(8px) scale(0.98);
+            box-shadow: 0 0px 0 #c2410c;
+        }
+
+        .btn-premium-play:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-premium-profil {
+            background: linear-gradient(180deg, #67e8f9 0%, #0284c7 100%);
+            box-shadow: 0 8px 0 #0369a1, 0 15px 25px rgba(2, 132, 199, 0.4);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-premium-profil:active {
+            transform: translateY(8px) scale(0.98);
+            box-shadow: 0 0px 0 #0369a1;
+        }
+
+        .btn-premium-profil:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-premium-info {
+            background: linear-gradient(180deg, #f9a8d4 0%, #db2777 100%);
+            box-shadow: 0 8px 0 #9d174d, 0 15px 25px rgba(219, 39, 119, 0.4);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-premium-info:active {
+            transform: translateY(8px) scale(0.98);
+            box-shadow: 0 0px 0 #9d174d;
+        }
+
+        .btn-premium-info:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-premium-howto {
+            background: linear-gradient(180deg, #bbf7d0 0%, #16a34a 100%);
+            box-shadow: 0 8px 0 #166534, 0 15px 25px rgba(22, 163, 74, 0.4);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-premium-howto:active {
+            transform: translateY(8px) scale(0.98);
+            box-shadow: 0 0px 0 #166534;
+        }
+
+        .btn-premium-howto:hover {
+            filter: brightness(1.1);
+        }
+
+        .locked {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(0.5);
+        }
+
+        .glow-active {
+            box-shadow: 0 0 25px 5px currentColor;
+        }
+
+        #tug-marker {
+            transition: left 0.8s cubic-bezier(0.68, -0.55, 0.26, 1.55);
+        }
+
+        #parallax-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            overflow: hidden;
+        }
+
+        .paralax {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/background.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .paralax .layer {
+            position: absolute;
+            width: 400%;
+        }
+
+        .paralax .foreground {
+            height: 50%;
+            bottom: 0;
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/foreground.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 30s linear infinite;
+        }
+
+        .paralax .hills {
+            height: 40%;
+            bottom: 15%;
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/hills.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 60s linear infinite;
+        }
+
+        .paralax .rocks1 {
+            height: 35%;
+            bottom: 25%;
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/rocks1.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 120s linear infinite;
+        }
+
+        .paralax .rocks2 {
+            height: 40%;
+            bottom: 15%;
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/rocks2.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 240s linear infinite;
+        }
+
+        @keyframes slideshow {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes pulse-green {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 15px rgba(16, 185, 129, 0);
+            }
+        }
+
+        .animate-pulse-green {
+            animation: pulse-green 2s infinite;
+        }
+
+        /* Dosen card hover */
+        .dosen-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dosen-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Big modal backdrop */
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+
+        /* How to use step */
+        .step-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #d1fae5;
+        }
+
+        .step-num {
+            min-width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #047857);
+            color: white;
+            font-weight: 900;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 3px 6px rgba(5, 150, 105, 0.4);
+        }
+    </style>
+</head>
+
+<body class="text-gray-800 flex flex-col items-center pb-10">
+
+    <audio id="bgm-audio" loop>
+        <source src="bacground.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Top Left Controls -->
+    <div class="fixed top-4 left-4 z-[250] flex flex-col items-start gap-2">
+        <button id="btn-back-home"
+            class="hidden bg-red-500/90 backdrop-blur hover:bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg border-2 border-red-300 transition-colors flex items-center gap-2 hover:scale-105">
+            🏠 Kembali
+        </button>
+        <button id="btn-toggle-bgm"
+            class="bg-white/90 backdrop-blur hover:bg-white text-emerald-700 text-sm font-bold px-4 py-2 rounded-full shadow-lg border-2 border-emerald-500 transition-colors flex items-center gap-2 hover:scale-105">
+            🔈 Musik: OFF
+        </button>
+    </div>
+
+    <!-- Parallax Background -->
+    <div id="parallax-bg" class="content">
+        <div class="paralax">
+            <div class="layer rocks2"></div>
+            <div class="layer rocks1"></div>
+            <div class="layer hills"></div>
+            <div class="layer foreground"></div>
+        </div>
+    </div>
+
+    <!-- ========== START SCREEN ========== -->
+    <div id="start-screen"
+        class="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center p-4 md:p-8 overflow-y-auto">
+
+        <div class="absolute top-10 left-[10%] animate-float text-6xl opacity-70 drop-shadow-lg hidden md:block">💡
+        </div>
+        <div class="absolute bottom-20 right-[15%] animate-float text-7xl opacity-70 drop-shadow-lg hidden md:block"
+            style="animation-delay:1s;">⚡</div>
+        <div class="absolute top-32 right-[10%] animate-float text-5xl opacity-70 drop-shadow-lg hidden md:block"
+            style="animation-delay:2s;">🌟</div>
+
+        <div
+            class="bg-white/10 backdrop-blur-xl border border-white/40 rounded-[2.5rem] p-6 flex flex-col items-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-5xl w-full relative overflow-hidden mt-10 md:mt-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+
+            <h1
+                class="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-wide mb-2 drop-shadow-[0_4px_4px_rgba(0,0,0,0.7)] text-center relative z-10">
+                💡 Ayo Memahami Energi
+            </h1>
+            <p
+                class="text-white text-lg md:text-2xl font-bold tracking-widest uppercase mb-8 drop-shadow-md text-center relative z-10 bg-black/30 px-6 py-2 rounded-full inline-block">
+                Transformasi Energi
+            </p>
+
+            <div
+                class="w-full max-w-3xl aspect-video rounded-3xl overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)] border-[6px] border-white/90 mb-10 bg-black flex-shrink-0 z-10 relative">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/CLu9PCsh97A?si"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+
+            <div class="flex flex-row flex-wrap gap-4 items-center justify-center z-10 w-full">
+                <button id="btn-start-game"
+                    class="btn-premium-play text-white font-black text-xl md:text-3xl py-3 px-8 md:py-4 md:px-12 rounded-full border-[3px] border-yellow-200 transition-all uppercase tracking-widest animate-bounce text-center flex items-center justify-center gap-2">
+                    ▶ MULAI GAME
+                </button>
+                <button id="btn-show-howto"
+                    class="btn-premium-howto text-white font-black text-lg md:text-xl py-3 px-6 md:py-4 md:px-8 rounded-full border-[3px] border-green-200 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-center">
+                    🎮 CARA MAIN
+                </button>
+                <button id="btn-show-info"
+                    class="btn-premium-info text-white font-black text-lg md:text-xl py-3 px-6 md:py-4 md:px-8 rounded-full border-[3px] border-pink-200 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-center">
+                    📚 INFO
+                </button>
+                <button id="btn-show-profil"
+                    class="btn-premium-profil text-white font-black text-lg md:text-xl py-3 px-6 md:py-4 md:px-8 rounded-full border-[3px] border-cyan-200 transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-center">
+                    👤 PROFIL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: CARA BERMAIN ========== -->
+    <div id="modal-howto"
+        class="modal-backdrop fixed inset-0 z-[300] bg-green-900/60 backdrop-blur-md hidden flex-col items-center justify-center p-4 opacity-0 overflow-y-auto">
+        <div
+            class="w-full max-w-3xl bg-gradient-to-br from-white/97 to-green-50/97 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-6 md:p-10 mb-6 relative mt-10 md:mt-0">
+            <button
+                class="close-howto absolute top-4 right-4 text-gray-500 hover:text-red-500 transition bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow-sm">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <div class="text-center mb-8">
+                <div class="text-5xl mb-3">🎮</div>
+                <h1
+                    class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-500 mb-1">
+                    Cara Bermain</h1>
+                <p class="text-green-700 font-semibold">Panduan lengkap penggunaan media pembelajaran ini</p>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Tonton Video Pembelajaran</p>
+                        <p class="text-gray-600 text-sm mt-0.5">Sebelum bermain, tonton video "Transformasi Energi" yang
+                            tersedia di halaman utama. Video ini akan membantumu memahami materi dan menjawab pertanyaan
+                            dengan benar.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Bagi Menjadi 2 Tim</p>
+                        <p class="text-gray-600 text-sm mt-0.5">Permainan ini dimainkan oleh <strong>2 tim</strong> —
+                            <span class="text-red-600 font-bold">Tim Merah</span> (kiri) dan <span
+                                class="text-green-600 font-bold">Tim Hijau</span> (kanan). Setiap tim duduk di sisi
+                            layar masing-masing.
+                        </p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Tekan Tombol BUZZ! Lebih Cepat</p>
+                        <p class="text-gray-600 text-sm mt-0.5">Baca pertanyaan yang muncul di layar. Tim yang paling
+                            cepat menekan tombol <strong>BUZZ!</strong> berhak menjawab pertanyaan tersebut.</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Pilih Jawaban yang Benar</p>
+                        <p class="text-gray-600 text-sm mt-0.5">Setelah buzz, pilih salah satu dari 4 pilihan jawaban
+                            (A, B, C, D) yang tampil di layar. Jawab dengan cepat dan tepat!</p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">5</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Sistem Poin & Tali Tambang</p>
+                        <p class="text-gray-600 text-sm mt-0.5">✅ <strong>Jawaban Benar</strong>: Tim mendapat
+                            <strong>+10 poin</strong> dan tali tambang bergeser ke arah tim lawan.<br>❌ <strong>Jawaban
+                                Salah</strong>: Tidak ada poin dan tali tambang tidak bergerak.
+                        </p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">6</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Kondisi Kemenangan</p>
+                        <p class="text-gray-600 text-sm mt-0.5">Tim yang memiliki <strong>poin terbanyak</strong>
+                            setelah semua pertanyaan selesai, atau berhasil mendorong tali tambang hingga ujung,
+                            dinyatakan sebagai <strong>PEMENANG! 🏆</strong></p>
+                    </div>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">7</div>
+                    <div>
+                        <p class="font-bold text-gray-800">Fitur Tambahan</p>
+                        <p class="text-gray-600 text-sm mt-0.5">📺 <strong>Video Bantuan</strong>: Klik tombol "Video
+                            Bantuan" di pojok kanan atas untuk membuka video referensi kapan saja.<br>🎵
+                            <strong>Musik</strong>: Aktifkan musik latar di pojok kiri atas untuk suasana bermain yang
+                            lebih seru!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-4 flex gap-3 items-start">
+                <span class="text-2xl">💡</span>
+                <p class="text-gray-700 text-sm font-medium"><strong>Tips:</strong> Diskusikan jawaban bersama anggota
+                    timmu sebelum memilih! Kerja sama tim adalah kunci kemenangan.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: INFO PEMBELAJARAN ========== -->
+    <div id="modal-info"
+        class="modal-backdrop fixed inset-0 z-[300] bg-pink-900/60 backdrop-blur-md hidden flex-col items-center justify-center p-4 opacity-0 overflow-y-auto">
+        <div
+            class="w-full max-w-4xl bg-gradient-to-br from-white/95 to-pink-50/95 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-6 md:p-10 mb-6 relative mt-10 md:mt-0">
+            <button
+                class="close-info absolute top-4 right-4 text-gray-500 hover:text-red-500 transition bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow-sm">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <div class="text-center mb-8">
+                <h1
+                    class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-purple-500 mb-2">
+                    📚 Informasi Pembelajaran</h1>
+            </div>
+            <div class="space-y-6 text-gray-700 text-lg">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-pink-100">
+                    <h2 class="text-2xl font-bold text-pink-700 mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Tujuan Pembelajaran
+                    </h2>
+                    <ol class="list-decimal list-inside space-y-3 ml-2 text-justify">
+                        <li>Mengidentifikasi ragam transformasi energi pada kehidupan sehari-hari.</li>
+                        <li>Membuat simulasi transformasi energi menggunakan bagan/alat bantu sederhana dalam kehidupan
+                            sehari-hari.</li>
+                    </ol>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-pink-100">
+                    <h2 class="text-2xl font-bold text-pink-700 mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Capaian Pembelajaran
+                    </h2>
+                    <p class="leading-relaxed text-justify">
+                        Peserta didik mengidentifikasi proses perubahan wujud zat dan perubahan bentuk energi dalam
+                        kehidupan sehari-hari. Peserta didik mengidentifikasi sumber dan bentuk energi serta menjelaskan
+                        proses perubahan bentuk energi dalam kehidupan sehari-hari (contoh: energi kalor, listrik,
+                        bunyi, cahaya).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: PROFIL ========== -->
+    <div id="modal-profil"
+        class="modal-backdrop fixed inset-0 z-[300] bg-emerald-900/60 backdrop-blur-md hidden flex-col items-center justify-center p-4 opacity-0 overflow-y-auto">
+        <div
+            class="w-full max-w-4xl bg-gradient-to-br from-white/95 to-emerald-50/95 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-6 md:p-10 mb-6 relative mt-10 md:mt-0">
+            <button
+                class="close-profil absolute top-4 right-4 text-gray-500 hover:text-red-500 transition bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow-sm">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <div class="text-center mb-8">
+                <h1
+                    class="text-2xl md:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 mb-2">
+                    Profil Pengembang</h1>
+                <p class="text-emerald-800 font-medium">Video Pembelajaran</p>
+            </div>
+
+            <!-- Mahasiswa -->
+            <div class="text-center mb-10">
+                <div class="w-40 h-40 mx-auto mb-6 relative">
+                    <div
+                        class="w-full h-full rounded-full p-1 bg-gradient-to-br from-emerald-200 to-emerald-500 animate-pulse-green">
+                        <img src="Profil.jpg" alt="Profil Mahasiswa"
+                            class="w-full h-full rounded-full object-cover border-4 border-white shadow-inner bg-white"
+                            onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2310b981%22/><text y=%2260%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2240%22 fill=%22white%22>👩</text></svg>'">
+                    </div>
+                </div>
+                <h2
+                    class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-700 to-emerald-400 mb-4">
+                    Jane Doe</h2>
+                <div
+                    class="flex flex-col gap-3 items-center text-gray-700 font-medium bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100 max-w-md mx-auto shadow-sm text-lg">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                        Prodi: Information Technology
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        NIM: 1234567890
+                    </div>
+                    <div class="flex items-center gap-3 mt-1 pt-3 border-t border-emerald-200 w-full justify-center">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                        University of Portfolio
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dosen Pembimbing -->
+            <div class="w-full border-t border-emerald-100 pt-8">
+                <h3 class="text-xl font-bold text-center text-emerald-800 mb-6">Dosen Pembimbing
+                    <span class="block w-16 h-1 bg-emerald-400 mx-auto mt-2 rounded-full"></span>
+                </h3>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <!-- Dosen 1 - clickable -->
+                    <div class="dosen-card flex flex-col items-center p-5 bg-white border-2 border-emerald-100 rounded-2xl w-full md:w-1/2 text-center"
+                        onclick="openDosenModal('Dosen1.jpg', 'John Doe, M.Sc.', 'Pembimbing 1', 'Dosen pembimbing utama yang membimbing pengembangan portofolio ini. Beliau merupakan dosen berpengalaman di bidang Teknologi Informasi.')">
+                        <div
+                            class="w-24 h-24 rounded-full overflow-hidden border-4 border-emerald-300 mb-3 shadow-md bg-emerald-100">
+                            <img src="Dosen1.jpg" alt="Dosen 1" class="w-full h-full object-cover"
+                                onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-emerald-600 text-4xl\'>👨‍🏫</div>'">
+                        </div>
+                        <span
+                            class="text-emerald-500 font-bold text-sm block mb-1 bg-emerald-50 px-3 py-0.5 rounded-full">Pembimbing
+                            1</span>
+                        <h5 class="font-bold text-lg text-emerald-900">John Doe, M.Sc.</h5>
+                        <p class="text-emerald-600 text-xs mt-2 font-medium flex items-center gap-1 justify-center">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                            Klik untuk lihat lebih besar
+                        </p>
+                    </div>
+
+                    <!-- Dosen 2 - clickable -->
+                    <div class="dosen-card flex flex-col items-center p-5 bg-white border-2 border-emerald-100 rounded-2xl w-full md:w-1/2 text-center"
+                        onclick="openDosenModal('Dosen2.jpg', 'Jane Smith, Ph.D.', 'Pembimbing 2', 'Dosen pembimbing kedua yang turut membimbing pengembangan portofolio ini. Beliau ahli di bidang Teknologi Pendidikan.')">
+                        <div
+                            class="w-24 h-24 rounded-full overflow-hidden border-4 border-emerald-300 mb-3 shadow-md bg-emerald-100">
+                            <img src="Dosen2.jpg" alt="Dosen 2" class="w-full h-full object-cover"
+                                onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-emerald-600 text-4xl\'>👩‍🏫</div>'">
+                        </div>
+                        <span
+                            class="text-emerald-500 font-bold text-sm block mb-1 bg-emerald-50 px-3 py-0.5 rounded-full">Pembimbing
+                            2</span>
+                        <h5 class="font-bold text-lg text-emerald-900">Jane Smith, Ph.D.</h5>
+                        <p class="text-emerald-600 text-xs mt-2 font-medium flex items-center gap-1 justify-center">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                            Klik untuk lihat lebih besar
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: DOSEN DETAIL (BIG POPUP) ========== -->
+    <div id="modal-dosen-detail"
+        class="modal-backdrop fixed inset-0 z-[400] bg-black/70 backdrop-blur-md hidden flex-col items-center justify-center p-4 opacity-0">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden relative">
+            <button onclick="closeDosenModal()"
+                class="absolute top-3 right-3 z-10 bg-white/90 hover:bg-red-50 text-gray-600 hover:text-red-500 rounded-full p-2 shadow-md transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <!-- Image area -->
+            <div class="w-full bg-gradient-to-b from-emerald-100 to-emerald-50 flex items-center justify-center"
+                style="min-height:300px;">
+                <img id="dosen-detail-img" src="" alt="Foto Dosen" class="w-full max-h-80 object-contain"
+                    onerror="this.style.display='none'; document.getElementById('dosen-detail-fallback').style.display='flex'">
+                <div id="dosen-detail-fallback" class="hidden w-full h-64 items-center justify-center text-8xl">👩‍🏫
+                </div>
+            </div>
+            <!-- Info -->
+            <div class="p-6 text-center bg-white">
+                <span id="dosen-detail-role"
+                    class="inline-block bg-emerald-100 text-emerald-700 font-bold text-sm px-4 py-1 rounded-full mb-3"></span>
+                <h2 id="dosen-detail-name" class="text-2xl font-black text-emerald-900 mb-3"></h2>
+                <p id="dosen-detail-desc" class="text-gray-600 text-sm leading-relaxed"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen Overlays -->
+    <div id="screen-overlay" class="fixed inset-0 pointer-events-none z-50"></div>
+    <div id="lightning-container"
+        class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center opacity-0 text-yellow-400 text-9xl">
+        ⚡</div>
+
+    <!-- Video Collapsible -->
+    <div class="fixed top-4 right-4 z-50 flex flex-col items-end">
+        <button id="toggle-video"
+            class="bg-white/90 backdrop-blur text-sm font-bold px-4 py-2 rounded-full shadow-lg border-2 border-emerald-500 hover:bg-emerald-50 transition-colors">
+            📺 Video Bantuan
+        </button>
+        <div id="video-container" class="hidden mt-2 bg-white p-2 rounded-xl shadow-2xl border-4 border-emerald-500">
+            <iframe width="280" height="157" src="https://www.youtube.com/embed/CLu9PCsh97A?si"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen class="rounded-lg"></iframe>
+        </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div
+        class="sticky top-4 w-[98%] max-w-6xl bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-emerald-400 p-4 z-40 mt-4">
+        <div class="flex justify-between items-center text-center">
+            <div class="w-1/3 text-left pl-4 text-2xl md:text-4xl font-black text-red-500" id="score-left">0</div>
+            <div class="w-1/3">
+                <h1 class="text-2xl md:text-3xl font-black text-emerald-600 tracking-wide">💡 Ayo Memahami Energi</h1>
+                <div class="text-sm font-bold text-gray-400 mt-1 bg-gray-100 rounded-full inline-block px-3 py-1"
+                    id="question-progress">Siap-siap...</div>
+            </div>
+            <div class="w-1/3 text-right pr-4 text-2xl md:text-4xl font-black text-green-500" id="score-right">0</div>
+        </div>
+
+        <!-- TUG OF WAR BAR -->
+        <div class="mt-4 px-4 pb-2 relative">
+            <div class="w-full h-4 bg-yellow-900 rounded-full relative overflow-hidden shadow-inner">
+                <div class="absolute inset-0 opacity-30"
+                    style="background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, #000 5px, #000 10px);">
+                </div>
+            </div>
+            <div class="absolute top-0 bottom-0 left-1/2 w-1 bg-white/50 -translate-x-1/2 z-0"></div>
+            <div id="tug-marker"
+                class="absolute top-2 w-8 h-8 md:w-10 md:h-10 bg-yellow-400 border-4 border-white rounded-full shadow-lg -translate-y-1/2 -ml-4 md:-ml-5 flex items-center justify-center text-xs"
+                style="left: 50%;">⭐</div>
+        </div>
+    </div>
+
+    <!-- MAIN GAME AREA -->
+    <div class="w-[98%] max-w-[1400px] mt-8 flex flex-col md:flex-row gap-6 md:gap-6 relative">
+
+        <!-- LEFT TEAM -->
+        <div id="team-left"
+            class="md:w-[22%] flex flex-col items-center bg-white/90 backdrop-blur-md rounded-3xl p-4 md:p-6 shadow-xl border-4 border-red-400 text-red-500 transition-all duration-300">
+            <h2
+                class="text-lg md:text-xl font-bold mb-2 uppercase tracking-wider text-red-600 bg-red-100 px-4 py-1 rounded-full">
+                Tim Merah</h2>
+            <img id="avatar-left" src="left_idle.gif" alt="Tim Merah Avatar"
+                class="w-24 h-24 md:w-36 md:h-36 mb-4 transition-transform duration-300 object-contain drop-shadow-lg">
+            <button id="btn-buzz-left"
+                class="btn-3d btn-3d-red w-24 h-24 md:w-32 md:h-32 bg-red-500 rounded-full border-8 border-red-300 flex items-center justify-center text-white text-2xl font-black mt-auto uppercase tracking-widest shadow-red-500/50">
+                BUZZ!
+            </button>
+        </div>
+
+        <!-- QUESTION CARD -->
+        <div class="md:w-[56%] flex flex-col items-center z-10">
+            <div id="question-card"
+                class="w-full bg-white/95 backdrop-blur-md rounded-3xl p-4 md:p-6 shadow-2xl border-4 border-yellow-400 text-center relative overflow-hidden min-h-[350px] flex flex-col justify-center">
+                <div
+                    class="absolute top-0 left-0 w-16 h-16 opacity-20 transform -rotate-12 -ml-4 -mt-4 text-yellow-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" />
+                    </svg>
+                </div>
+                <h3 id="question-text" class="text-xl md:text-2xl font-black text-gray-800 leading-tight mb-6">
+                    Memuat pertanyaan...
+                </h3>
+                <div id="answers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 locked"></div>
+            </div>
+            <div id="turn-indicator"
+                class="mt-6 bg-yellow-400 text-yellow-900 px-6 py-2 rounded-full font-bold text-lg shadow-md border-2 border-yellow-500 hidden animate-pulse">
+                Menunggu Jawaban...
+            </div>
+        </div>
+
+        <!-- RIGHT TEAM -->
+        <div id="team-right"
+            class="md:w-[22%] flex flex-col items-center bg-white/90 backdrop-blur-md rounded-3xl p-4 md:p-6 shadow-xl border-4 border-green-500 text-green-500 transition-all duration-300">
+            <h2
+                class="text-lg md:text-xl font-bold mb-2 uppercase tracking-wider text-green-700 bg-green-100 px-4 py-1 rounded-full">
+                Tim Hijau</h2>
+            <img id="avatar-right" src="right_idle.gif" alt="Tim Hijau Avatar"
+                class="w-24 h-24 md:w-36 md:h-36 mb-4 transition-transform duration-300 object-contain drop-shadow-lg">
+            <button id="btn-buzz-right"
+                class="btn-3d btn-3d-green w-24 h-24 md:w-32 md:h-32 bg-green-500 rounded-full border-8 border-green-300 flex items-center justify-center text-white text-2xl font-black mt-auto uppercase tracking-widest shadow-green-500/50">
+                BUZZ!
+            </button>
+        </div>
+    </div>
+
+    <!-- WIN OVERLAY -->
+    <div id="win-overlay"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-white">
+        <h1 id="win-title"
+            class="text-6xl md:text-8xl font-black mb-4 animate-bounce drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">TIM
+            MENANG!</h1>
+        <img id="win-avatar" src="" alt="Winner"
+            class="w-48 h-48 md:w-64 md:h-64 mb-8 animate-pop object-contain drop-shadow-2xl hidden">
+        <button onclick="location.reload()"
+            class="bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold text-2xl px-10 py-4 rounded-full border-4 border-white shadow-[0_0_20px_rgba(250,204,21,0.5)] transition-transform hover:scale-110">
+            MAIN LAGI!
+        </button>
+    </div>
+
+    <script>
+        // --------------------------------------------------
+        // MODAL HELPERS
+        // --------------------------------------------------
+        function openModal(el) {
+            el.classList.remove('hidden');
+            el.style.display = 'flex';
+            setTimeout(() => el.classList.remove('opacity-0'), 10);
+        }
+        function closeModal(el) {
+            el.classList.add('opacity-0');
+            setTimeout(() => { el.classList.add('hidden'); el.style.display = ''; }, 300);
+        }
+
+        // Profil modal
+        document.getElementById('btn-show-profil').addEventListener('click', () => openModal(document.getElementById('modal-profil')));
+        document.querySelectorAll('.close-profil').forEach(b => b.addEventListener('click', () => closeModal(document.getElementById('modal-profil'))));
+
+        // Info modal
+        document.getElementById('btn-show-info').addEventListener('click', () => openModal(document.getElementById('modal-info')));
+        document.querySelectorAll('.close-info').forEach(b => b.addEventListener('click', () => closeModal(document.getElementById('modal-info'))));
+
+        // How to modal
+        document.getElementById('btn-show-howto').addEventListener('click', () => openModal(document.getElementById('modal-howto')));
+        document.querySelectorAll('.close-howto').forEach(b => b.addEventListener('click', () => closeModal(document.getElementById('modal-howto'))));
+
+        // Close modals clicking backdrop
+        ['modal-profil', 'modal-info', 'modal-howto'].forEach(id => {
+            document.getElementById(id).addEventListener('click', function (e) {
+                if (e.target === this) closeModal(this);
+            });
+        });
+
+        // --------------------------------------------------
+        // DOSEN DETAIL MODAL
+        // --------------------------------------------------
+        function openDosenModal(imgSrc, name, role, desc) {
+            const modal = document.getElementById('modal-dosen-detail');
+            const img = document.getElementById('dosen-detail-img');
+            const fallback = document.getElementById('dosen-detail-fallback');
+
+            document.getElementById('dosen-detail-name').textContent = name;
+            document.getElementById('dosen-detail-role').textContent = role;
+            document.getElementById('dosen-detail-desc').textContent = desc;
+
+            img.style.display = 'block';
+            fallback.style.display = 'none';
+            img.src = imgSrc;
+
+            openModal(modal);
+        }
+        function closeDosenModal() {
+            closeModal(document.getElementById('modal-dosen-detail'));
+        }
+        document.getElementById('modal-dosen-detail').addEventListener('click', function (e) {
+            if (e.target === this) closeDosenModal();
+        });
+
+        // --------------------------------------------------
+        // QUESTIONS DATA (6 original + 4 new = 10 total)
+        // --------------------------------------------------
+        const questionsData = [
+            {
+                question: "Saat listrik padam, Rani tidak bisa menyalakan lampu, tetapi masih bisa memasak menggunakan kompor gas. Perbedaan sumber energi pada kedua alat tersebut adalah …",
+                options: [
+                    "Lampu dan kompor sama-sama menggunakan energi listrik",
+                    "Lampu menggunakan energi listrik, kompor menggunakan energi kimia",
+                    "Lampu menggunakan energi panas, kompor menggunakan energi gerak",
+                    "Lampu menggunakan energi bunyi, kompor menggunakan energi cahaya"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Di rumah Budi, kipas angin tidak bisa digunakan saat listrik mati, tetapi ayah masih bisa menyalakan motor. Hal ini terjadi karena …",
+                options: [
+                    "Kipas angin dan motor menggunakan energi yang sama",
+                    "Motor tidak membutuhkan energi",
+                    "Kipas angin menggunakan energi listrik, motor menggunakan energi kimia",
+                    "Motor menggunakan energi cahaya"
+                ],
+                correctIndex: 2
+            },
+            {
+                question: "Saat blender digunakan, terdengar suara keras dan mesin terasa hangat. Pernyataan yang paling tepat adalah …",
+                options: [
+                    "Energi hanya berubah menjadi bunyi",
+                    "Tidak terjadi perubahan energi",
+                    "Muncul energi sampingan berupa panas dan bunyi",
+                    "Semua energi berubah menjadi cahaya"
+                ],
+                correctIndex: 2
+            },
+            {
+                question: "Ketika sepeda motor berjalan, selain bergerak juga terdengar suara mesin. Kesimpulan yang benar dari peristiwa tersebut adalah …",
+                options: [
+                    "Energi tidak bisa berubah bentuk",
+                    "Energi gerak berubah menjadi energi kimia",
+                    "Terjadi perubahan energi disertai energi sampingan",
+                    "Energi bunyi berubah menjadi energi gerak"
+                ],
+                correctIndex: 2
+            },
+            {
+                question: "Sekolah ingin memanfaatkan sinar matahari untuk menghasilkan listrik. Alat dan perubahan energi yang tepat adalah …",
+                options: [
+                    "Panel surya – cahaya menjadi listrik",
+                    "Lampu – listrik menjadi cahaya",
+                    "Kipas angin – listrik menjadi gerak",
+                    "Kompor – kimia menjadi panas"
+                ],
+                correctIndex: 0
+            },
+            {
+                question: "Desa terpencil belum memiliki listrik, tetapi mendapat sinar matahari yang melimpah. Solusi terbaik agar desa mendapatkan listrik adalah …",
+                options: [
+                    "Menggunakan generator bensin",
+                    "Menggunakan panel surya",
+                    "Menggunakan kipas angin",
+                    "Menggunakan kompor gas"
+                ],
+                correctIndex: 1
+            },
+            // NEW QUESTIONS
+            {
+                question: "Saat hujan deras, listrik di rumah Rina padam. Rina ingin menyetrika seragam menggunakan setrika arang milik ibunya. Setrika arang tetap bisa digunakan, sedangkan setrika listrik tidak. Perbedaan sumber energi pada kedua setrika tersebut adalah …",
+                options: [
+                    "Setrika listrik dan setrika arang sama-sama menggunakan energi listrik",
+                    "Setrika listrik menggunakan energi listrik, setrika arang menggunakan energi kimia",
+                    "Setrika listrik menggunakan energi gerak, setrika arang menggunakan energi cahaya",
+                    "Setrika listrik menggunakan energi bunyi, setrika arang menggunakan energi gerak"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Saat berkemah, Dika menggunakan senter untuk penerangan. Setelah lama digunakan, cahaya senter mulai redup dan terang kembali setelah baterai diganti. Peristiwa tersebut menunjukkan bahwa …",
+                options: [
+                    "Energi cahaya berubah menjadi energi listrik",
+                    "Energi listrik dari baterai berubah menjadi energi cahaya dan berkurang saat digunakan",
+                    "Energi bunyi berubah menjadi energi cahaya",
+                    "Energi cahaya berubah menjadi energi kimia"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Saat televisi menyala, layar terlihat terang, terdengar suara dari speaker, dan bagian belakang terasa hangat. Kesimpulan yang paling tepat dari peristiwa tersebut adalah …",
+                options: [
+                    "Energi listrik hanya berubah menjadi energi cahaya",
+                    "Energi listrik berubah menjadi beberapa bentuk energi seperti cahaya, bunyi, dan panas",
+                    "Tidak terjadi perubahan energi",
+                    "Energi listrik berubah menjadi energi kimia saja"
+                ],
+                correctIndex: 1
+            },
+            {
+                question: "Sekolah Sinta ingin menghemat penggunaan listrik pada siang hari. Sinta mengamati kelasnya cukup gelap karena jendela jarang dibuka, sehingga lampu selalu dinyalakan. Ide terbaik yang dapat diberikan Sinta adalah …",
+                options: [
+                    "Menyalakan lebih banyak lampu agar kelas lebih terang",
+                    "Membuka jendela dan tirai agar cahaya matahari masuk ke kelas",
+                    "Menyalakan kipas angin sepanjang hari",
+                    "Menggunakan lebih banyak alat elektronik"
+                ],
+                correctIndex: 1
+            }
+        ];
+
+        // --------------------------------------------------
+        // CHARACTER STATES
+        // --------------------------------------------------
+        const characters = {
+            left: { idle: 'left_idle.gif', happy: 'left_happy.gif', wrong: 'left_wrong.gif' },
+            right: { idle: 'right_idle.gif', happy: 'right_happy.gif', wrong: 'right_wrong.gif' }
+        };
+
+        // --------------------------------------------------
+        // GAME STATE
+        // --------------------------------------------------
+        let currentQuestionIndex = 0;
+        let scores = { left: 0, right: 0 };
+        let tugPosition = 50;
+        let activeTeam = null;
+        let gameState = 'waiting_buzz';
+        let audioContext;
+
+        // --------------------------------------------------
+        // AUDIO
+        // --------------------------------------------------
+        function initAudio() {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        function playSound(type) {
+            if (!audioContext) return;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1046.50, audioContext.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc.start(); osc.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc.start(); osc.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'buzz') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(300, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                osc.start(); osc.stop(audioContext.currentTime + 0.1);
+            }
+        }
+
+        // --------------------------------------------------
+        // UI ELEMENTS
+        // --------------------------------------------------
+        const elQuestionText = document.getElementById('question-text');
+        const elAnswersContainer = document.getElementById('answers-container');
+        const elProgress = document.getElementById('question-progress');
+        const elScoreLeft = document.getElementById('score-left');
+        const elScoreRight = document.getElementById('score-right');
+        const elTugMarker = document.getElementById('tug-marker');
+        const elBtnBuzzLeft = document.getElementById('btn-buzz-left');
+        const elBtnBuzzRight = document.getElementById('btn-buzz-right');
+        const elTeamLeft = document.getElementById('team-left');
+        const elTeamRight = document.getElementById('team-right');
+        const elTurnIndicator = document.getElementById('turn-indicator');
+        const elOverlay = document.getElementById('screen-overlay');
+        const elLightning = document.getElementById('lightning-container');
+
+        // --------------------------------------------------
+        // CORE LOGIC
+        // --------------------------------------------------
+        function startGame() { renderQuestion(); updateUIState(); }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= questionsData.length) {
+                endGame(scores.left > scores.right ? 'left' : (scores.right > scores.left ? 'right' : 'draw'));
+                return;
+            }
+            const q = questionsData[currentQuestionIndex];
+            elQuestionText.innerText = q.question;
+            elProgress.innerText = `Pertanyaan ${currentQuestionIndex + 1} / ${questionsData.length}`;
+            elAnswersContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-3d btn-answer w-full bg-yellow-300 hover:bg-yellow-400 text-gray-800 font-bold text-base md:text-lg py-3 px-4 rounded-xl border-4 border-yellow-500 shadow-md transition-all";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(idx);
+                elAnswersContainer.appendChild(btn);
+            });
+        }
+
+        function handleBuzz(team) {
+            if (gameState !== 'waiting_buzz') return;
+            initAudio(); playSound('buzz');
+            activeTeam = team;
+            gameState = 'answering';
+            updateUIState();
+        }
+
+        function handleAnswer(selectedIndex) {
+            if (gameState !== 'answering' || !activeTeam) return;
+            gameState = 'showing_result';
+            const correctIndex = questionsData[currentQuestionIndex].correctIndex;
+            const isCorrect = (selectedIndex === correctIndex);
+            playSound(isCorrect ? 'correct' : 'wrong');
+            const teamCard = activeTeam === 'left' ? elTeamLeft : elTeamRight;
+
+            if (isCorrect) {
+                scores[activeTeam] += 10;
+                tugPosition += (activeTeam === 'right') ? 20 : -20;
+                updateAvatar(activeTeam, 'happy');
+                updateAvatar(activeTeam === 'left' ? 'right' : 'left', 'wrong');
+                elOverlay.className = "fixed inset-0 pointer-events-none z-50 flash-green-overlay";
+                elLightning.classList.remove('opacity-0');
+                elLightning.classList.add('lightning-effect');
+                teamCard.classList.add('animate-pop');
+            } else {
+                updateAvatar(activeTeam, 'wrong');
+                teamCard.classList.add('animate-shake');
+                elOverlay.className = "fixed inset-0 pointer-events-none z-50 flash-red-overlay";
+            }
+
+            elScoreLeft.innerText = scores.left;
+            elScoreRight.innerText = scores.right;
+            if (isCorrect) { elScoreLeft.classList.add('animate-pop'); elScoreRight.classList.add('animate-pop'); }
+            if (tugPosition <= 0) tugPosition = 0;
+            if (tugPosition >= 100) tugPosition = 100;
+            elTugMarker.style.left = `${tugPosition}%`;
+
+            setTimeout(() => {
+                elOverlay.className = "fixed inset-0 pointer-events-none z-50";
+                elLightning.classList.remove('lightning-effect');
+                elLightning.classList.add('opacity-0');
+                teamCard.classList.remove('animate-shake', 'animate-pop');
+                elScoreLeft.classList.remove('animate-pop');
+                elScoreRight.classList.remove('animate-pop');
+                updateAvatar('left', 'idle');
+                updateAvatar('right', 'idle');
+                if (tugPosition <= 0) { endGame('left'); return; }
+                if (tugPosition >= 100) { endGame('right'); return; }
+                currentQuestionIndex++;
+                activeTeam = null;
+                gameState = 'waiting_buzz';
+                renderQuestion(); updateUIState();
+            }, 1500);
+        }
+
+        function updateUIState() {
+            elTeamLeft.classList.remove('opacity-50', 'scale-95', 'glow-active');
+            elTeamRight.classList.remove('opacity-50', 'scale-95', 'glow-active');
+            elBtnBuzzLeft.classList.remove('locked');
+            elBtnBuzzRight.classList.remove('locked');
+            elAnswersContainer.classList.add('locked');
+            elTurnIndicator.classList.add('hidden');
+
+            if (gameState === 'answering') {
+                elAnswersContainer.classList.remove('locked');
+                elTurnIndicator.classList.remove('hidden');
+                if (activeTeam === 'left') {
+                    elTeamRight.classList.add('opacity-50', 'scale-95');
+                    elBtnBuzzRight.classList.add('locked');
+                    elBtnBuzzLeft.classList.add('locked');
+                    elTeamLeft.classList.add('glow-active');
+                } else {
+                    elTeamLeft.classList.add('opacity-50', 'scale-95');
+                    elBtnBuzzLeft.classList.add('locked');
+                    elBtnBuzzRight.classList.add('locked');
+                    elTeamRight.classList.add('glow-active');
+                }
+            } else if (gameState === 'showing_result') {
+                elAnswersContainer.classList.add('locked');
+                elBtnBuzzLeft.classList.add('locked');
+                elBtnBuzzRight.classList.add('locked');
+            }
+        }
+
+        function updateAvatar(team, state) {
+            const el = document.getElementById(`avatar-${team}`);
+            el.src = characters[team][state];
+            el.classList.add('animate-pop');
+            setTimeout(() => el.classList.remove('animate-pop'), 300);
+        }
+
+        function endGame(winner) {
+            gameState = 'game_over';
+            playSound('correct'); playSound('correct');
+            const overlay = document.getElementById('win-overlay');
+            const title = document.getElementById('win-title');
+            const avatar = document.getElementById('win-avatar');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            if (winner === 'left') {
+                title.innerText = "TIM MERAH MENANG!";
+                title.className = "text-5xl md:text-8xl font-black mb-4 animate-bounce text-red-500 drop-shadow-[0_5px_5px_rgba(255,255,255,0.8)]";
+                avatar.src = characters.left.happy; avatar.classList.remove('hidden');
+            } else if (winner === 'right') {
+                title.innerText = "TIM HIJAU MENANG!";
+                title.className = "text-5xl md:text-8xl font-black mb-4 animate-bounce text-green-500 drop-shadow-[0_5px_5px_rgba(255,255,255,0.8)]";
+                avatar.src = characters.right.happy; avatar.classList.remove('hidden');
+            } else {
+                title.innerText = "SERI!";
+                avatar.classList.add('hidden');
+            }
+        }
+
+        // --------------------------------------------------
+        // EVENT LISTENERS
+        // --------------------------------------------------
+        elBtnBuzzLeft.addEventListener('click', () => handleBuzz('left'));
+        elBtnBuzzRight.addEventListener('click', () => handleBuzz('right'));
+
+        document.getElementById('toggle-video').addEventListener('click', () => {
+            const vc = document.getElementById('video-container');
+            vc.classList.toggle('hidden');
+            document.getElementById('toggle-video').innerText = vc.classList.contains('hidden') ? '📺 Video Bantuan' : '❌ Tutup Video';
+        });
+
+        let isBgmPlaying = false;
+        const bgmAudio = document.getElementById('bgm-audio');
+        const btnBgm = document.getElementById('btn-toggle-bgm');
+        const btnBackHome = document.getElementById('btn-back-home');
+
+        btnBgm.addEventListener('click', () => {
+            if (isBgmPlaying) {
+                bgmAudio.pause(); isBgmPlaying = false;
+                btnBgm.innerHTML = '🔈 Musik: OFF';
+            } else {
+                bgmAudio.play().then(() => {
+                    isBgmPlaying = true; btnBgm.innerHTML = '🔊 Musik: ON';
+                }).catch(e => {
+                    const old = btnBgm.innerHTML;
+                    btnBgm.innerHTML = '❌ File bacground.mp3?';
+                    setTimeout(() => btnBgm.innerHTML = old, 3000);
+                });
+            }
+        });
+
+        btnBackHome.addEventListener('click', () => {
+            document.getElementById('start-screen').classList.remove('hidden');
+            btnBackHome.classList.add('hidden');
+            document.getElementById('win-overlay').classList.add('hidden');
+            currentQuestionIndex = 0; scores = { left: 0, right: 0 }; tugPosition = 50;
+            activeTeam = null; gameState = 'waiting_buzz';
+            elScoreLeft.innerText = 0; elScoreRight.innerText = 0;
+            elTugMarker.style.left = '50%';
+            updateAvatar('left', 'idle'); updateAvatar('right', 'idle');
+            elOverlay.className = "fixed inset-0 pointer-events-none z-50";
+            elTurnIndicator.classList.add('hidden');
+            elAnswersContainer.innerHTML = '';
+            elProgress.innerText = "Siap-siap...";
+            elQuestionText.innerText = "Memuat pertanyaan...";
+        });
+
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            initAudio(); playSound('buzz');
+            document.getElementById('start-screen').classList.add('hidden');
+            btnBackHome.classList.remove('hidden');
+            if (!isBgmPlaying) {
+                bgmAudio.play().then(() => { isBgmPlaying = true; btnBgm.innerHTML = '🔊 Musik: ON'; }).catch(() => { });
+            }
+            startGame();
+        });
+    </script>
+</body>
+
+</html>

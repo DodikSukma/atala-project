@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # If the requested resource is a real file or directory, serve it directly.
+  # This ensures raw HTML project folders (iframe content) load normally.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Otherwise, redirect all requests to index.html for React Router.
+  RewriteRule ^ index.html [QSA,L]
+</IfModule>

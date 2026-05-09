@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Belajar Basis Data Bersama MS Nicel</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- sql.js (SQLite di browser via WebAssembly) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+
+  <style>
+    /* =========================================================
+       GLOBAL DARK THEME
+       ========================================================= */
+    html, body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #020617;
+      color: #e2e8f0;
+      min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+
+    /* Gradient orbs di background */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(80px);
+      opacity: 0.25;
+      animation: float 20s ease-in-out infinite;
+    }
+    .orb-1 { width: 400px; height: 400px; background: #0ea5e9; top: -100px; left: -100px; }
+    .orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -150px; animation-delay: -5s; }
+    .orb-3 { width: 300px; height: 300px; background: #06b6d4; top: 40%; right: 10%; animation-delay: -10s; opacity: 0.15; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(30px, -30px) scale(1.05); }
+      66%      { transform: translate(-20px, 20px) scale(0.95); }
+    }
+
+    /* Grid pattern overlay */
+    .grid-pattern {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Brand gradient */
+    .brand-gradient {
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #10b981 100%);
+    }
+    .brand-gradient-text {
+      background: linear-gradient(135deg, #38bdf8 0%, #22d3ee 50%, #34d399 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Glass card */
+    .glass-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      transition: border-color 0.3s;
+    }
+    .glass-card:hover { border-color: rgba(14, 165, 233, 0.35); }
+
+    .glow-sky { box-shadow: 0 0 40px rgba(14, 165, 233, 0.35), 0 10px 40px rgba(0,0,0,0.4); }
+    .btn-glow {
+      box-shadow: 0 0 0 rgba(14, 165, 233, 0.5), 0 8px 24px rgba(14, 165, 233, 0.25);
+      transition: all 0.3s ease;
+    }
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(14, 165, 233, 0.5), 0 12px 32px rgba(14, 165, 233, 0.35);
+    }
+
+    /* SQL Editor */
+    .sql-editor {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      background: #020617;
+      color: #e2e8f0;
+      tab-size: 2;
+      line-height: 1.7;
+      caret-color: #22d3ee;
+    }
+    .sql-editor:focus { outline: 2px solid #06b6d4; outline-offset: -2px; }
+
+    /* Animations */
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .slide-right { animation: slideRight 0.4s ease-out; }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .pop-in { animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .shimmer { position: relative; overflow: hidden; }
+    .shimmer::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Result table */
+    .result-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+    .result-table th {
+      background: linear-gradient(135deg, #0ea5e9, #10b981);
+      color: white;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .result-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #1e293b;
+      color: #e2e8f0;
+    }
+    .result-table tr:nth-child(even) td { background: rgba(30, 41, 59, 0.4); }
+    .result-table tr:hover td            { background: rgba(14, 165, 233, 0.12); }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    pre.code-block {
+      background: #020617;
+      color: #e2e8f0;
+      padding: 16px 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-family: 'Consolas', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      border: 1px solid #1e293b;
+      position: relative;
+    }
+    pre.code-block .kw   { color: #7dd3fc; font-weight: 600; }
+    pre.code-block .str  { color: #86efac; }
+    pre.code-block .num  { color: #fbbf24; }
+    pre.code-block .cmt  { color: #64748b; font-style: italic; }
+
+    code.inline {
+      background: rgba(14, 165, 233, 0.15);
+      color: #7dd3fc;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.88em;
+      font-weight: 600;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+
+    .tab-btn {
+      position: relative;
+      padding: 10px 18px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+    }
+    .tab-btn:hover { color: #e2e8f0; background: rgba(148, 163, 184, 0.05); }
+    .tab-btn.active {
+      color: white;
+      background: linear-gradient(135deg, #0ea5e9, #10b981);
+      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+    }
+
+    .menu-item {
+      position: relative;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      transition: all 0.25s;
+      border: 1px solid transparent;
+      text-align: left;
+    }
+    .menu-item:hover {
+      background: rgba(14, 165, 233, 0.08);
+      border-color: rgba(14, 165, 233, 0.2);
+      transform: translateX(4px);
+    }
+    .menu-item.active {
+      background: linear-gradient(135deg, rgba(14,165,233,0.2), rgba(16,185,129,0.2));
+      border-color: rgba(14, 165, 233, 0.4);
+      box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15);
+    }
+
+    .type-pill {
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .type-pill:hover { transform: translateY(-4px) scale(1.02); }
+    .type-pill.selected {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
+    }
+
+    .exercise-card {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(249, 115, 22, 0.08));
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .info-box      { background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(6,182,212,0.1)); border-left: 3px solid #38bdf8; }
+    .highlight-box { background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(245,158,11,0.08)); border-left: 3px solid #fbbf24; }
+    .success-box   { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(20,184,166,0.1)); border-left: 3px solid #10b981; }
+    .error-box     { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.1)); border: 1px solid rgba(239,68,68,0.3); }
+
+    .hover-lift { transition: all 0.3s; }
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+    .progress-ring circle { transition: stroke-dashoffset 0.5s; }
+
+    .cover-fade-in > * {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: coverReveal 0.8s ease-out forwards;
+    }
+    .cover-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
+    .cover-fade-in > *:nth-child(2) { animation-delay: 0.3s; }
+    .cover-fade-in > *:nth-child(3) { animation-delay: 0.5s; }
+    .cover-fade-in > *:nth-child(4) { animation-delay: 0.7s; }
+    .cover-fade-in > *:nth-child(5) { animation-delay: 0.9s; }
+    .cover-fade-in > *:nth-child(6) { animation-delay: 1.1s; }
+    @keyframes coverReveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-ring { position: relative; }
+    .profile-ring::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4, #10b981, #0ea5e9);
+      background-size: 300% 300%;
+      animation: gradientShift 4s ease infinite;
+      z-index: -1;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    .shake { animation: shake 0.4s ease-in-out; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25%      { transform: translateX(-6px); }
+      75%      { transform: translateX(6px); }
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(30, 41, 59, 0.8);
+      color: #94a3b8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #334155;
+    }
+    .copy-btn:hover { background: #1e293b; color: #e2e8f0; border-color: #475569; }
+  </style>
+</head>
+<body class="relative">
+
+<!-- Background decoration -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="grid-pattern"></div>
+
+<!-- =========== LOADING OVERLAY =========== -->
+<div id="loadingOverlay" class="fixed inset-0 bg-slate-950 z-[100] flex items-center justify-center">
+  <div class="text-center">
+    <div class="relative w-20 h-20 mx-auto mb-6">
+      <div class="absolute inset-0 border-4 border-sky-500/20 rounded-full"></div>
+      <div class="absolute inset-0 border-4 border-transparent border-t-sky-400 rounded-full animate-spin"></div>
+      <div class="absolute inset-2 border-4 border-transparent border-t-emerald-400 rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+    </div>
+    <p class="text-slate-200 font-semibold text-lg">Memuat mesin SQL...</p>
+    <p class="text-xs text-slate-500 mt-2">Menyiapkan lingkungan belajarmu 🚀</p>
+  </div>
+</div>
+
+<!-- =========== COVER PAGE =========== -->
+<div id="coverPage" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 overflow-y-auto">
+  <div class="relative z-10 max-w-3xl w-full cover-fade-in py-8">
+
+    <div class="text-center">
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/60 border border-sky-500/30 text-xs font-semibold text-sky-300 backdrop-blur">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Media Pembelajaran Interaktif
+      </span>
+    </div>
+
+    <div class="text-center mt-6">
+      <h1 class="text-4xl md:text-6xl font-black leading-tight">
+        Belajar <span class="brand-gradient-text">Basis Data</span><br/>
+        Bersama <span class="brand-gradient-text">MS Nicel</span>
+      </h1>
+      <p class="mt-4 text-slate-400 text-base md:text-lg max-w-xl mx-auto">
+        Pelajari SQL dari nol sampai mahir — dengan <strong class="text-sky-300">praktik langsung</strong> di browser. Tidak perlu install apapun.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-4 my-10 max-w-md mx-auto">
+      <div class="flex-1 h-px bg-gradient-to-r from-transparent to-slate-700"></div>
+      <span class="text-xs text-slate-500 uppercase tracking-widest">Dibuat oleh</span>
+      <div class="flex-1 h-px bg-gradient-to-l from-transparent to-slate-700"></div>
+    </div>
+
+    <div class="text-center">
+      <div class="profile-ring inline-block rounded-full">
+        <div class="relative w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden bg-slate-800 border-4 border-slate-900">
+          <img id="profileImg" src="profil.JPG" alt="Profil Guru"
+               class="w-full h-full object-cover"
+               onerror="this.onerror=null; this.style.display='none'; document.getElementById('profileFallback').style.display='flex';" />
+          <div id="profileFallback" class="hidden absolute inset-0 items-center justify-center brand-gradient text-white text-5xl font-bold">
+            KN
+          </div>
+        </div>
+      </div>
+
+      <h2 class="mt-5 text-2xl md:text-3xl font-bold text-white">
+        Kadek Nicelia Pramesti, <span class="text-emerald-400">S.Pd., Gr.</span>
+      </h2>
+      <p class="text-slate-400 text-sm mt-1">Guru Mata Pelajaran Basis Data</p>
+    </div>
+
+    <div class="mt-10 grid grid-cols-3 gap-3 md:gap-4 max-w-lg mx-auto">
+      <div class="glass-card rounded-xl p-3 md:p-4 text-center hover-lift">
+        <div class="text-2xl md:text-3xl">📚</div>
+        <div class="text-xs md:text-sm font-bold text-sky-300 mt-1">5 Pertemuan</div>
+      </div>
+      <div class="glass-card rounded-xl p-3 md:p-4 text-center hover-lift">
+        <div class="text-2xl md:text-3xl">💻</div>
+        <div class="text-xs md:text-sm font-bold text-cyan-300 mt-1">Praktik Live</div>
+      </div>
+      <div class="glass-card rounded-xl p-3 md:p-4 text-center hover-lift">
+        <div class="text-2xl md:text-3xl">🎯</div>
+        <div class="text-xs md:text-sm font-bold text-emerald-300 mt-1">Soal Latihan</div>
+      </div>
+    </div>
+
+    <div class="mt-10 text-center">
+      <button onclick="enterApp()"
+        class="btn-glow brand-gradient text-white font-bold px-10 py-4 rounded-2xl text-lg inline-flex items-center gap-3">
+        <span>Mulai Belajar</span>
+        <span class="text-xl">🚀</span>
+      </button>
+      <p class="text-xs text-slate-500 mt-4">SMK · SQL Fundamentals · Database Learning</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- =========== MAIN APP =========== -->
+<div id="mainApp" class="hidden relative z-10">
+
+  <header class="border-b border-slate-800/60 backdrop-blur-lg bg-slate-950/70 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 brand-gradient rounded-xl flex items-center justify-center text-2xl shadow-lg glow-sky flex-shrink-0">🗄️</div>
+        <div class="min-w-0">
+          <h1 class="text-base md:text-lg font-bold text-white truncate">Belajar Basis Data Bersama MS Nicel</h1>
+          <p class="text-xs text-slate-400 hidden md:block">by Kadek Nicelia Pramesti, S.Pd., Gr.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <button onclick="showCover()" title="Kembali ke halaman awal"
+          class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          <span>🏠</span><span>Home</span>
+        </button>
+        <button onclick="resetDatabase()" title="Reset semua data ke kondisi awal"
+          class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-xs font-medium bg-slate-800/70 hover:bg-slate-700 border border-slate-700 text-slate-200 transition">
+          <span>🔄</span><span class="hidden sm:inline">Reset DB</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+      <aside class="lg:col-span-1">
+        <div class="glass-card rounded-2xl p-5 lg:sticky lg:top-24">
+
+          <div class="flex items-center gap-3 pb-4 mb-4 border-b border-slate-700/50">
+            <div class="relative w-14 h-14 flex-shrink-0">
+              <svg class="progress-ring w-14 h-14 -rotate-90" viewBox="0 0 56 56">
+                <circle cx="28" cy="28" r="24" stroke="#1e293b" stroke-width="4" fill="none"/>
+                <circle id="progressCircle" cx="28" cy="28" r="24" stroke="url(#gradStroke)" stroke-width="4" fill="none"
+                        stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8"/>
+                <defs>
+                  <linearGradient id="gradStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0ea5e9"/>
+                    <stop offset="100%" stop-color="#10b981"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div id="progressText" class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">0/5</div>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs text-slate-400 uppercase tracking-wider">Progress</div>
+              <div class="text-sm font-bold text-white">Belajar SQL</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-lg">📖</span>
+            <h2 class="font-bold text-white text-sm">Daftar Pertemuan</h2>
+          </div>
+
+          <nav id="lessonMenu" class="space-y-2"></nav>
+
+          <div class="mt-5 p-3 rounded-xl bg-slate-800/40 border border-slate-700/50">
+            <p class="text-xs text-slate-400 leading-relaxed">
+              ✨ <strong class="text-sky-300">Tips:</strong> Klik "Tandai Selesai" di setiap pertemuan untuk melacak progresmu!
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="lg:col-span-3 space-y-6 min-w-0">
+
+        <div id="welcomeScreen" class="glass-card rounded-2xl p-8 fade-in">
+          <div class="text-center max-w-2xl mx-auto">
+            <div class="inline-flex w-20 h-20 brand-gradient rounded-3xl items-center justify-center text-4xl mb-5 glow-sky shimmer">👋</div>
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-3">
+              Halo, Calon <span class="brand-gradient-text">Master SQL!</span>
+            </h2>
+            <p class="text-slate-400 mb-8 leading-relaxed">
+              Pilih pertemuan di menu sebelah kiri untuk mulai belajar. Kamu bisa langsung praktik SQL di editor live di bawah setiap pelajaran.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="p-5 rounded-2xl bg-gradient-to-br from-sky-500/10 to-cyan-500/10 border border-sky-500/20 hover-lift">
+                <div class="text-3xl mb-2">🎓</div>
+                <h3 class="font-bold text-sky-300">Belajar</h3>
+                <p class="text-xs text-slate-400 mt-1">Materi terstruktur</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-emerald-500/10 border border-cyan-500/20 hover-lift">
+                <div class="text-3xl mb-2">⚡</div>
+                <h3 class="font-bold text-cyan-300">Praktik</h3>
+                <p class="text-xs text-slate-400 mt-1">SQL live di browser</p>
+              </div>
+              <div class="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/20 hover-lift">
+                <div class="text-3xl mb-2">🏆</div>
+                <h3 class="font-bold text-emerald-300">Berlatih</h3>
+                <p class="text-xs text-slate-400 mt-1">Soal menantang</p>
+              </div>
+            </div>
+
+            <div class="mt-8 info-box p-4 rounded-xl text-left">
+              <p class="text-sm text-slate-300">
+                <span class="text-sky-300 font-semibold">ℹ️ Database sudah siap.</span>
+                Tabel <code class="inline">siswa</code> dan <code class="inline">jurusan</code> sudah terisi data contoh. Klik <em>"Reset DB"</em> kapan saja untuk kembali ke kondisi awal.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="lessonContent" class="hidden"></div>
+
+        <div id="editorPanel" class="hidden">
+          <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="brand-gradient px-5 py-3 flex items-center justify-between">
+              <div class="flex items-center gap-2 text-white min-w-0">
+                <span class="text-xl flex-shrink-0">⚡</span>
+                <h3 class="font-bold truncate">SQL Editor</h3>
+                <span class="hidden md:inline text-xs bg-white/20 px-2 py-0.5 rounded flex-shrink-0">Live · Tekan Run untuk eksekusi</span>
+              </div>
+              <div class="flex gap-2 flex-shrink-0">
+                <button onclick="clearEditor()" class="bg-white/15 hover:bg-white/25 text-white text-xs px-3 py-1.5 rounded transition">🗑️ Clear</button>
+              </div>
+            </div>
+
+            <div class="relative">
+              <textarea id="sqlEditor"
+                class="sql-editor w-full p-5 border-0 resize-y min-h-[170px]"
+                placeholder="-- Tulis query SQL di sini&#10;-- Contoh: SELECT * FROM siswa;"
+                spellcheck="false"></textarea>
+            </div>
+
+            <div class="bg-slate-900/80 px-5 py-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-700/50">
+              <div class="text-xs text-slate-400">
+                💡 Kamu bisa menjalankan beberapa query sekaligus dengan memisahkan pakai <code class="inline">;</code>
+              </div>
+              <button onclick="runQuery()"
+                class="btn-glow brand-gradient text-white px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 text-sm">
+                <span>▶️</span><span>Run Query</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="outputArea" class="mt-4"></div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="max-w-7xl mx-auto px-6 py-8 text-center">
+    <p class="text-xs text-slate-500">
+      © 2025 · Dikembangkan dengan ❤️ oleh <strong class="text-slate-300">Kadek Nicelia Pramesti, S.Pd., Gr.</strong>
+    </p>
+  </footer>
+</div>
+
+
+<!-- =========== JAVASCRIPT =========== -->
+<script>
+/* ================= DATA PELAJARAN ================= */
+const LESSONS = {
+  1: {
+    title: 'Pengenalan Database',
+    emoji: '📘',
+    level: 'Pemula',
+    levelColor: 'bg-green-500/20 text-green-300 border border-green-500/30',
+    subtitle: 'Mengenal database, tabel, tipe data, dan SQL dasar',
+    materials: [
+      {
+        heading: 'Apa itu Database?',
+        type: 'info',
+        body: `Database (Basis Data) adalah <strong>kumpulan data yang tersimpan secara terstruktur</strong> sehingga mudah dikelola, dicari, dan diolah.
+        <br><br>Contoh penerapan database dalam kehidupan sehari-hari:
+        <ul class="list-disc ml-5 mt-2 space-y-1 text-slate-300">
+          <li>📇 Data siswa di sekolah</li>
+          <li>🛒 Data produk di toko online</li>
+          <li>🏦 Data nasabah di bank</li>
+          <li>📱 Data kontak di HP kamu</li>
+        </ul>`
+      },
+      {
+        heading: 'Tabel, Field, dan Record',
+        type: 'normal',
+        body: `Data di database disimpan dalam bentuk <strong>tabel</strong> (mirip tabel di Excel).
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+          <div class="p-3 rounded-lg bg-sky-500/10 border border-sky-500/20">
+            <div class="text-2xl mb-1">📋</div>
+            <div class="font-bold text-sky-300">Tabel</div>
+            <div class="text-xs text-slate-400 mt-1">Kumpulan data yang berkaitan. Contoh: tabel <code class="inline">siswa</code></div>
+          </div>
+          <div class="p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+            <div class="text-2xl mb-1">📑</div>
+            <div class="font-bold text-cyan-300">Field / Kolom</div>
+            <div class="text-xs text-slate-400 mt-1">Atribut data. Contoh: <code class="inline">nama</code>, <code class="inline">kelas</code></div>
+          </div>
+          <div class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+            <div class="text-2xl mb-1">📝</div>
+            <div class="font-bold text-emerald-300">Record / Baris</div>
+            <div class="text-xs text-slate-400 mt-1">Satu data lengkap. Contoh: satu orang siswa</div>
+          </div>
+        </div>`
+      },
+      {
+        heading: 'Tipe Data di SQL',
+        type: 'interactive-types',
+        body: `Setiap kolom harus punya <strong>tipe data</strong> yang menentukan jenis nilai apa yang boleh disimpan di dalamnya. Klik setiap kartu di bawah untuk melihat detail dan contohnya:`
+      },
+      {
+        heading: 'Apa itu SQL?',
+        type: 'highlight',
+        body: `<strong>SQL (Structured Query Language)</strong> adalah bahasa standar untuk berkomunikasi dengan database. Dengan SQL kamu bisa:
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+          <div class="text-center p-2 rounded bg-slate-800/60"><div class="text-xl">📖</div><div class="text-xs font-semibold text-sky-300 mt-1">Membaca</div></div>
+          <div class="text-center p-2 rounded bg-slate-800/60"><div class="text-xl">➕</div><div class="text-xs font-semibold text-emerald-300 mt-1">Menambah</div></div>
+          <div class="text-center p-2 rounded bg-slate-800/60"><div class="text-xl">✏️</div><div class="text-xs font-semibold text-amber-300 mt-1">Mengubah</div></div>
+          <div class="text-center p-2 rounded bg-slate-800/60"><div class="text-xl">🗑️</div><div class="text-xs font-semibold text-rose-300 mt-1">Menghapus</div></div>
+        </div>`
+      },
+      {
+        heading: 'Perintah SELECT Dasar',
+        type: 'code',
+        body: `<code class="inline">SELECT</code> adalah perintah paling sering dipakai — untuk <strong>menampilkan data</strong>.`,
+        code: `<span class="cmt">-- Menampilkan SEMUA kolom dari tabel siswa</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa;
+
+<span class="cmt">-- Menampilkan hanya kolom tertentu</span>
+<span class="kw">SELECT</span> nama, kelas <span class="kw">FROM</span> siswa;`
+      }
+    ],
+    examples: [
+      { label: 'Tampilkan semua siswa', query: 'SELECT * FROM siswa;' },
+      { label: 'Hanya kolom nama', query: 'SELECT nama FROM siswa;' },
+      { label: 'Nama & kelas saja', query: 'SELECT nama, kelas FROM siswa;' },
+      { label: 'Semua data jurusan', query: 'SELECT * FROM jurusan;' }
+    ],
+    exercises: [
+      { number: 1, title: 'Tampilkan Semua Data Siswa', instruction: 'Tampilkan <strong>seluruh data</strong> yang ada di tabel <code class="inline">siswa</code>.', hint: 'Gunakan: SELECT * FROM nama_tabel;' },
+      { number: 2, title: 'Tampilkan Nama dan Kelas', instruction: 'Tampilkan hanya kolom <code class="inline">nama</code> dan <code class="inline">kelas</code> dari tabel siswa.', hint: 'Sebutkan nama kolom dipisahkan dengan koma.' }
+    ]
+  },
+
+  2: {
+    title: 'CREATE & ALTER',
+    emoji: '🏗️',
+    level: 'Dasar',
+    levelColor: 'bg-sky-500/20 text-sky-300 border border-sky-500/30',
+    subtitle: 'Membuat dan memodifikasi struktur tabel (DDL)',
+    materials: [
+      { heading: 'CREATE TABLE', type: 'info', body: `Perintah <code class="inline">CREATE TABLE</code> digunakan untuk <strong>membuat tabel baru</strong>. Kamu harus menentukan nama tabel dan nama + tipe data setiap kolomnya.` },
+      { heading: 'Struktur CREATE TABLE', type: 'code', body: `Pola dasarnya:`, code: `<span class="kw">CREATE TABLE</span> nama_tabel (
+  kolom1 <span class="kw">TIPE_DATA</span>,
+  kolom2 <span class="kw">TIPE_DATA</span>,
+  ...
+);` },
+      { heading: 'Contoh CREATE TABLE', type: 'code', body: `Membuat tabel <code class="inline">guru</code>:`, code: `<span class="kw">CREATE TABLE</span> guru (
+  id <span class="kw">INTEGER PRIMARY KEY</span>,
+  nama <span class="kw">VARCHAR</span>(<span class="num">100</span>),
+  mapel <span class="kw">VARCHAR</span>(<span class="num">50</span>)
+);` },
+      { heading: 'ALTER TABLE — Mengubah Struktur', type: 'highlight', body: `<code class="inline">ALTER TABLE</code> dipakai untuk <strong>menambah, mengubah, atau menghapus kolom</strong> dari tabel yang sudah ada — tanpa harus membuat ulang tabelnya.` },
+      { heading: 'Contoh ALTER TABLE', type: 'code', body: `Menambah kolom <code class="inline">alamat</code> ke tabel guru:`, code: `<span class="kw">ALTER TABLE</span> guru
+<span class="kw">ADD COLUMN</span> alamat <span class="kw">VARCHAR</span>(<span class="num">200</span>);` }
+    ],
+    examples: [
+      { label: 'Buat tabel guru', query: `CREATE TABLE guru (
+  id INTEGER PRIMARY KEY,
+  nama VARCHAR(100),
+  mapel VARCHAR(50)
+);` },
+      { label: 'Tambah kolom alamat', query: 'ALTER TABLE guru ADD COLUMN alamat VARCHAR(200);' },
+      { label: 'Lihat struktur tabel guru', query: 'PRAGMA table_info(guru);' }
+    ],
+    exercises: [
+      { number: 1, title: 'Buat Tabel Guru', instruction: 'Buatlah tabel <code class="inline">guru</code> dengan kolom: <code class="inline">id</code> (INTEGER PRIMARY KEY), <code class="inline">nama</code> (VARCHAR 100), dan <code class="inline">mapel</code> (VARCHAR 50).', hint: 'CREATE TABLE nama_tabel ( kolom1 TIPE, ... );' },
+      { number: 2, title: 'Tambahkan Kolom Alamat', instruction: 'Setelah tabel guru dibuat, tambahkan kolom <code class="inline">alamat</code> bertipe <code class="inline">VARCHAR(200)</code>.', hint: 'ALTER TABLE nama_tabel ADD COLUMN nama_kolom TIPE;' }
+    ]
+  },
+
+  3: {
+    title: 'INSERT & DELETE',
+    emoji: '✏️',
+    level: 'Menengah',
+    levelColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
+    subtitle: 'Menambah, mengubah, dan menghapus data (DML)',
+    materials: [
+      { heading: 'INSERT INTO — Menambah Data', type: 'info', body: `<code class="inline">INSERT INTO</code> digunakan untuk <strong>memasukkan data baru</strong> ke dalam tabel.` },
+      { heading: 'Contoh INSERT', type: 'code', body: `Menambah siswa baru:`, code: `<span class="kw">INSERT INTO</span> siswa (id, nama, kelas, jurusan_id)
+<span class="kw">VALUES</span> (<span class="num">100</span>, <span class="str">'Rina Amalia'</span>, <span class="str">'X-A'</span>, <span class="num">1</span>);` },
+      { heading: 'DELETE — Menghapus Data', type: 'highlight', body: `<code class="inline">DELETE</code> digunakan untuk <strong>menghapus data</strong>. ⚠️ <strong class="text-rose-300">HARUS pakai WHERE</strong>, kalau tidak semua data akan terhapus!` },
+      { heading: 'Contoh DELETE', type: 'code', body: `Menghapus siswa dengan id = 100:`, code: `<span class="kw">DELETE FROM</span> siswa <span class="kw">WHERE</span> id = <span class="num">100</span>;` },
+      { heading: '🎁 Bonus: UPDATE — Mengubah Data', type: 'normal', body: `<code class="inline">UPDATE</code> digunakan untuk mengubah data yang sudah ada.
+        <pre class="code-block mt-2"><span class="kw">UPDATE</span> siswa <span class="kw">SET</span> kelas = <span class="str">'XI-A'</span> <span class="kw">WHERE</span> id = <span class="num">1</span>;</pre>` }
+    ],
+    examples: [
+      { label: 'Tambah 1 siswa baru', query: `INSERT INTO siswa (id, nama, kelas, jurusan_id)
+VALUES (100, 'Rina Amalia', 'X-A', 1);` },
+      { label: 'Hapus siswa id=100', query: 'DELETE FROM siswa WHERE id = 100;' },
+      { label: 'Ubah kelas siswa id=1', query: "UPDATE siswa SET kelas = 'XI-A' WHERE id = 1;" }
+    ],
+    exercises: [
+      { number: 1, title: 'Tambah 3 Siswa Baru', instruction: 'Tambahkan 3 data siswa baru dengan id 101, 102, dan 103. Nama, kelas, dan jurusan_id (1-4) bebas.', hint: 'Jalankan 3 INSERT, atau 1 INSERT dengan beberapa baris VALUES.' },
+      { number: 2, title: 'Hapus Siswa id=102', instruction: 'Hapus data siswa dengan <code class="inline">id = 102</code> dari tabel siswa.', hint: 'DELETE FROM ... WHERE id = ...' },
+      { number: 3, title: '🎁 Bonus: Ubah Nama', instruction: 'Ubah nama siswa dengan id = 101 menjadi "Nicel Pratama".', hint: 'UPDATE ... SET nama = ... WHERE id = ...' }
+    ]
+  },
+
+  4: {
+    title: 'SELECT, WHERE, LIKE',
+    emoji: '🔍',
+    level: 'Menengah',
+    levelColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
+    subtitle: 'Menyaring dan mencari data dengan kondisi',
+    materials: [
+      { heading: 'Filter Data dengan WHERE', type: 'info', body: `Setelah bisa menampilkan semua data, sekarang kita belajar <strong>menyaring data</strong> pakai klausa <code class="inline">WHERE</code>.` },
+      { heading: 'Operator Perbandingan', type: 'normal', body: `<div class="grid grid-cols-3 md:grid-cols-6 gap-2 mt-3">
+          <div class="p-2 rounded bg-slate-800/60 text-center"><code class="inline">=</code><div class="text-xs text-slate-400 mt-1">Sama</div></div>
+          <div class="p-2 rounded bg-slate-800/60 text-center"><code class="inline">!=</code><div class="text-xs text-slate-400 mt-1">Tidak sama</div></div>
+          <div class="p-2 rounded bg-slate-800/60 text-center"><code class="inline">&gt;</code><div class="text-xs text-slate-400 mt-1">Lebih besar</div></div>
+          <div class="p-2 rounded bg-slate-800/60 text-center"><code class="inline">&lt;</code><div class="text-xs text-slate-400 mt-1">Lebih kecil</div></div>
+          <div class="p-2 rounded bg-slate-800/60 text-center"><code class="inline">&gt;=</code><div class="text-xs text-slate-400 mt-1">≥</div></div>
+          <div class="p-2 rounded bg-slate-800/60 text-center"><code class="inline">&lt;=</code><div class="text-xs text-slate-400 mt-1">≤</div></div>
+        </div>` },
+      { heading: 'Contoh WHERE', type: 'code', body: `Beberapa contoh kondisi:`, code: `<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa <span class="kw">WHERE</span> kelas = <span class="str">'X-A'</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa <span class="kw">WHERE</span> jurusan_id = <span class="num">1</span>;
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa <span class="kw">WHERE</span> id &gt;= <span class="num">5</span>;` },
+      { heading: 'LIKE — Pencarian Teks dengan Pola', type: 'highlight', body: `<code class="inline">LIKE</code> digunakan untuk mencari teks yang <strong>cocok dengan pola tertentu</strong>. Gunakan <code class="inline">%</code> sebagai wildcard (mewakili karakter apapun).` },
+      { heading: 'Pola LIKE yang Sering Dipakai', type: 'code', body: `Perhatikan posisi tanda <code class="inline">%</code>:`, code: `<span class="cmt">-- Diawali huruf "A"</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa <span class="kw">WHERE</span> nama <span class="kw">LIKE</span> <span class="str">'A%'</span>;
+
+<span class="cmt">-- Diakhiri huruf "i"</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa <span class="kw">WHERE</span> nama <span class="kw">LIKE</span> <span class="str">'%i'</span>;
+
+<span class="cmt">-- Mengandung huruf "i" di mana saja</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa <span class="kw">WHERE</span> nama <span class="kw">LIKE</span> <span class="str">'%i%'</span>;` },
+      { heading: 'Gabungkan dengan AND / OR', type: 'normal', body: `Gunakan <code class="inline">AND</code> (dan) atau <code class="inline">OR</code> (atau) untuk menggabungkan beberapa kondisi:
+        <pre class="code-block mt-2"><span class="kw">SELECT</span> * <span class="kw">FROM</span> siswa
+<span class="kw">WHERE</span> kelas = <span class="str">'X-A'</span> <span class="kw">AND</span> jurusan_id = <span class="num">1</span>;</pre>` }
+    ],
+    examples: [
+      { label: 'Siswa di kelas X-A', query: "SELECT * FROM siswa WHERE kelas = 'X-A';" },
+      { label: 'Siswa jurusan RPL', query: 'SELECT * FROM siswa WHERE jurusan_id = 1;' },
+      { label: 'Nama mengandung "i"', query: "SELECT * FROM siswa WHERE nama LIKE '%i%';" },
+      { label: 'Nama diawali huruf "A"', query: "SELECT * FROM siswa WHERE nama LIKE 'A%';" }
+    ],
+    exercises: [
+      { number: 1, title: 'Siswa Jurusan RPL', instruction: 'Tampilkan semua siswa yang jurusannya <strong>RPL</strong> (jurusan_id = 1).', hint: 'SELECT * FROM siswa WHERE jurusan_id = 1;' },
+      { number: 2, title: 'Cari Nama dengan Huruf "i"', instruction: 'Tampilkan siswa yang namanya <strong>mengandung huruf "i"</strong>.', hint: 'Gunakan LIKE dengan % di kedua sisi: LIKE \'%i%\'' },
+      { number: 3, title: '🎁 Bonus: Kombinasi Kondisi', instruction: 'Tampilkan siswa yang <strong>kelasnya X-A DAN jurusannya RPL</strong>.', hint: 'WHERE ... AND ...' }
+    ]
+  },
+
+  5: {
+    title: 'JOIN Antar Tabel',
+    emoji: '🔗',
+    level: 'Lanjut',
+    levelColor: 'bg-rose-500/20 text-rose-300 border border-rose-500/30',
+    subtitle: 'Menggabungkan data dari beberapa tabel',
+    materials: [
+      { heading: 'Konsep Relasi Tabel', type: 'info', body: `Dalam database nyata, data dipecah ke <strong>beberapa tabel</strong> agar tidak berulang (redundan). Tabel-tabel ini dihubungkan lewat kolom <em>kunci</em>.
+        <br><br>Contoh: tabel <code class="inline">siswa</code> punya kolom <code class="inline">jurusan_id</code> yang <strong>menunjuk</strong> ke <code class="inline">id</code> di tabel <code class="inline">jurusan</code>.` },
+      { heading: 'Apa itu JOIN?', type: 'highlight', body: `<code class="inline">JOIN</code> adalah perintah untuk <strong>menggabungkan data dari 2 tabel atau lebih</strong> berdasarkan kolom yang saling terhubung. Paling umum adalah <code class="inline">INNER JOIN</code>.` },
+      { heading: 'Sintaks INNER JOIN', type: 'code', body: `Pola dasarnya:`, code: `<span class="kw">SELECT</span> kolom1, kolom2
+<span class="kw">FROM</span> tabel1
+<span class="kw">INNER JOIN</span> tabel2
+  <span class="kw">ON</span> tabel1.kolom = tabel2.kolom;` },
+      { heading: 'Contoh Nyata', type: 'code', body: `Menampilkan nama siswa beserta nama jurusannya:`, code: `<span class="kw">SELECT</span> siswa.nama, jurusan.nama_jurusan
+<span class="kw">FROM</span> siswa
+<span class="kw">INNER JOIN</span> jurusan
+  <span class="kw">ON</span> siswa.jurusan_id = jurusan.id;` },
+      { heading: 'Alias untuk Nama Singkat', type: 'normal', body: `Gunakan <code class="inline">AS</code> untuk kasih nama pendek agar query lebih rapi:
+        <pre class="code-block mt-2"><span class="kw">SELECT</span> s.nama, j.nama_jurusan
+<span class="kw">FROM</span> siswa <span class="kw">AS</span> s
+<span class="kw">INNER JOIN</span> jurusan <span class="kw">AS</span> j
+  <span class="kw">ON</span> s.jurusan_id = j.id;</pre>` }
+    ],
+    examples: [
+      { label: 'JOIN siswa + jurusan', query: `SELECT siswa.nama, jurusan.nama_jurusan
+FROM siswa
+INNER JOIN jurusan ON siswa.jurusan_id = jurusan.id;` },
+      { label: 'JOIN dengan alias', query: `SELECT s.nama, s.kelas, j.nama_jurusan
+FROM siswa AS s
+INNER JOIN jurusan AS j ON s.jurusan_id = j.id;` },
+      { label: 'JOIN + filter RPL', query: `SELECT s.nama, j.nama_jurusan
+FROM siswa s INNER JOIN jurusan j
+  ON s.jurusan_id = j.id
+WHERE j.nama_jurusan = 'RPL';` }
+    ],
+    exercises: [
+      { number: 1, title: 'Gabungkan Siswa & Jurusan', instruction: 'Tampilkan <strong>nama siswa</strong> beserta <strong>nama jurusannya</strong> dengan <code class="inline">INNER JOIN</code>.', hint: 'ON siswa.jurusan_id = jurusan.id' },
+      { number: 2, title: 'JOIN + Urutkan A-Z', instruction: 'Seperti soal 1, tapi <strong>urutkan berdasarkan nama siswa (A-Z)</strong>.', hint: 'Tambahkan ORDER BY siswa.nama ASC di akhir query.' },
+      { number: 3, title: '🎁 Bonus: Filter Jurusan TKJ', instruction: 'Tampilkan hanya siswa di jurusan <strong>TKJ</strong> beserta nama jurusannya.', hint: "Tambahkan WHERE jurusan.nama_jurusan = 'TKJ'" }
+    ]
+  }
+};
+
+/* Data tipe data untuk Pertemuan 1 (interactive) */
+const DATA_TYPES = [
+  { name: 'INTEGER', alias: 'INT', icon: '🔢', color: 'from-sky-500 to-blue-500', textColor: 'text-sky-300', borderColor: 'border-sky-500/40',
+    desc: 'Bilangan bulat (tanpa desimal)', example: '25, 100, -5, 2025', usage: 'Sering dipakai untuk: id, umur, jumlah, tahun' },
+  { name: 'VARCHAR(n)', alias: 'TEKS', icon: '📝', color: 'from-cyan-500 to-teal-500', textColor: 'text-cyan-300', borderColor: 'border-cyan-500/40',
+    desc: 'Teks dengan panjang maksimal n karakter', example: "'Andi', 'SMK Negeri 1'", usage: 'Sering dipakai untuk: nama, alamat, email, kelas' },
+  { name: 'TEXT', alias: 'TEKS PANJANG', icon: '📄', color: 'from-teal-500 to-emerald-500', textColor: 'text-teal-300', borderColor: 'border-teal-500/40',
+    desc: 'Teks panjang tanpa batas', example: "'Ini paragraf deskripsi yang panjang...'", usage: 'Sering dipakai untuk: deskripsi, biografi, artikel' },
+  { name: 'DATE', alias: 'TANGGAL', icon: '📅', color: 'from-emerald-500 to-green-500', textColor: 'text-emerald-300', borderColor: 'border-emerald-500/40',
+    desc: 'Tanggal format YYYY-MM-DD', example: "'2025-04-19', '2010-07-17'", usage: 'Sering dipakai untuk: tanggal lahir, tanggal daftar' },
+  { name: 'REAL', alias: 'DESIMAL', icon: '💯', color: 'from-violet-500 to-purple-500', textColor: 'text-violet-300', borderColor: 'border-violet-500/40',
+    desc: 'Bilangan desimal / pecahan', example: '3.14, 99.99, 85.5', usage: 'Sering dipakai untuk: nilai, harga, berat' },
+  { name: 'BOOLEAN', alias: 'YA/TIDAK', icon: '✅', color: 'from-pink-500 to-rose-500', textColor: 'text-pink-300', borderColor: 'border-pink-500/40',
+    desc: 'Nilai benar/salah (0 atau 1 di SQLite)', example: '1 (benar), 0 (salah)', usage: 'Sering dipakai untuk: status aktif, sudah_lulus' }
+];
+
+/* ================= STATE ================= */
+let db = null;
+let SQL = null;
+let currentLesson = null;
+let currentTab = 'materi';
+const completedLessons = new Set();
+
+/* ================= INIT ================= */
+async function initApp() {
+  try {
+    SQL = await initSqlJs({
+      locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
+    });
+    resetDatabase(true);
+    renderLessonMenu();
+    updateProgress();
+
+    setTimeout(() => {
+      const ovr = document.getElementById('loadingOverlay');
+      ovr.style.opacity = '0';
+      ovr.style.transition = 'opacity 0.5s';
+      setTimeout(() => {
+        ovr.style.display = 'none';
+        document.getElementById('coverPage').classList.remove('hidden');
+      }, 500);
+    }, 300);
+  } catch (err) {
+    document.getElementById('loadingOverlay').innerHTML = `
+      <div class="text-center p-8 max-w-md">
+        <div class="text-5xl mb-4">⚠️</div>
+        <p class="text-red-400 font-bold text-lg">Gagal memuat SQL engine</p>
+        <p class="text-sm text-slate-400 mt-2">Pastikan kamu terhubung ke internet, lalu refresh halaman.</p>
+      </div>`;
+    console.error(err);
+  }
+}
+
+function setupDefaultTables() {
+  db.run(`
+    CREATE TABLE jurusan (
+      id INTEGER PRIMARY KEY,
+      nama_jurusan VARCHAR(50)
+    );
+    INSERT INTO jurusan (id, nama_jurusan) VALUES
+      (1, 'RPL'), (2, 'TKJ'), (3, 'MM'), (4, 'AKL');
+
+    CREATE TABLE siswa (
+      id INTEGER PRIMARY KEY,
+      nama VARCHAR(100),
+      kelas VARCHAR(10),
+      jurusan_id INTEGER
+    );
+    INSERT INTO siswa (id, nama, kelas, jurusan_id) VALUES
+      (1, 'Aisyah Putri',   'X-A',   1),
+      (2, 'Budi Santoso',   'X-B',   2),
+      (3, 'Citra Dewi',     'XI-A',  1),
+      (4, 'Dimas Prasetyo', 'XI-B',  3),
+      (5, 'Eka Ramadhan',   'XII-A', 4),
+      (6, 'Fitri Lestari',  'X-A',   1),
+      (7, 'Gilang Permana', 'XI-A',  2),
+      (8, 'Hana Maulida',   'XII-B', 3);
+  `);
+}
+
+function resetDatabase(silent = false) {
+  if (db) db.close();
+  db = new SQL.Database();
+  setupDefaultTables();
+  if (!silent) {
+    showToast('🔄 Database berhasil di-reset!');
+    const out = document.getElementById('outputArea');
+    if (out) out.innerHTML = '';
+  }
+}
+
+/* ================= NAV COVER <-> APP ================= */
+function enterApp() {
+  const cover = document.getElementById('coverPage');
+  cover.style.opacity = '0';
+  cover.style.transition = 'opacity 0.5s';
+  setTimeout(() => {
+    cover.classList.add('hidden');
+    cover.style.opacity = '1';
+    document.getElementById('mainApp').classList.remove('hidden');
+    document.getElementById('mainApp').classList.add('fade-in');
+  }, 500);
+}
+
+function showCover() {
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('coverPage').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+/* ================= SIDEBAR MENU ================= */
+function renderLessonMenu() {
+  const menu = document.getElementById('lessonMenu');
+  menu.innerHTML = '';
+  Object.entries(LESSONS).forEach(([num, lesson]) => {
+    const n = parseInt(num);
+    const isActive = currentLesson === n;
+    const isCompleted = completedLessons.has(n);
+    const btn = document.createElement('button');
+    btn.className = `menu-item ${isActive ? 'active' : ''}`;
+    btn.onclick = () => openLesson(n);
+    btn.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="relative w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0
+             ${isActive ? 'brand-gradient text-white' : 'bg-slate-800 text-slate-300'}">
+          ${lesson.emoji}
+          ${isCompleted ? '<span class="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-[10px] text-white border-2 border-slate-900">✓</span>' : ''}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-xs ${isActive ? 'text-white' : 'text-slate-300'}">Pertemuan ${n}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded ${lesson.levelColor}">${lesson.level}</span>
+          </div>
+          <div class="text-xs ${isActive ? 'text-slate-200' : 'text-slate-500'} truncate mt-0.5">${lesson.title}</div>
+        </div>
+      </div>`;
+    menu.appendChild(btn);
+  });
+}
+
+function updateProgress() {
+  const total = Object.keys(LESSONS).length;
+  const done = completedLessons.size;
+  const pct = done / total;
+  const circle = document.getElementById('progressCircle');
+  const text = document.getElementById('progressText');
+  if (circle) {
+    const c = 2 * Math.PI * 24;
+    circle.setAttribute('stroke-dasharray', c);
+    circle.setAttribute('stroke-dashoffset', c * (1 - pct));
+  }
+  if (text) text.textContent = `${done}/${total}`;
+}
+
+/* ================= LESSON CONTENT ================= */
+function openLesson(num) {
+  currentLesson = num;
+  currentTab = 'materi';
+  renderLessonContent(num);
+  renderLessonMenu();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderLessonContent(num) {
+  const lesson = LESSONS[num];
+  document.getElementById('welcomeScreen').classList.add('hidden');
+  document.getElementById('lessonContent').classList.remove('hidden');
+  document.getElementById('editorPanel').classList.remove('hidden');
+
+  const isCompleted = completedLessons.has(num);
+  const contentDiv = document.getElementById('lessonContent');
+
+  contentDiv.innerHTML = `
+    <div class="fade-in space-y-5">
+      <div class="glass-card rounded-2xl p-6">
+        <div class="flex items-start justify-between flex-wrap gap-4">
+          <div class="flex items-start gap-4 min-w-0">
+            <div class="w-16 h-16 brand-gradient rounded-2xl flex items-center justify-center text-3xl shadow-lg glow-sky flex-shrink-0">${lesson.emoji}</div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap mb-1">
+                <span class="level-badge ${lesson.levelColor}">🏆 ${lesson.level}</span>
+                <span class="text-xs text-slate-400">Pertemuan ${num} dari 5</span>
+              </div>
+              <h2 class="text-2xl md:text-3xl font-black text-white">${lesson.title}</h2>
+              <p class="text-sm text-slate-400 mt-1">${lesson.subtitle}</p>
+            </div>
+          </div>
+          <button onclick="toggleComplete(${num})"
+            class="px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2
+            ${isCompleted
+              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+              : 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700'}">
+            <span>${isCompleted ? '✅' : '⭕'}</span>
+            <span>${isCompleted ? 'Sudah Selesai' : 'Tandai Selesai'}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-1.5 flex gap-1 overflow-x-auto">
+        <button class="tab-btn flex-1 ${currentTab === 'materi' ? 'active' : ''}" onclick="switchTab('materi', this)">
+          📖 <span class="hidden sm:inline">Materi</span>
+        </button>
+        <button class="tab-btn flex-1 ${currentTab === 'contoh' ? 'active' : ''}" onclick="switchTab('contoh', this)">
+          🧪 <span class="hidden sm:inline">Contoh Query</span><span class="sm:hidden">Contoh</span>
+        </button>
+        <button class="tab-btn flex-1 ${currentTab === 'latihan' ? 'active' : ''}" onclick="switchTab('latihan', this)">
+          🎯 <span class="hidden sm:inline">Soal Latihan</span><span class="sm:hidden">Latihan</span>
+        </button>
+      </div>
+
+      <div id="tabContent"></div>
+    </div>`;
+
+  renderTabContent();
+
+  const editor = document.getElementById('sqlEditor');
+  editor.placeholder = `-- Pertemuan ${num}: ${lesson.title}\n-- Klik contoh di tab "Contoh Query", atau tulis sendiri!\n\nSELECT * FROM siswa;`;
+}
+
+function switchTab(tab, btnEl) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderTabContent();
+}
+
+function renderTabContent() {
+  const container = document.getElementById('tabContent');
+  if (!container) return;
+  const lesson = LESSONS[currentLesson];
+  if (currentTab === 'materi') {
+    container.innerHTML = renderMateri(lesson);
+    if (document.getElementById('typePills')) selectDataType(0);
+    attachCopyButtons();
+  } else if (currentTab === 'contoh') {
+    container.innerHTML = renderExamples(lesson);
+  } else if (currentTab === 'latihan') {
+    container.innerHTML = renderExercises(lesson);
+  }
+}
+
+function renderMateri(lesson) {
+  const materialsHtml = lesson.materials.map(m => {
+    let boxClass = 'bg-slate-800/40 border border-slate-700/50';
+    let icon = '📌';
+    if (m.type === 'info')      { boxClass = 'info-box'; icon = '💡'; }
+    if (m.type === 'highlight') { boxClass = 'highlight-box'; icon = '⭐'; }
+    if (m.type === 'code')      { boxClass = 'bg-slate-800/40 border border-slate-700/50'; icon = '💻'; }
+    if (m.type === 'interactive-types') { boxClass = 'bg-gradient-to-br from-sky-500/5 to-emerald-500/5 border border-sky-500/20'; icon = '🎨'; }
+
+    const codeBlock = m.code ? `
+      <div class="relative mt-3">
+        <pre class="code-block">${m.code}</pre>
+        <button class="copy-btn" data-copy="${encodeURIComponent(m.code.replace(/<[^>]+>/g, ''))}">📋 Copy</button>
+      </div>` : '';
+
+    let interactiveHtml = '';
+    if (m.type === 'interactive-types') {
+      const pills = DATA_TYPES.map((t, i) => `
+        <button class="type-pill p-3 rounded-xl bg-slate-900/60 border ${t.borderColor} text-left"
+          data-type-index="${i}" onclick="selectDataType(${i})">
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${t.color} flex items-center justify-center text-xl flex-shrink-0">${t.icon}</div>
+            <div class="min-w-0">
+              <div class="font-bold text-sm text-white truncate">${t.name}</div>
+              <div class="text-[10px] ${t.textColor} uppercase tracking-wider">${t.alias}</div>
+            </div>
+          </div>
+        </button>`).join('');
+      interactiveHtml = `
+        <div id="typePills" class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">${pills}</div>
+        <div id="typeDetail" class="mt-4"></div>`;
+    }
+
+    return `
+      <div class="p-5 rounded-xl ${boxClass} pop-in">
+        <h4 class="font-bold text-white mb-2 flex items-center gap-2">
+          <span>${icon}</span><span>${m.heading}</span>
+        </h4>
+        <div class="text-sm text-slate-300 leading-relaxed">${m.body}</div>
+        ${codeBlock}
+        ${interactiveHtml}
+      </div>`;
+  }).join('');
+
+  return `<div class="glass-card rounded-2xl p-6 fade-in"><div class="space-y-4">${materialsHtml}</div></div>`;
+}
+
+function selectDataType(idx) {
+  const t = DATA_TYPES[idx];
+  document.querySelectorAll('[data-type-index]').forEach(el => el.classList.remove('selected'));
+  const btn = document.querySelector(`[data-type-index="${idx}"]`);
+  if (btn) btn.classList.add('selected');
+  const detail = document.getElementById('typeDetail');
+  if (!detail) return;
+  detail.innerHTML = `
+    <div class="slide-right p-5 rounded-xl bg-slate-900/80 border ${t.borderColor}">
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 rounded-xl bg-gradient-to-br ${t.color} flex items-center justify-center text-3xl flex-shrink-0">${t.icon}</div>
+        <div class="flex-1 min-w-0">
+          <h5 class="text-xl font-bold text-white">${t.name}</h5>
+          <p class="text-sm text-slate-300 mt-1">${t.desc}</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+            <div class="p-3 rounded-lg bg-slate-800/60 border border-slate-700">
+              <div class="text-[10px] uppercase tracking-wider ${t.textColor} font-bold mb-1">Contoh Nilai</div>
+              <code class="text-sm text-emerald-300">${t.example}</code>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-800/60 border border-slate-700">
+              <div class="text-[10px] uppercase tracking-wider ${t.textColor} font-bold mb-1">Kegunaan</div>
+              <p class="text-xs text-slate-300">${t.usage}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExamples(lesson) {
+  const examplesHtml = lesson.examples.map(ex => `
+    <button onclick='loadExample(${JSON.stringify(ex.query)})'
+      class="text-left w-full p-4 rounded-xl bg-slate-800/60 border border-slate-700/50 hover:border-sky-500/50 hover:bg-slate-800 transition group hover-lift">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-sky-400 group-hover:scale-110 transition">▶️</span>
+        <span class="text-sm font-semibold text-white group-hover:text-sky-300">${ex.label}</span>
+      </div>
+      <pre class="text-xs text-slate-400 font-mono overflow-x-auto whitespace-pre-wrap break-all">${escapeHtml(ex.query)}</pre>
+    </button>`).join('');
+  return `
+    <div class="glass-card rounded-2xl p-6 fade-in">
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🧪</span> Contoh Query Siap Pakai</h3>
+        <p class="text-xs text-slate-400 mt-1">Klik salah satu untuk memuat ke SQL Editor di bawah ↓</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${examplesHtml}</div>
+    </div>`;
+}
+
+function renderExercises(lesson) {
+  const exercisesHtml = lesson.exercises.map(ex => `
+    <div class="exercise-card p-5 rounded-xl pop-in">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold flex items-center justify-center shadow-lg flex-shrink-0">${ex.number}</div>
+        <div class="flex-1 min-w-0">
+          <h5 class="font-bold text-white mb-1">${ex.title}</h5>
+          <div class="text-sm text-slate-300 leading-relaxed">${ex.instruction}</div>
+          <details class="mt-3 group">
+            <summary class="text-xs text-amber-300 cursor-pointer hover:text-amber-200 font-semibold flex items-center gap-1">
+              <span class="group-open:rotate-90 transition inline-block">▶</span>
+              Lihat petunjuk
+            </summary>
+            <div class="mt-2 text-xs text-slate-300 bg-slate-900/60 p-3 rounded-lg border border-amber-500/20 font-mono">💭 ${ex.hint}</div>
+          </details>
+        </div>
+      </div>
+    </div>`).join('');
+  return `
+    <div class="glass-card rounded-2xl p-6 fade-in">
+      <div class="mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2"><span>🎯</span> Soal Latihan</h3>
+        <p class="text-xs text-slate-400 mt-1">Kerjakan di SQL Editor di bawah ↓ Jangan lupa klik Run Query!</p>
+      </div>
+      <div class="space-y-3">${exercisesHtml}</div>
+    </div>`;
+}
+
+function toggleComplete(num) {
+  if (completedLessons.has(num)) {
+    completedLessons.delete(num);
+    showToast('↺ Tanda selesai dihapus');
+  } else {
+    completedLessons.add(num);
+    showToast(`🎉 Pertemuan ${num} selesai! Keep it up!`);
+  }
+  renderLessonMenu();
+  renderLessonContent(num);
+  updateProgress();
+}
+
+/* ================= COPY BUTTONS ================= */
+function attachCopyButtons() {
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.onclick = () => {
+      const code = decodeURIComponent(btn.dataset.copy);
+      navigator.clipboard.writeText(code).then(() => {
+        const old = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.style.color = '#10b981';
+        setTimeout(() => { btn.textContent = old; btn.style.color = ''; }, 1500);
+      }).catch(() => showToast('⚠️ Gagal copy'));
+    };
+  });
+}
+
+/* ================= SQL EDITOR ================= */
+function loadExample(query) {
+  const editor = document.getElementById('sqlEditor');
+  editor.value = query;
+  editor.focus();
+  editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  showToast('✨ Query dimuat ke editor');
+}
+
+function clearEditor() {
+  document.getElementById('sqlEditor').value = '';
+  document.getElementById('outputArea').innerHTML = '';
+}
+
+function runQuery() {
+  const query = document.getElementById('sqlEditor').value.trim();
+  const output = document.getElementById('outputArea');
+  if (!query) {
+    output.innerHTML = `
+      <div class="highlight-box p-4 rounded-xl flex items-start gap-3 shake">
+        <span class="text-2xl">⚠️</span>
+        <div>
+          <strong class="text-amber-300">Editor masih kosong!</strong>
+          <p class="text-sm text-slate-300 mt-1">Tulis query atau pilih contoh dari tab "Contoh Query".</p>
+        </div>
+      </div>`;
+    return;
+  }
+  try {
+    const results = db.exec(query);
+    displayResults(results, query);
+  } catch (err) {
+    displayError(err.message);
+  }
+}
+
+function displayResults(results, query) {
+  const output = document.getElementById('outputArea');
+  if (!results || results.length === 0) {
+    const firstWord = query.trim().split(/\s+/)[0].toUpperCase();
+    const map = {
+      INSERT: ['➕', 'Data berhasil ditambahkan!', 'Coba jalankan SELECT untuk lihat hasilnya.'],
+      UPDATE: ['✏️', 'Data berhasil diperbarui!', 'Coba jalankan SELECT untuk lihat hasilnya.'],
+      DELETE: ['🗑️', 'Data berhasil dihapus!', 'Coba jalankan SELECT untuk lihat hasilnya.'],
+      CREATE: ['🏗️', 'Tabel berhasil dibuat!', 'Coba: SELECT * FROM nama_tabelmu;'],
+      ALTER:  ['🔧', 'Struktur tabel berhasil diubah!', 'Cek struktur dengan: PRAGMA table_info(nama_tabel);'],
+      DROP:   ['💥', 'Tabel berhasil dihapus!', 'Untuk mengembalikan, klik Reset DB.']
+    };
+    const [icon, title, sub] = map[firstWord] || ['✅', 'Query berhasil dijalankan!', ''];
+    output.innerHTML = `
+      <div class="success-box p-5 rounded-xl fade-in flex items-start gap-3">
+        <div class="text-3xl flex-shrink-0">${icon}</div>
+        <div>
+          <strong class="text-emerald-300 text-lg">${title}</strong>
+          ${sub ? `<p class="text-sm text-slate-300 mt-1">💡 ${sub}</p>` : ''}
+        </div>
+      </div>`;
+    return;
+  }
+  let html = '';
+  results.forEach((res, idx) => {
+    const { columns, values } = res;
+    const thead = columns.map(c => `<th>${escapeHtml(c)}</th>`).join('');
+    const tbody = values.map(row => '<tr>' + row.map(cell =>
+      `<td>${cell === null ? '<span class="text-slate-500 italic">NULL</span>' : escapeHtml(String(cell))}</td>`
+    ).join('') + '</tr>').join('');
+    html += `
+      <div class="glass-card rounded-2xl overflow-hidden fade-in ${idx > 0 ? 'mt-4' : ''}">
+        <div class="brand-gradient px-5 py-3 flex items-center justify-between text-white">
+          <div class="flex items-center gap-2"><span class="text-xl">📊</span><strong>Hasil Query ${results.length > 1 ? `#${idx + 1}` : ''}</strong></div>
+          <span class="text-xs bg-white/20 px-3 py-1 rounded-full font-semibold">${values.length} baris · ${columns.length} kolom</span>
+        </div>
+        <div class="overflow-x-auto"><table class="result-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table></div>
+      </div>`;
+  });
+  output.innerHTML = html;
+}
+
+function displayError(message) {
+  const output = document.getElementById('outputArea');
+  output.innerHTML = `
+    <div class="error-box rounded-2xl p-5 fade-in shake">
+      <div class="flex items-start gap-3">
+        <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 border border-red-500/30">❌</div>
+        <div class="flex-1 min-w-0">
+          <strong class="text-red-300 text-lg">Query Error!</strong>
+          <p class="text-sm text-red-200 mt-2 font-mono bg-slate-950/80 p-3 rounded-lg border border-red-500/20 break-words">${escapeHtml(message)}</p>
+          <p class="text-xs text-slate-400 mt-3">💡 <strong class="text-slate-300">Cek:</strong> ejaan perintah, nama tabel/kolom, tanda baca (titik koma, kutip, kurung).</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ================= UTIL ================= */
+function escapeHtml(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function showToast(text) {
+  const toast = document.createElement('div');
+  toast.className = 'fixed top-5 right-5 glass-card px-4 py-3 rounded-xl shadow-2xl z-[70] pop-in flex items-center gap-2 text-sm font-semibold text-white border border-emerald-500/30';
+  toast.textContent = text;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.3s, transform 0.3s';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+/* ================= GO! ================= */
+initApp();
+</script>
+
+</body>
+</html>

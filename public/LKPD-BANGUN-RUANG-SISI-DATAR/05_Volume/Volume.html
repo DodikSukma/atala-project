@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD Level 5 - Konsep Volume</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+            --comic-green: #4caf50;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            padding: 1rem;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            display: none;
+            /* Sembunyikan dulu */
+        }
+
+        .game-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Efek komik di container */
+        .game-container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Tombol Close */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 3px 3px 0 #000;
+            font-size: 1.2rem;
+        }
+
+        .close-btn:hover {
+            background-color: var(--dark-red);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.9), rgba(255, 78, 80, 0.9));
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efek ledakan komik di header */
+        .header-section::before {
+            content: "VOLUME!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+
+        .main-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: white;
+            font-weight: 500;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .level-indicator {
+            display: inline-block;
+            background: var(--comic-yellow);
+            color: var(--dark-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            box-shadow: 2px 2px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+
+        /* --- STYLE UNTUK MATERI PEMBELAJARAN --- */
+        .learning-material {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 3px solid var(--comic-blue);
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .learning-material::after {
+            content: "INFO!";
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--comic-blue);
+            transform: rotate(10deg);
+            text-shadow: 1px 1px 0 #000;
+            opacity: 0.7;
+        }
+
+        .learning-material h2 {
+            font-family: 'Bangers', cursive;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .definition {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        /* Container Video & GeoGebra */
+        .embed-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            /* 16:9 Aspect Ratio */
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 2px solid #333;
+            background-color: #f0f0f0;
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Kontrol Zoom Custom */
+        .zoom-controls {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .zoom-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000;
+            transition: all 0.2s;
+        }
+
+        .zoom-icon-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-orange);
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: linear-gradient(135deg, rgba(249, 212, 35, 0.2), rgba(255, 78, 80, 0.2));
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--comic-yellow);
+            position: relative;
+        }
+
+        .quiz-section h3 {
+            font-family: 'Bangers', cursive;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-options {
+            margin-top: 1rem;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid var(--primary-blue);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .quiz-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 4px 4px 0 #000;
+        }
+
+        .quiz-option.correct {
+            background: var(--comic-green);
+            border-color: var(--comic-green);
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            background: var(--primary-red);
+            border-color: var(--dark-red);
+            color: white;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .feedback-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: var(--light-blue);
+            color: white;
+            display: none;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .feedback-message.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .feedback-message.error {
+            background: var(--primary-red);
+        }
+
+        .feedback-message.success {
+            background: var(--comic-green);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-header i {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--comic-yellow);
+        }
+
+        .section-header h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            margin: 0;
+            text-shadow: 1px 1px 0 #000;
+            color: var(--white);
+            /* PERUBAHAN: Warna teks judul menjadi putih */
+        }
+
+        /* --- AKHIR STYLE MATERI PEMBELAJARAN --- */
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .control-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+        }
+
+        .check-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+        }
+
+        .reset-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Modal untuk kode masuk */
+        .code-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .code-modal.hide {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Efek ledakan di modal kode */
+        .modal-content::before {
+            content: "CODE!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+
+        .code-icon {
+            font-size: 4rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .code-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .code-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid var(--primary-red);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.2);
+        }
+
+        .code-input.incorrect {
+            border-color: var(--dark-red);
+            animation: shake 0.5s;
+        }
+
+        .submit-code-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .submit-code-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Modal Success */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .success-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .success-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Efek ledakan di modal success */
+        .success-content::before {
+            content: "WOW!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+
+        .success-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .success-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-box {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .next-level-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+
+        .next-level-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .embed-container {
+                padding-bottom: 100%;
+                /* Lebih tinggi di mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="code-modal" id="codeModal">
+        <div class="modal-content">
+            <div class="code-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <h2 class="code-title">MASUKKAN KODE</h2>
+            <p class="code-message">Masukkan kode dari Level 4 untuk melanjutkan ke Level 5</p>
+            <div class="code-input-group">
+                <input type="text" class="code-input" id="codeInput" placeholder="KODE" maxlength="20">
+            </div>
+            <button class="submit-code-btn" id="submitCodeBtn">
+                <i class="fas fa-unlock"></i>
+                Buka Level 5
+            </button>
+        </div>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <!-- <button class="close-btn" id="closeBtn" title="Kembali ke LKPD">
+            <i class="fas fa-times"></i>
+        </button> -->
+
+        <header class="header-section">
+            <div class="level-indicator">LEVEL 5</div>
+            <h1 class="main-title">E-LKPD INTERAKTIF</h1>
+            <p class="subtitle">Konsep Volume Bangun Ruang</p>
+        </header>
+
+        <main>
+            <!-- Konsep Volume -->
+            <section class="learning-material">
+                <div class="section-header">
+                    <i class="fas fa-cube"></i>
+                    <h2>Konsep Volume</h2>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mencermati!</strong><br>
+                            Perhatikan video berikut untuk memahami konsep volume:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="video-konsep">
+                    <iframe src="https://www.youtube.com/embed/UE6d6CZWYIY" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('video-konsep')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('video-konsep')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Aktivitas: Apa yang dimaksud dengan volume?</h3>
+                    <div class="quiz-options" id="volumeQuiz">
+                        <div class="quiz-option" data-answer="a">
+                            <span class="option-label">a.</span> Jumlah panjang seluruh rusuk yang membatasi suatu
+                            bangun ruang.
+                        </div>
+                        <div class="quiz-option" data-answer="b">
+                            <span class="option-label">b.</span> Luas seluruh permukaan yang menutupi bagian luar suatu
+                            bangun ruang.
+                        </div>
+                        <div class="quiz-option" data-answer="c">
+                            <span class="option-label">c.</span> Perhitungan seberapa banyak ruang yang dapat ditempati
+                            dalam suatu objek.
+                        </div>
+                        <div class="quiz-option" data-answer="d">
+                            <span class="option-label">d.</span> Jarak terjauh antara dua titik sudut yang saling
+                            berhadapan dalam bangun ruang.
+                        </div>
+                    </div>
+                    <div class="feedback-message" id="volumeFeedback">
+                        Ayo cermati lagi videonya!!!
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kubus -->
+            <section class="learning-material">
+                <div class="section-header">
+                    <i class="fas fa-cube"></i>
+                    <h2>Volume Kubus</h2>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mengeksplorasi!</strong><br>
+                            Perhatikan video berikut untuk memahami volume kubus:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="video-kubus">
+                    <iframe src="https://www.youtube.com/embed/QJMWeRAlnCc" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('video-kubus')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('video-kubus')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Aktivitas: Manakah rumus volume kubus yang benar?</h3>
+                    <div class="quiz-options" id="kubusQuiz">
+                        <div class="quiz-option" data-answer="a">
+                            <span class="option-label">a.</span> Sisi × sisi × sisi
+                        </div>
+                        <div class="quiz-option" data-answer="b">
+                            <span class="option-label">b.</span> Tinggi × sisi + lebar
+                        </div>
+                        <div class="quiz-option" data-answer="c">
+                            <span class="option-label">c.</span> Sisi + sisi × sisi
+                        </div>
+                        <div class="quiz-option" data-answer="d">
+                            <span class="option-label">d.</span> Tinggi + tinggi + tinggi
+                        </div>
+                    </div>
+                    <div class="feedback-message" id="kubusFeedback">
+                        Volume dapat dinyatakan sebagai hasil kali dari tiga unsur dimensi dasar karena volume mengukur
+                        besarnya ruang dalam objek tiga dimensi (3D) ---- ayo cermati lagi videonya!!!
+                    </div>
+                </div>
+            </section>
+
+            <!-- Balok -->
+            <section class="learning-material">
+                <div class="section-header">
+                    <i class="fas fa-box"></i>
+                    <h2>Volume Balok</h2>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mengeksplorasi!</strong><br>
+                            Eksplorasi volume balok dengan simulasi berikut:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="geogebra-balok">
+                    <iframe scrolling="no" title="Volume Balok"
+                        src="https://www.geogebra.org/material/iframe/id/z5jtnq8m/width/614/height/561/border/888888/sfsb/true/smb/false/stb/false/stbh/false/ai/false/asb/false/sri/false/rc/false/ld/false/sdz/false/ctl/false"
+                        width="614px" height="561px" style="border:0px;"> </iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('geogebra-balok')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('geogebra-balok')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Aktivitas: Manakah rumus volume balok yang benar?</h3>
+                    <div class="quiz-options" id="balokQuiz">
+                        <div class="quiz-option" data-answer="a">
+                            <span class="option-label">a.</span> Panjang × lebar × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="b">
+                            <span class="option-label">b.</span> Panjang × lebar + tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="c">
+                            <span class="option-label">c.</span> 2 × (panjang + lebar) × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="d">
+                            <span class="option-label">d.</span> Panjang + lebar + tinggi
+                        </div>
+                    </div>
+                    <div class="feedback-message" id="balokFeedback">
+                        Perhatikan bahwa volume balok adalah hasil kali dari ketiga dimensinya (panjang, lebar, dan
+                        tinggi) ---- ayo cermati lagi simulasinya!!!
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prisma -->
+            <section class="learning-material">
+                <div class="section-header">
+                    <i class="fas fa-shapes"></i>
+                    <h2>Volume Prisma</h2>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mengamati!</strong><br>
+                            Perhatikan video berikut untuk memahami volume prisma:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="video-prisma">
+                    <iframe src="https://www.youtube.com/embed/cGCdDl6lULw" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('video-prisma')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('video-prisma')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mengeksplorasi!</strong><br>
+                            Eksplorasi volume prisma dengan simulasi berikut:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="geogebra-prisma1">
+                    <iframe src="https://www.geogebra.org/classic/rq9sjupa?embed" title="GeoGebra"
+                        frameborder="0"></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('geogebra-prisma1')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('geogebra-prisma1')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="geogebra-prisma2">
+                    <iframe src="https://www.geogebra.org/classic/mbuhjtfb?embed" title="GeoGebra"
+                        frameborder="0"></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('geogebra-prisma2')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('geogebra-prisma2')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Aktivitas: Apa rumus menentukan volume prisma?</h3>
+                    <div class="quiz-options" id="prismaQuiz">
+                        <div class="quiz-option" data-answer="a">
+                            <span class="option-label">a.</span> Luas alas × tinggi prisma
+                        </div>
+                        <div class="quiz-option" data-answer="b">
+                            <span class="option-label">b.</span> ½ × alas × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="c">
+                            <span class="option-label">c.</span> Alas × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="d">
+                            <span class="option-label">d.</span> Panjang × lebar + tinggi
+                        </div>
+                    </div>
+                    <div class="feedback-message" id="prismaFeedback">
+                        Perhatikan bahwa, volume prisma bergantung pada alas prisma ---- ayo cermati lagi videonya!!!
+                    </div>
+                </div>
+            </section>
+
+            <!-- Limas -->
+            <section class="learning-material">
+                <div class="section-header">
+                    <i class="fas fa-mountain"></i>
+                    <h2>Volume Limas</h2>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mengeksplorasi!</strong><br>
+                            Eksplorasi volume limas dengan simulasi berikut:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="geogebra-limas">
+                    <iframe src="https://www.geogebra.org/classic/auvgghax?embed" title="GeoGebra"
+                        frameborder="0"></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('geogebra-limas')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('geogebra-limas')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-12">
+                        <p class="definition">
+                            <strong>Ayo Mengamati!</strong><br>
+                            Perhatikan video berikut untuk memahami volume limas:
+                        </p>
+                    </div>
+                </div>
+
+                <div class="embed-container" id="video-limas">
+                    <iframe src="https://www.youtube.com/embed/YCynCiGGb9M" title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <div class="zoom-controls">
+                        <button class="zoom-icon-btn" onclick="zoomIn('video-limas')"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="zoom-icon-btn" onclick="zoomOut('video-limas')"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="quiz-section">
+                    <h3>Aktivitas: Apa rumus menentukan volume limas?</h3>
+                    <div class="quiz-options" id="limasQuiz">
+                        <div class="quiz-option" data-answer="a">
+                            <span class="option-label">a.</span> Luas alas × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="b">
+                            <span class="option-label">b.</span> ½ × luas alas × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="c">
+                            <span class="option-label">c.</span> 1/3 × luas alas × tinggi
+                        </div>
+                        <div class="quiz-option" data-answer="d">
+                            <span class="option-label">d.</span> 1/3 × luas alas + tinggi
+                        </div>
+                    </div>
+                    <div class="feedback-message" id="limasFeedback">
+                        Perhatikan bahwa volume limas berkaitan dengan prisma, cermati kembali video & eksplorasi ----
+                        ayo cermati lagi videonya!!!
+                    </div>
+                </div>
+            </section>
+
+            <div class="control-buttons">
+                <button class="control-btn check-btn" id="checkAllBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Periksa Semua Jawaban
+                </button>
+                <button class="control-btn reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i>
+                    Reset
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 class="success-title">YEY KAMU BENAR!</h2>
+            <p class="success-message">Selamat! Kamu telah berhasil memahami konsep volume dengan benar.</p>
+            <div class="code-box">matrixjaya</div>
+            <p class="success-message">Gunakan kode ini untuk melanjutkan ke level selanjutnya</p>
+            <button class="next-level-btn" id="nextLevelBtn">
+                <i class="fas fa-arrow-right"></i>
+                Lanjut ke Level 6
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // --- LOGIKA ZOOM GLOBAL ---
+    let zoomLevels = {};
+
+    function zoomIn(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            if (!zoomLevels[containerId]) zoomLevels[containerId] = 1;
+            zoomLevels[containerId] += 0.1;
+            container.style.transform = `scale(${zoomLevels[containerId]})`;
+        }
+    }
+
+    function zoomOut(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            if (!zoomLevels[containerId]) zoomLevels[containerId] = 1;
+            zoomLevels[containerId] = Math.max(0.5, zoomLevels[containerId] - 0.1);
+            container.style.transform = `scale(${zoomLevels[containerId]})`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elemen DOM
+        const codeModal = document.getElementById('codeModal');
+        const gameContainer = document.getElementById('gameContainer');
+        const codeInput = document.getElementById('codeInput');
+        const submitCodeBtn = document.getElementById('submitCodeBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const checkAllBtn = document.getElementById('checkAllBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const successModal = document.getElementById('successModal');
+        const nextLevelBtn = document.getElementById('nextLevelBtn');
+
+        // Kode yang benar
+        const correctCode = 'matrixmaster';
+        const nextLevelCode = 'matrixjaya';
+
+        // State permainan
+        let gameState = {
+            volumeQuiz: false,
+            kubusQuiz: false,
+            balokQuiz: false,
+            prismaQuiz: false,
+            limasQuiz: false
+        };
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Submit kode
+            submitCodeBtn.addEventListener('click', validateCode);
+            codeInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    validateCode();
+                }
+            });
+
+            // Event listener untuk tombol close
+            closeBtn.addEventListener('click', function () {
+                window.close();
+            });
+
+            // Quiz options
+            setupQuizOptions();
+
+            // Control buttons
+            checkAllBtn.addEventListener('click', checkAllAnswers);
+            resetBtn.addEventListener('click', resetGame);
+            nextLevelBtn.addEventListener('click', function () {
+                // Redirect ke level selanjutnya
+                window.location.href = "../05_SceneGame/SceneGame.html";
+                alert(`Kode untuk level selanjutnya adalah: ${nextLevelCode}`);
+            });
+        }
+
+        // Setup quiz options
+        function setupQuizOptions() {
+            // Volume quiz
+            const volumeOptions = document.querySelectorAll('#volumeQuiz .quiz-option');
+            volumeOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    checkAnswer(this, 'volume', 'c');
+                });
+            });
+
+            // Kubus quiz
+            const kubusOptions = document.querySelectorAll('#kubusQuiz .quiz-option');
+            kubusOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    checkAnswer(this, 'kubus', 'a');
+                });
+            });
+
+            // Balok quiz
+            const balokOptions = document.querySelectorAll('#balokQuiz .quiz-option');
+            balokOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    checkAnswer(this, 'balok', 'a');
+                });
+            });
+
+            // Prisma quiz
+            const prismaOptions = document.querySelectorAll('#prismaQuiz .quiz-option');
+            prismaOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    checkAnswer(this, 'prisma', 'a');
+                });
+            });
+
+            // Limas quiz
+            const limasOptions = document.querySelectorAll('#limasQuiz .quiz-option');
+            limasOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    checkAnswer(this, 'limas', 'c');
+                });
+            });
+        }
+
+        // Check answer
+        function checkAnswer(element, quizName, correctAnswer) {
+            const answer = element.dataset.answer;
+            const feedback = document.getElementById(`${quizName}Feedback`);
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+
+            // Jika sudah ada jawaban benar, jangan lakukan apa-apa
+            if (gameState[`${quizName}Quiz`]) {
+                return;
+            }
+
+            // Remove previous states
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Hide feedback initially
+            feedback.classList.remove('show', 'error', 'success');
+
+            if (answer === correctAnswer) {
+                element.classList.add('correct');
+                feedback.textContent = 'Jawaban benar!';
+                feedback.classList.add('success');
+                gameState[`${quizName}Quiz`] = true;
+                
+                // Nonaktifkan semua opsi setelah jawaban benar
+                options.forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                    opt.style.opacity = '0.7';
+                });
+            } else {
+                element.classList.add('incorrect');
+                feedback.classList.add('error');
+                gameState[`${quizName}Quiz`] = false;
+            }
+
+            feedback.classList.add('show');
+        }
+
+        // Check all answers
+        function checkAllAnswers() {
+            let allCorrect = true;
+
+            for (const quiz in gameState) {
+                if (!gameState[quiz]) {
+                    allCorrect = false;
+                    break;
+                }
+            }
+
+            if (allCorrect) {
+                successModal.classList.add('show');
+            } else {
+                alert('Masih ada jawaban yang salah. Coba lagi!');
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            // Reset all quiz states
+            for (const quiz in gameState) {
+                gameState[quiz] = false;
+            }
+
+            // Reset all quiz options
+            const allOptions = document.querySelectorAll('.quiz-option');
+            allOptions.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+                // Aktifkan kembali semua opsi
+                option.style.pointerEvents = 'auto';
+                option.style.opacity = '1';
+            });
+
+            // Hide all feedback messages
+            const allFeedback = document.querySelectorAll('.feedback-message');
+            allFeedback.forEach(feedback => {
+                feedback.classList.remove('show', 'error', 'success');
+            });
+        }
+
+        // Validasi kode
+        function validateCode() {
+            const enteredCode = codeInput.value.trim().toLowerCase();
+
+            if (enteredCode === correctCode) {
+                codeModal.classList.add('hide');
+                gameContainer.classList.add('show');
+            } else {
+                codeInput.classList.add('incorrect');
+                setTimeout(() => {
+                    codeInput.classList.remove('incorrect');
+                }, 1000);
+            }
+        }
+
+        // Initialize
+        setupEventListeners();
+    });
+</script>
+</body>
+
+</html>

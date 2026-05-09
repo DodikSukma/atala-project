@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro-Learning: Luas Permukaan Atap Gazebo</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            color: #333;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        /* Main container */
+        .main-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Left panel for narrator */
+        .narrator-panel {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.9);
+            border-right: 5px solid var(--primary-red);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Efek burst di narrator panel */
+        .narrator-panel::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                        linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .narrator-avatar {
+            width: 150px;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            overflow: visible;
+            box-shadow: 5px 5px 0 #000;
+            border: 3px solid var(--comic-yellow);
+            transition: all 0.3s ease;
+        }
+        
+        .narrator-avatar.talking {
+            transform: scale(1.1);
+            box-shadow: 8px 8px 0 #000;
+        }
+        
+        .narrator-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .narrator-text {
+            background: var(--comic-yellow);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 3px 3px 0 #000;
+            position: relative;
+            max-width: 100%;
+            border: 2px solid var(--dark-blue);
+        }
+        
+        .narrator-text::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: var(--comic-yellow);
+            border-radius: 50%;
+            border: 2px solid var(--dark-blue);
+        }
+        
+        .narrator-text p {
+            margin: 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+        
+        /* Right panel for slides */
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Slide */
+        .slide {
+            position: absolute;
+            width: calc(100% - 4rem);
+            height: calc(100% - 4rem);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 3px solid var(--primary-red);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s ease;
+            overflow-y: auto;
+        }
+        
+        .slide::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                        linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+        
+        .slide-header {
+            margin-bottom: 2rem;
+            position: relative;
+            padding-top: 60px;
+        }
+        
+        .slide-nav-buttons {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+        
+        .slide-nav-button {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            box-shadow: 2px 2px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .slide-nav-button:hover:not(:disabled) {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #000;
+        }
+        
+        .slide-nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .slide-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .slide-number {
+            background: var(--comic-yellow);
+            color: var(--dark-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 2px 2px 0 #000;
+            font-family: 'Bangers', cursive;
+        }
+        
+        .slide-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            flex: 1;
+        }
+        
+        .visual-container {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+            border: 2px dashed var(--primary-blue);
+        }
+        
+        .visual-container svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .interaction-container {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px dashed var(--primary-red);
+        }
+        
+        .interaction-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .answer-option {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            border: 3px solid var(--primary-blue);
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 2px 2px 0 #000;
+            font-weight: 600;
+        }
+        
+        .answer-option:hover {
+            background: var(--comic-yellow);
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        .answer-option.selected {
+            background: var(--light-orange);
+            border-color: var(--primary-orange);
+        }
+        
+        .answer-option.correct {
+            background: var(--primary-green);
+            border-color: var(--dark-green);
+            color: white;
+        }
+        
+        .answer-option.incorrect {
+            background: var(--dark-red);
+            border-color: var(--primary-red);
+            color: white;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .fill-blank-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .fill-blank-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .fill-blank-input {
+            background: rgba(255, 255, 255, 0.8);
+            border: 3px solid var(--primary-red);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+            width: 120px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+            font-weight: 600;
+        }
+        
+        .fill-blank-input:focus {
+            outline: none;
+            background: var(--comic-yellow);
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 154, 0, 0.2);
+        }
+        
+        .fill-blank-input.correct {
+            background: var(--primary-green);
+            border-color: var(--dark-green);
+            color: white;
+        }
+        
+        .fill-blank-input.incorrect {
+            background: var(--dark-red);
+            border-color: var(--primary-red);
+            color: white;
+            animation: shake 0.5s;
+        }
+        
+        /* Popup feedback */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .popup-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--comic-yellow);
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .popup-overlay.show .popup-content {
+            transform: scale(1);
+        }
+        
+        .popup-image {
+            width: 150px;
+            margin: 0 auto 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 3px 3px 0 #000;
+            border: 2px solid var(--comic-yellow);
+        }
+        
+        .popup-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .popup-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .popup-message {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+        
+        .popup-button {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .popup-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        /* Close button for popup */
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+            font-size: 16px;
+            z-index: 10;
+        }
+        
+        .popup-close:hover {
+            transform: scale(1.1);
+            background: var(--dark-red);
+        }
+        
+        /* Discussion Modal Styles (NEW) */
+        .discussion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500; /* Higher than popup */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .discussion-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .discussion-content {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 4px solid var(--comic-blue);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .discussion-overlay.show .discussion-content {
+            transform: translateY(0);
+        }
+
+        .discussion-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px dashed var(--light-blue);
+            padding-bottom: 1rem;
+        }
+
+        .discussion-icon {
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .discussion-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin: 0;
+        }
+
+        .discussion-body {
+            font-size: 1.1rem;
+            color: var(--dark-blue);
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .discussion-body p {
+            margin-bottom: 1rem;
+        }
+
+        .discussion-btn {
+            background: linear-gradient(135deg, var(--comic-blue), var(--primary-blue));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            box-shadow: 3px 3px 0 #000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none; /* Hidden by default */
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .discussion-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        .discussion-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--dark-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        /* Access code popup */
+        .access-code-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.3s ease;
+        }
+        
+        .access-code-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .access-code-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--comic-yellow);
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .access-code-overlay:not(.hidden) .access-code-content {
+            transform: scale(1);
+        }
+        
+        .access-code-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .access-code-message {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+        
+        .access-code-input {
+            background: rgba(255, 255, 255, 0.8);
+            border: 3px solid var(--primary-red);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+            width: 100%;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .access-code-input:focus {
+            outline: none;
+            background: var(--comic-yellow);
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 154, 0, 0.2);
+        }
+        
+        .access-code-button {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+        
+        .access-code-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        .access-code-error {
+            color: var(--dark-red);
+            font-weight: 600;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .access-code-error.show {
+            display: block;
+        }
+        
+        /* Progress indicator */
+        .progress-container {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.active {
+            background: var(--comic-yellow);
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        
+        .progress-dot.completed {
+            background: var(--primary-green);
+        }
+        
+        /* Tombol Close */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 3px 3px 0 #000;
+            font-size: 1.2rem;
+        }
+        
+        .close-btn:hover {
+            background-color: var(--dark-red);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        .close-btn::before {
+            content: "!";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--comic-yellow);
+            color: var(--dark-red);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            box-shadow: 1px 1px 0 #000;
+            font-family: 'Bangers', cursive;
+        }
+        
+        /* Tombol Lanjut ke Uji Kompetensi */
+        .continue-button {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            display: none;
+            margin: 2rem auto 0;
+            position: relative;
+            z-index: 10;
+            animation: pulse 2s infinite;
+        }
+        
+        .continue-button.show {
+            display: block;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .continue-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+        }
+        
+        /* Video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            margin-bottom: 1rem;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+        }
+        
+        .video-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Feedback message for reflection question */
+        .feedback-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .feedback-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .feedback-message.correct {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .feedback-message.incorrect {
+            background: rgba(201, 42, 42, 0.2);
+            border-left: 5px solid var(--dark-red);
+        }
+        
+        .feedback-message h4 {
+            font-family: 'Bangers', cursive;
+            margin-bottom: 0.5rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Question card styles for practice questions */
+        .question-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary-blue);
+            position: relative;
+        }
+        
+        .question-number {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: var(--comic-yellow);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            box-shadow: 2px 2px 0 #000;
+        }
+        
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 0;
+        }
+        
+        .option-item {
+            margin-bottom: 1rem;
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            border: 3px solid var(--primary-blue);
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+            font-weight: 600;
+        }
+        
+        .option-label:hover {
+            background: var(--comic-yellow);
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        .option-radio {
+            margin: 0;
+        }
+        
+        .option-text {
+            flex: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .narrator-panel {
+                width: 100%;
+                height: 200px;
+                flex-direction: row;
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 5px solid var(--primary-red);
+            }
+            
+            .narrator-avatar {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 0;
+                margin-right: 1rem;
+            }
+            
+            .narrator-text {
+                flex: 1;
+            }
+            
+            .slides-container {
+                padding: 1rem;
+            }
+            
+            .slide {
+                width: calc(100% - 2rem);
+                height: calc(100% - 2rem);
+                padding: 1.5rem;
+            }
+            
+            .slide-header {
+                padding-top: 50px;
+            }
+            
+            .slide-nav-buttons {
+                top: 1.5rem;
+                right: 1.5rem;
+            }
+            
+            .slide-title {
+                font-size: 1.5rem;
+            }
+            
+            .visual-container {
+                min-height: 200px;
+                padding: 1rem;
+            }
+            
+            .interaction-container {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .narrator-panel {
+                height: 150px;
+            }
+            
+            .narrator-avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .narrator-text p {
+                font-size: 0.9rem;
+            }
+            
+            .slide-header {
+                padding-top: 40px;
+            }
+            
+            .slide-nav-buttons {
+                top: 1rem;
+                right: 1rem;
+            }
+            
+            .slide-nav-button {
+                padding: 0.3rem 0.7rem;
+                font-size: 0.8rem;
+            }
+            
+            .slide-title {
+                font-size: 1.2rem;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+            
+            .answer-option {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem;
+            }
+            
+            .fill-blank-item {
+                font-size: 1rem;
+            }
+            
+            .fill-blank-input {
+                width: 80px;
+                font-size: 0.9rem;
+            }
+            
+            .continue-button {
+                font-size: 1.1rem;
+                padding: 0.8rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="access-code-overlay" id="accessCodeOverlay">
+        <div class="access-code-content">
+            <h2 class="access-code-title">Masukkan Kode Akses</h2>
+            <p class="access-code-message">Silakan masukkan kode akses untuk melanjutkan:</p>
+            <input type="text" class="access-code-input" id="accessCodeInput" placeholder="Kode Akses">
+            <button class="access-code-button" id="accessCodeButton">Verifikasi</button>
+            <div class="access-code-error" id="accessCodeError">Kode akses salah! Silakan coba lagi.</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="narrator-panel">
+            <div class="narrator-avatar" id="narratorAvatar">
+                <img src="talking.gif" alt="Narrator GIF">
+            </div>
+            <div class="narrator-text">
+                <p id="narratorText">Selamat datang dalam petualangan matematika! Kita akan belajar menghitung luas permukaan atap gazebo berbentuk limas.</p>
+            </div>
+            <!-- <div class="close-button" id="narratorCloseButton" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; color: var(--dark-blue);">
+                 <button class="close-btn" id="closeBtn" title="Kembali ke LKPD">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div> -->
+        </div>
+        
+        <div class="slides-container">
+            <div class="slide active" id="slide1">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn1" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn1">
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">1</div>
+                        Video Pembelajaran
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="interaction-container">
+                        <div class="interaction-title">Video Pembelajaran Luas Bangun Datar</div>
+                        <div class="videos-grid">
+                            <div class="video-item">
+                                <div class="video-container">
+                                    <iframe src="https://www.youtube.com/embed/K57Op8esC3o" title="Video Pembelajaran Luas Bangun Datar 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                                <h4 class="video-title">Video Pembelajaran Luas Bangun Datar 1</h4>
+                            </div>
+                            <div class="video-item">
+                                <div class="video-container">
+                                    <iframe src="https://www.youtube.com/embed/uTL62VdsHd4" title="Video Pembelajaran Luas Bangun Datar 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                                <h4 class="video-title">Video Pembelajaran Luas Bangun Datar 2</h4>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn1" onclick="showDiscussion(1)">💡 Lihat Rangkuman Video</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide2">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn2">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn2" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">2</div>
+                        Perkenalan Soal & Data
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="visual-container">
+                        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="50" y="200" width="200" height="80" fill="rgba(255,255,255,0.3)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="50,200 150,50 250,200" fill="rgba(255,255,255,0.2)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="50,200 150,50 50,280" fill="rgba(255,255,255,0.2)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="250,200 150,50 250,280" fill="rgba(255,255,255,0.2)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <text x="150" y="240" text-anchor="middle" fill="var(--dark-blue)" font-size="18" font-weight="bold">a = 6 m</text>
+                            <text x="200" y="150" text-anchor="middle" fill="var(--dark-blue)" font-size="18" font-weight="bold">s = 5 m</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="interaction-container">
+                        <div class="interaction-title">Pertanyaan</div>
+                        <div class="question-container">
+                            <div class="question-text">Yang harus kita hitung adalah...</div>
+                            <div class="answer-options">
+                                <div class="answer-option" data-answer="false">
+                                    <i class="fas fa-cube"></i>
+                                    Volume atap
+                                </div>
+                                <div class="answer-option" data-answer="true">
+                                    <i class="fas fa-layer-group"></i>
+                                    Luas permukaan atap
+                                </div>
+                                <div class="answer-option" data-answer="false">
+                                    <i class="fas fa-circle"></i>
+                                    Keliling alas
+                                </div>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn2" onclick="showDiscussion(2)">💡 Lihat Pembahasan</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide3">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn3">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn3" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">3</div>
+                        Langkah 1: Hitung Luas Alas
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="visual-container">
+                        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="50" y="100" width="200" height="100" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="3"/>
+                            <line x1="50" y1="100" x2="250" y2="100" stroke="var(--primary-blue)" stroke-width="1" stroke-dasharray="5,5"/>
+                            <line x1="50" y1="200" x2="250" y2="200" stroke="var(--primary-blue)" stroke-width="1" stroke-dasharray="5,5"/>
+                            <line x1="50" y1="100" x2="50" y2="200" stroke="var(--primary-blue)" stroke-width="1" stroke-dasharray="5,5"/>
+                            <line x1="250" y1="100" x2="250" y2="200" stroke="var(--primary-blue)" stroke-width="1" stroke-dasharray="5,5"/>
+                            <text x="150" y="150" text-anchor="middle" fill="var(--dark-blue)" font-size="18" font-weight="bold">a = 6 m</text>
+                            <text x="150" y="80" text-anchor="middle" fill="var(--dark-blue)" font-size="16">Luas = a × a</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="interaction-container">
+                        <div class="interaction-title">Hitung Luas Alas</div>
+                        <div class="question-container">
+                            <div class="question-text">Karena alasnya persegi, luas = a × a. Masukkan a = 6.</div>
+                            <div class="fill-blank-container">
+                                <div class="fill-blank-item">
+                                    Luas alas = a × a = <input type="text" class="fill-blank-input" id="slide3Input" data-answer="36"> m²
+                                </div>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn3" onclick="showDiscussion(3)">💡 Lihat Pembahasan</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide4">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn4">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn4" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">4</div>
+                        Keliling Alas & Konsep Sisi Miring
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="visual-container">
+                        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="50" y="100" width="200" height="100" fill="rgba(255,255,255,0.3)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="50,100 150,50 250,100" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="3"/>
+                            <line x1="150" y1="50" x2="150" y2="100" stroke="var(--primary-blue)" stroke-width="1" stroke-dasharray="5,5"/>
+                            <text x="150" y="150" text-anchor="middle" fill="var(--dark-blue)" font-size="18" font-weight="bold">a = 6 m</text>
+                            <text x="200" y="80" text-anchor="middle" fill="var(--dark-blue)" font-size="18" font-weight="bold">s = 5 m</text>
+                            <text x="150" y="30" text-anchor="middle" fill="var(--dark-blue)" font-size="16">1/2 × Keliling alas × s</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="interaction-container">
+                        <div class="interaction-title">Hitung Keliling Alas</div>
+                        <div class="question-container">
+                            <div class="question-text">Luas semua sisi miring bisa dihitung dengan rumus: 1/2 × Keliling alas × s.</div>
+                            <div class="fill-blank-container">
+                                <div class="fill-blank-item">
+                                    Keliling alas = 4 × a = <input type="text" class="fill-blank-input" id="slide4Input" data-answer="24"> m
+                                </div>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn4" onclick="showDiscussion(4)">💡 Lihat Pembahasan</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide5">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn5">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn5" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">5</div>
+                        Hitung Luas Semua Sisi Miring
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="visual-container">
+                        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <polygon points="150,50 250,150 150,250" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="150,50 50,150 150,250" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="150,50 250,150 50,150" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <polygon points="150,50 50,150 250,150" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <text x="150" y="30" text-anchor="middle" fill="var(--dark-blue)" font-size="16">Jaring-jaring limas</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="interaction-container">
+                        <div class="interaction-title">Hitung Luas Semua Sisi Miring</div>
+                        <div class="question-container">
+                            <div class="question-text">Masukkan K_alas = 24 dan s = 5. Hitung 1/2 × 24 × 5.</div>
+                            <div class="fill-blank-container">
+                                <div class="fill-blank-item">
+                                    Keliling alas = <input type="text" class="fill-blank-input" id="slide5Input1" data-answer="24">
+                                </div>
+                                <div class="fill-blank-item">
+                                    s = <input type="text" class="fill-blank-input" id="slide5Input2" data-answer="5">
+                                </div>
+                                <div class="fill-blank-item">
+                                    hasil = <input type="text" class="fill-blank-input" id="slide5Input3" data-answer="60">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn5" onclick="showDiscussion(5)">💡 Lihat Pembahasan</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide6">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn6">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn6" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">6</div>
+                        Penjumlahan & Kesimpulan
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="visual-container">
+                        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="50" y="100" width="80" height="80" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <text x="90" y="145" text-anchor="middle" fill="var(--dark-blue)" font-size="16" font-weight="bold">L_alas = 36</text>
+                            
+                            <rect x="170" y="100" width="80" height="80" fill="rgba(255,255,255,0.5)" stroke="var(--primary-blue)" stroke-width="2"/>
+                            <text x="210" y="145" text-anchor="middle" fill="var(--dark-blue)" font-size="16" font-weight="bold">L_sisi = 60</text>
+                            
+                            <text x="150" y="145" text-anchor="middle" fill="var(--dark-blue)" font-size="24" font-weight="bold">+</text>
+                            
+                            <rect x="100" y="200" width="100" height="50" fill="rgba(255,154,0,0.5)" stroke="var(--primary-orange)" stroke-width="2"/>
+                            <text x="150" y="230" text-anchor="middle" fill="var(--dark-blue)" font-size="16" font-weight="bold">Total = 96</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="interaction-container">
+                        <div class="interaction-title">Hitung Total Luas Atap</div>
+                        <div class="question-container">
+                            <div class="question-text">Sekarang jumlahkan: 36 + 60 = ?</div>
+                            <div class="fill-blank-container">
+                                <div class="fill-blank-item">
+                                    Total luas atap = 36 + 60 = <input type="text" class="fill-blank-input" id="slide6Input" data-answer="96"> m²
+                                </div>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn6" onclick="showDiscussion(6)">💡 Lihat Pembahasan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide" id="slide7">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn7">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn7" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">7</div>
+                        Refleksi
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="interaction-container">
+                        <div class="interaction-title">Soal Refleksi</div>
+                        <div class="question-container">
+                            <div class="question-text">Apa yang dimaksud volume bangun ruang sisi datar?</div>
+                            <div class="answer-options">
+                                <div class="answer-option" data-answer="a">
+                                    <i class="fas fa-ruler"></i>
+                                    Jumlah panjang seluruh rusuk bangun ruang
+                                </div>
+                                <div class="answer-option" data-answer="b">
+                                    <i class="fas fa-layer-group"></i>
+                                    Jumlah luas seluruh sisi bangun ruang
+                                </div>
+                                <div class="answer-option" data-answer="c">
+                                    <i class="fas fa-square"></i>
+                                    Luas salah satu sisi bangun ruang saja
+                                </div>
+                                <div class="answer-option" data-answer="d">
+                                    <i class="fas fa-cube"></i>
+                                    Jumlah volume bangun ruang
+                                </div>
+                            </div>
+                            <div class="feedback-message" id="reflectionFeedback">
+                                <h4 id="feedbackTitle"></h4>
+                                <p id="feedbackText"></p>
+                            </div>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn7" onclick="showDiscussion(7)">💡 Lihat Pembahasan</button>
+                    </div>
+                    
+                    <button class="continue-button" id="continueButton">
+                        <i class="fas fa-arrow-right"></i> Lanjut ke Uji Kompetensi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide8">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn8">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn8" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">8</div>
+                        Soal Latihan Volume 1
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="interaction-container">
+                        <div class="interaction-title">Soal Latihan Volume</div>
+                        
+                        <div class="question-card">
+                            <div class="question-number">Soal 1</div>
+                            <div class="question-text">Sebuah prisma dengan alas berbentuk segitiga. Panjang alas 8 cm,
+                                tinggi alas 5 cm, dan tinggi prisma 10 cm. Hitunglah volume prisma tersebut!</div>
+                            <ul class="options-list">
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q6" value="A" class="option-radio">
+                                        <span class="option-text">58 cm³</span>
+                                    </label>
+                                </li>
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q6" value="B" class="option-radio">
+                                        <span class="option-text">200 cm³</span>
+                                    </label>
+                                </li>
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q6" value="C" class="option-radio">
+                                        <span class="option-text">400 cm³</span>
+                                    </label>
+                                </li>
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q6" value="D" class="option-radio">
+                                        <span class="option-text">240 cm³</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn8" onclick="showDiscussion(8)">💡 Lihat Pembahasan</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide" id="slide9">
+                <div class="slide-header">
+                    <div class="slide-nav-buttons">
+                        <button class="slide-nav-button" id="prevBtn9">
+                            <i class="fas fa-chevron-left"></i>
+                            Prev
+                        </button>
+                        <button class="slide-nav-button" id="nextBtn9" disabled>
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="slide-title">
+                        <div class="slide-number">9</div>
+                        Soal Latihan Volume 2
+                    </div>
+                </div>
+                
+                <div class="slide-content">
+                    <div class="interaction-container">
+                        <div class="interaction-title">Soal Latihan Volume</div>
+                        
+                        <div class="question-card">
+                            <div class="question-number">Soal 2</div>
+                            <div class="question-text">Budi membuat sebuah kotak penyimpanan berbentuk balok dengan panjang
+                                10 cm, lebar 5 cm, dan tinggi 8 cm. Berapakah volume kotak tersebut?</div>
+                            <ul class="options-list">
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q1" value="A" class="option-radio">
+                                        <span class="option-text">58 cm³</span>
+                                    </label>
+                                </li>
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q1" value="B" class="option-radio">
+                                        <span class="option-text">400 cm³</span>
+                                    </label>
+                                </li>
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q1" value="C" class="option-radio">
+                                        <span class="option-text">340 cm³</span>
+                                    </label>
+                                </li>
+                                <li class="option-item">
+                                    <label class="option-label">
+                                        <input type="radio" name="q1" value="D" class="option-radio">
+                                        <span class="option-text">200 cm³</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                        <button class="discussion-btn" id="discussBtn9" onclick="showDiscussion(9)">💡 Lihat Pembahasan</button>
+                    </div>
+                    
+                    <button class="continue-button" id="continueButton2">
+                        <i class="fas fa-arrow-right"></i> Lanjut ke Uji Kompetensi
+                    </button>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-dot active" data-slide="1"></div>
+                <div class="progress-dot" data-slide="2"></div>
+                <div class="progress-dot" data-slide="3"></div>
+                <div class="progress-dot" data-slide="4"></div>
+                <div class="progress-dot" data-slide="5"></div>
+                <div class="progress-dot" data-slide="6"></div>
+                <div class="progress-dot" data-slide="7"></div>
+                <div class="progress-dot" data-slide="8"></div>
+                <div class="progress-dot" data-slide="9"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <button class="popup-close" id="popupClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="popup-image">
+                <img id="popupImage" src="https://media.giphy.com/media/3o7abAHdYvZdBNnGZq/giphy.gif" alt="Feedback GIF">
+            </div>
+            <h2 class="popup-title" id="popupTitle">Benar!</h2>
+            <p class="popup-message" id="popupMessage">Kamu menjawab dengan tepat!</p>
+            <button class="popup-button" id="popupButton">Lanjut</button>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay1">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(1)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-video discussion-icon"></i>
+                <h3 class="discussion-title">Rangkuman Video</h3>
+            </div>
+            <div class="discussion-body">
+                <p>Dalam video tersebut, kita belajar bahwa luas bangun datar adalah besarnya daerah yang dibatasi oleh sisi-sisi bangun tersebut.</p>
+                <p>Untuk Limas, luas permukaannya adalah jumlah dari luas alas ditambah dengan luas seluruh sisi tegak (segitiga) yang menyelimutinya.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay2">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(2)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-lightbulb discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Konsep</h3>
+            </div>
+            <div class="discussion-body">
+                <p><strong>Kenapa Luas Permukaan?</strong></p>
+                <p>Bayangkan kamu ingin mengecat atap gazebo tersebut. Cat akan melapisi bagian <strong>kulit luar</strong> dari atap.</p>
+                <p>Oleh karena itu, yang kita hitung adalah <strong>Luas Permukaan</strong> (area yang menutupi), bukan Volume (isi di dalamnya) ataupun Keliling (hanya pinggirannya).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay3">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(3)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-calculator discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Luas Alas</h3>
+            </div>
+            <div class="discussion-body">
+                <p>Alas gazebo berbentuk <strong>Persegi</strong>.</p>
+                <p>Rumus luas persegi adalah sisi kali sisi (s × s atau a × a).</p>
+                <p>Diketahui panjang sisi alas (a) = 6 meter.</p>
+                <p><strong>Luas = 6 × 6 = 36 m²</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay4">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(4)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-sync discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Keliling Alas</h3>
+            </div>
+            <div class="discussion-body">
+                <p>Keliling alas persegi adalah jumlah semua sisinya.</p>
+                <p>Karena persegi memiliki 4 sisi yang sama panjang:</p>
+                <p>Keliling = 4 × sisi</p>
+                <p><strong>Keliling = 4 × 6 = 24 m</strong></p>
+                <p>Angka ini penting untuk menghitung luas sisi miring nanti!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay5">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(5)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-shapes discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Sisi Miring</h3>
+            </div>
+            <div class="discussion-body">
+                <p>Sisi miring limas terdiri dari 4 segitiga.</p>
+                <p>Rumus cepat luas seluruh sisi tegak limas persegi:</p>
+                <p>L selimut = 1/2 × Keliling Alas × Tinggi Sisi Miring (s)</p>
+                <p>Diketahui:</p>
+                <ul>
+                    <li>Keliling Alas = 24 m (dari slide sebelumnya)</li>
+                    <li>s = 5 m</li>
+                </ul>
+                <p>L = 1/2 × 24 × 5</p>
+                <p>L = 12 × 5</p>
+                <p><strong>L = 60 m²</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay6">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(6)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-check-double discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Total</h3>
+            </div>
+            <div class="discussion-body">
+                <p>Luas Permukaan Total adalah gabungan Luas Alas dan Luas Selimut (Sisi Miring).</p>
+                <p>L total = L alas + L selimut</p>
+                <p>L total = 36 + 60</p>
+                <p><strong>L total = 96 m²</strong></p>
+                <p>Jadi, total luas atap gazebo adalah 96 meter persegi.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay7">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(7)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-brain discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Refleksi</h3>
+            </div>
+            <div class="discussion-body">
+                <p><strong>Definisi Volume:</strong></p>
+                <p>Volume adalah ukuran seberapa banyak ruang yang bisa ditempati dalam suatu objek tiga dimensi.</p>
+                <p>Pilihan "Jumlah volume bangun ruang" (D) adalah yang paling tepat secara konsep, karena mengacu pada kapasitas atau isi dari bangun tersebut.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay8">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(8)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-pencil-alt discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Soal 1</h3>
+            </div>
+            <div class="discussion-body">
+                <p><strong>Rumus Volume Prisma:</strong> Luas Alas × Tinggi Prisma</p>
+                <p>1. Hitung Luas Alas (Segitiga):</p>
+                <p>L alas = 1/2 × alas × tinggi</p>
+                <p>L alas = 1/2 × 8 × 5 = 20 cm²</p>
+                <br>
+                <p>2. Hitung Volume:</p>
+                <p>V = 20 × 10</p>
+                <p><strong>V = 200 cm³</strong></p>
+                <p><strong>Jawaban: B (200 cm³)</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="discussion-overlay" id="discussionOverlay9">
+        <div class="discussion-content">
+            <button class="discussion-close" onclick="closeDiscussion(9)"><i class="fas fa-times"></i></button>
+            <div class="discussion-header">
+                <i class="fas fa-box-open discussion-icon"></i>
+                <h3 class="discussion-title">Pembahasan Soal 2</h3>
+            </div>
+            <div class="discussion-body">
+                <p><strong>Rumus Volume Balok:</strong> p × l × t</p>
+                <p>Diketahui:</p>
+                <ul>
+                    <li>Panjang (p) = 10 cm</li>
+                    <li>Lebar (l) = 5 cm</li>
+                    <li>Tinggi (t) = 8 cm</li>
+                </ul>
+                <p>V = 10 × 5 × 8</p>
+                <p>V = 50 × 8</p>
+                <p><strong>V = 400 cm³</strong></p>
+                <p><strong>Jawaban: B (400 cm³)</strong></p>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="clickSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjiS2Oy9diMFl2+z6+OZURE" type="audio/wav">
+    </audio>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global functions for Discussion Modal
+        function showDiscussion(slideNum) {
+            document.getElementById('discussionOverlay' + slideNum).classList.add('show');
+            document.getElementById('clickSound').play().catch(e => console.log(e));
+        }
+
+        function closeDiscussion(slideNum) {
+            document.getElementById('discussionOverlay' + slideNum).classList.remove('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // State management
+            const state = {
+                currentSlide: 1,
+                totalSlides: 9, 
+                slideCompleted: [true, false, false, false, false, false, false, false, false], // Slide 1 (video) is auto-completed
+                answers: {
+                    slide2: null,
+                    slide3: null,
+                    slide4: null,
+                    slide5: [null, null, null],
+                    slide6: null,
+                    slide7: null,
+                    slide8: null, 
+                    slide9: null  
+                },
+                accessGranted: false
+            };
+            
+            // DOM elements
+            const slides = document.querySelectorAll('.slide');
+            const progressDots = document.querySelectorAll('.progress-dot');
+            const popupOverlay = document.getElementById('popupOverlay');
+            const popupImage = document.getElementById('popupImage');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupMessage = document.getElementById('popupMessage');
+            const popupButton = document.getElementById('popupButton');
+            const popupClose = document.getElementById('popupClose');
+            const clickSound = document.getElementById('clickSound');
+            const narratorText = document.getElementById('narratorText');
+            const narratorAvatar = document.getElementById('narratorAvatar');
+            const closeBtn = document.getElementById('closeBtn');
+            const continueButton = document.getElementById('continueButton');
+            const continueButton2 = document.getElementById('continueButton2'); 
+            const reflectionFeedback = document.getElementById('reflectionFeedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+            
+            // Access code elements
+            const accessCodeOverlay = document.getElementById('accessCodeOverlay');
+            const accessCodeInput = document.getElementById('accessCodeInput');
+            const accessCodeButton = document.getElementById('accessCodeButton');
+            const accessCodeError = document.getElementById('accessCodeError');
+            
+            // Narrator text for each slide
+            const narratorTexts = [
+                "Tonton video pembelajaran ini untuk memahami konsep dasar luas bangun datar. Klik Next untuk melanjutkan.",
+                "Alas atap berbentuk persegi dengan sisi 6 meter. Tinggi sisi miring (s) = 5 m, yaitu panjang sisi miring dari puncak sampai tepi alas. Kita diminta menghitung luas permukaan atap (luas alas + seluruh sisi miring).",
+                "Karena alasnya persegi, luas = a × a. Masukkan a = 6.",
+                "Luas semua sisi miring bisa dihitung dengan rumus: 1/2 × Keliling alas × s.",
+                "Masukkan K_alas = 24 dan s = 5. Hitung 1/2 × 24 × 5.",
+                "Sekarang jumlahkan: 36 + 60 = ?",
+                "Apa yang dimaksud dengan volume bangun ruang sisi datar? Pilih jawaban yang paling tepat.",
+                "Hitung volume prisma dengan alas berbentuk segitiga. Ingat rumus volume prisma: Luas alas × tinggi prisma.",
+                "Hitung volume balok. Ingat rumus volume balok: panjang × lebar × tinggi."
+            ];
+            
+            // Initialize
+            function init() {
+                setupEventListeners();
+                updateNavigationButtons();
+                // Show discussion button for slide 1 immediately since it's just a video
+                document.getElementById('discussBtn1').style.display = 'block';
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Access code verification
+                accessCodeButton.addEventListener('click', verifyAccessCode);
+                accessCodeInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        verifyAccessCode();
+                    }
+                });
+                
+                // Event listener untuk tombol close
+                closeBtn.addEventListener('click', function() {
+                      window.close();
+                });
+
+                // Event listener untuk tombol lanjut ke uji kompetensi
+                continueButton.addEventListener('click', function() {
+                    playClickSound();
+                    window.location.href = "../06_UjiKompetensi/UjiKompetensi.html";
+                });
+                
+                // Event listener untuk tombol lanjut ke uji kompetensi pada slide 9
+                continueButton2.addEventListener('click', function() {
+                    playClickSound();
+                    window.location.href = "../06_UjiKompetensi/UjiKompetensi.html";
+                });
+
+                // Navigation buttons for each slide
+                for (let i = 1; i <= state.totalSlides; i++) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    const nextBtn = document.getElementById(`nextBtn${i}`);
+                    
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function() {
+                            if (state.accessGranted) {
+                                playClickSound();
+                                goToPrevSlide();
+                            }
+                        });
+                    }
+                    
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function() {
+                            if (state.accessGranted) {
+                                playClickSound();
+                                goToNextSlide();
+                            }
+                        });
+                    }
+                }
+                
+                // Popup button
+                popupButton.addEventListener('click', closePopup);
+                
+                // Popup close button
+                popupClose.addEventListener('click', closePopup);
+                
+                // Answer options for slide 2
+                document.querySelectorAll('#slide2 .answer-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (state.accessGranted) {
+                            playClickSound();
+                            selectAnswer(this, 'slide2');
+                        }
+                    });
+                });
+
+                // Answer options for slide 7 (reflection)
+                document.querySelectorAll('#slide7 .answer-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (state.accessGranted) {
+                            playClickSound();
+                            selectReflectionAnswer(this);
+                        }
+                    });
+                });
+                
+                // Answer options for slide 8 (practice question 1)
+                document.querySelectorAll('#slide8 .option-label').forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (state.accessGranted) {
+                            playClickSound();
+                            selectPracticeAnswer(this, 'slide8', 'B'); // Correct answer is B (200 cm³)
+                        }
+                    });
+                });
+                
+                // Answer options for slide 9 (practice question 2)
+                document.querySelectorAll('#slide9 .option-label').forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (state.accessGranted) {
+                            playClickSound();
+                            selectPracticeAnswer(this, 'slide9', 'B'); // Correct answer is B (400 cm³)
+                        }
+                    });
+                });
+                
+                // Fill blank inputs
+                document.getElementById('slide3Input').addEventListener('input', function() {
+                    if (state.accessGranted) {
+                        checkSlide3Answer();
+                    }
+                });
+                
+                document.getElementById('slide4Input').addEventListener('input', function() {
+                    if (state.accessGranted) {
+                        checkSlide4Answer();
+                    }
+                });
+                
+                document.getElementById('slide5Input1').addEventListener('input', function() {
+                    if (state.accessGranted) {
+                        checkSlide5Answer();
+                    }
+                });
+                
+                document.getElementById('slide5Input2').addEventListener('input', function() {
+                    if (state.accessGranted) {
+                        checkSlide5Answer();
+                    }
+                });
+                
+                document.getElementById('slide5Input3').addEventListener('input', function() {
+                    if (state.accessGranted) {
+                        checkSlide5Answer();
+                    }
+                });
+                
+                document.getElementById('slide6Input').addEventListener('input', function() {
+                    if (state.accessGranted) {
+                        checkSlide6Answer();
+                    }
+                });
+            }
+            
+            // Verify access code
+            function verifyAccessCode() {
+                const code = accessCodeInput.value.trim();
+                
+                if (code === 'matrixjaya') {
+                    state.accessGranted = true;
+                    accessCodeOverlay.classList.add('hidden');
+                    updateSlide();
+                    updateNavigationButtons();
+                    playClickSound();
+                } else {
+                    accessCodeError.classList.add('show');
+                    playClickSound();
+                    
+                    // Shake effect for wrong code
+                    accessCodeInput.classList.add('incorrect');
+                    setTimeout(() => {
+                        accessCodeInput.classList.remove('incorrect');
+                    }, 500);
+                }
+            }
+            
+            // Navigation functions
+            function goToPrevSlide() {
+                if (state.currentSlide > 1) {
+                    state.currentSlide--;
+                    updateSlide();
+                    updateNavigationButtons();
+                }
+            }
+            
+            function goToNextSlide() {
+                // Allow navigation from slide 1 without completion check
+                if (state.currentSlide === 1) {
+                    state.currentSlide++;
+                    updateSlide();
+                    updateNavigationButtons();
+                    return;
+                }
+
+                // For other slides, check completion
+                if (state.currentSlide < state.totalSlides && state.slideCompleted[state.currentSlide - 1]) {
+                    state.currentSlide++;
+                    updateSlide();
+                    updateNavigationButtons();
+                }
+            }
+            
+            // Update slide display
+            function updateSlide() {
+                // Update slides
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active', 'prev');
+                    if (index + 1 === state.currentSlide) {
+                        slide.classList.add('active');
+                    } else if (index + 1 < state.currentSlide) {
+                        slide.classList.add('prev');
+                    }
+                });
+                
+                // Update progress dots
+                progressDots.forEach((dot, index) => {
+                    dot.classList.remove('active', 'completed');
+                    if (index + 1 === state.currentSlide) {
+                        dot.classList.add('active');
+                    } else if (state.slideCompleted[index]) {
+                        dot.classList.add('completed');
+                    }
+                });
+                
+                // Update narrator text and avatar
+                narratorText.textContent = narratorTexts[state.currentSlide - 1];
+                narratorAvatar.classList.add('talking');
+                
+                // Stop talking after 3 seconds
+                setTimeout(() => {
+                    narratorAvatar.classList.remove('talking');
+                }, 3000);
+                
+                // Show/hide continue button based on slide completion
+                if ((state.currentSlide === 7 && state.slideCompleted[6]) || 
+                    (state.currentSlide === 9 && state.slideCompleted[8])) {
+                    if (state.currentSlide === 7) {
+                        continueButton.classList.add('show');
+                        continueButton2.classList.remove('show');
+                    } else if (state.currentSlide === 9) {
+                        continueButton.classList.remove('show');
+                        continueButton2.classList.add('show');
+                    }
+                } else {
+                    continueButton.classList.remove('show');
+                    continueButton2.classList.remove('show');
+                }
+            }
+            
+            // Update navigation buttons for all slides
+            function updateNavigationButtons() {
+                for (let i = 1; i <= state.totalSlides; i++) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    const nextBtn = document.getElementById(`nextBtn${i}`);
+                    
+                    if (prevBtn) {
+                        // Previous button is disabled on the first slide or if access is not granted
+                        prevBtn.disabled = (i === 1) || !state.accessGranted;
+                    }
+                    
+                    if (nextBtn) {
+                        if (i === 1) {
+                            // For the first slide (video), the next button is only disabled if access is not granted
+                            nextBtn.disabled = !state.accessGranted;
+                        } else {
+                            // For all other slides, the next button is disabled if the current slide is not completed OR access is not granted
+                            nextBtn.disabled = !state.slideCompleted[i - 1] || !state.accessGranted;
+                        }
+                    }
+                }
+            }
+            
+            // Answer selection for slide 2
+            function selectAnswer(option, slideId) {
+                // Remove previous selection
+                document.querySelectorAll(`#${slideId} .answer-option`).forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Add selection to clicked option
+                option.classList.add('selected');
+                
+                // Check if answer is correct
+                const isCorrect = option.dataset.answer === 'true';
+                
+                if (isCorrect) {
+                    option.classList.add('correct');
+                    state.slideCompleted[1] = true; // Slide 2 is index 1
+                    showPopup(true, "Benar!", "Luas permukaan atap adalah jawaban yang tepat!");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn2').style.display = 'block';
+                } else {
+                    option.classList.add('incorrect');
+                    showPopup(false, "Coba Lagi", "Bukan itu — fokus pada luas permukaan.");
+                }
+            }
+            
+            // Answer selection for slide 7 (reflection)
+            function selectReflectionAnswer(option) {
+                // Remove previous selection and feedback
+                document.querySelectorAll('#slide7 .answer-option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                reflectionFeedback.classList.remove('show', 'correct', 'incorrect');
+                
+                // Add selection to clicked option
+                option.classList.add('selected');
+                
+                // Check if answer is correct
+                const answer = option.dataset.answer;
+                const isCorrect = answer === 'd';
+                
+                if (isCorrect) {
+                    option.classList.add('correct');
+                    state.slideCompleted[6] = true; // Slide 7 is index 6
+                    showPopup(true, "Jawaban Benar!", "Volume bangun ruang sisi datar adalah volume yang dapat diisi oleh bangun ruang itu sendiri.");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn7').style.display = 'block';
+                    
+                    // Show continue button after slide 7 is completed
+                    setTimeout(() => {
+                        continueButton.classList.add('show');
+                    }, 500);
+                } else {
+                    option.classList.add('incorrect');
+                    feedbackTitle.textContent = "Jawaban Salah";
+                    feedbackText.textContent = "Volume bangun ruang sisi datar adalah volume yang dapat diisi oleh bangun ruang itu sendiri.";
+                    reflectionFeedback.className = 'feedback-message incorrect show';
+                }
+            }
+            
+            // Answer selection for practice questions (slides 8 and 9)
+            function selectPracticeAnswer(option, slideId, correctAnswer) {
+                // Get the radio input within the clicked label
+                const radioInput = option.querySelector('.option-radio');
+                const answer = radioInput.value;
+                const slideNum = parseInt(slideId.replace('slide', ''));
+                
+                // Remove previous selection
+                document.querySelectorAll(`#${slideId} .option-label`).forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Add selection to clicked option
+                option.classList.add('selected');
+                
+                // Check if answer is correct
+                const isCorrect = answer === correctAnswer;
+                
+                if (isCorrect) {
+                    option.classList.add('correct');
+                    state.slideCompleted[slideNum - 1] = true;
+                    showPopup(true, "Benar!", "Kamu menjawab dengan tepat!");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn' + slideNum).style.display = 'block';
+                    
+                    // Show continue button after slide 9 is completed
+                    if (slideId === 'slide9') {
+                        setTimeout(() => {
+                            continueButton2.classList.add('show');
+                        }, 500);
+                    }
+                } else {
+                    option.classList.add('incorrect');
+                    showPopup(false, "Coba Lagi", "Jawabanmu belum tepat. Coba periksa kembali perhitunganmu!");
+                }
+            }
+            
+            // Check answer for slide 3
+            function checkSlide3Answer() {
+                const input = document.getElementById('slide3Input');
+                const answer = input.value.trim();
+                
+                if (answer === '36') {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    state.slideCompleted[2] = true;
+                    showPopup(true, "Benar!", "Luas alas = 6 × 6 = 36 m²");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn3').style.display = 'block';
+                } else if (answer !== '') {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                } else {
+                    input.classList.remove('correct', 'incorrect');
+                }
+            }
+            
+            // Check answer for slide 4
+            function checkSlide4Answer() {
+                const input = document.getElementById('slide4Input');
+                const answer = input.value.trim();
+                
+                if (answer === '24') {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    state.slideCompleted[3] = true;
+                    showPopup(true, "Benar!", "Keliling alas = 4 × 6 = 24 m");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn4').style.display = 'block';
+                } else if (answer !== '') {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                } else {
+                    input.classList.remove('correct', 'incorrect');
+                }
+            }
+            
+            // Check answer for slide 5
+            function checkSlide5Answer() {
+                const input1 = document.getElementById('slide5Input1');
+                const input2 = document.getElementById('slide5Input2');
+                const input3 = document.getElementById('slide5Input3');
+                
+                const answer1 = input1.value.trim();
+                const answer2 = input2.value.trim();
+                const answer3 = input3.value.trim();
+                
+                if (answer1 === '24' && answer2 === '5' && answer3 === '60') {
+                    input1.classList.add('correct');
+                    input2.classList.add('correct');
+                    input3.classList.add('correct');
+                    input1.classList.remove('incorrect');
+                    input2.classList.remove('incorrect');
+                    input3.classList.remove('incorrect');
+                    state.slideCompleted[4] = true;
+                    showPopup(true, "Benar!", "1/2 × 24 × 5 = 60 m²");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn5').style.display = 'block';
+                } else {
+                    // Handle incorrect states for each input individually
+                    [[input1, '24'], [input2, '5'], [input3, '60']].forEach(([input, correctAnswer]) => {
+                        const answer = input.value.trim();
+                        if (answer !== '' && answer !== correctAnswer) {
+                            input.classList.add('incorrect');
+                            input.classList.remove('correct');
+                        } else if (answer === correctAnswer) {
+                            input.classList.add('correct');
+                            input.classList.remove('incorrect');
+                        } else {
+                            input.classList.remove('correct', 'incorrect');
+                        }
+                    });
+                }
+            }
+            
+            // Check answer for slide 6
+            function checkSlide6Answer() {
+                const input = document.getElementById('slide6Input');
+                const answer = input.value.trim();
+                
+                if (answer === '96') {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    state.slideCompleted[5] = true;
+                    showPopup(true, "Luar Biasa!", "Kamu berhasil menghitung luas permukaan atap gazebo dengan benar!");
+                    updateNavigationButtons();
+                    // Show discussion button
+                    document.getElementById('discussBtn6').style.display = 'block';
+                } else if (answer !== '') {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                } else {
+                    input.classList.remove('correct', 'incorrect');
+                }
+            }
+            
+            // Show popup feedback
+            function showPopup(isCorrect, title, message) {
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+                
+                if (isCorrect) {
+                    popupImage.src = "yey.gif";
+                } else {
+                    popupImage.src = "sad.gif";
+                }
+                
+                popupOverlay.classList.add('show');
+            }
+            
+            // Close popup
+            function closePopup() {
+                popupOverlay.classList.remove('show');
+            }
+            
+            // Play click sound
+            function playClickSound() {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => {
+                    console.log("Audio play failed:", e);
+                });
+            }
+            
+            // Initialize app
+            init();
+        });
+    </script>
+</body>
+</html>

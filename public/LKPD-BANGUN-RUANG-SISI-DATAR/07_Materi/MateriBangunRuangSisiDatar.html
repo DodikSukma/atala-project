@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangun Ruang Sisi Datar - Komik Edukasi</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        /* Container utama */
+        .main-container {
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Tombol Close */
+        .close-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: 4px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-decoration: none;
+            color: var(--white);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .close-button::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                        linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 15px 15px;
+            background-position: 0 0, 7.5px 7.5px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+        
+        .close-button:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--dark-red), #8b0000);
+        }
+        
+        .close-button:active {
+            transform: scale(0.95) rotate(0deg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-button i {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .close-tooltip {
+            position: absolute;
+            top: 70px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-tooltip::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--dark-blue);
+        }
+        
+        .close-button:hover .close-tooltip {
+            opacity: 1;
+            visibility: visible;
+            top: 75px;
+        }
+        
+        /* Header */
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.9), rgba(255, 78, 80, 0.9));
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--comic-yellow);
+        }
+        
+        /* Efek ledakan komik di header */
+        .header-section::before {
+            content: "BAM!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 3px 3px 0 #000;
+            opacity: 0.8;
+        }
+        
+        .main-title {
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .subtitle {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.5rem;
+            color: var(--white);
+            font-weight: 700;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        /* Comic Card Style */
+        .comic-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 4px solid var(--dark-blue);
+            position: relative;
+            overflow: hidden;
+            transform: rotate(-0.5deg);
+            transition: all 0.3s ease;
+        }
+        
+        .comic-card:nth-child(even) {
+            transform: rotate(0.5deg);
+        }
+        
+        .comic-card:hover {
+            transform: translateY(-5px) rotate(0);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .comic-card::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                        linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.2;
+        }
+        
+        .comic-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .comic-title::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            border-radius: 2px;
+        }
+        
+         /* =======================================================
+            SPECIAL EMBED SECTION STYLES - TIDAK MENGANGGU STYLE LAIN
+            ======================================================= */
+
+            /* Container khusus untuk embed section */
+            .embed-section-container {
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+                border-radius: 25px;
+                padding: 2rem;
+                margin: 2rem 0;
+                border: 3px dashed var(--comic-yellow);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .embed-section-container::before {
+                position: absolute;
+                top: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--primary-red);
+                color: var(--white);
+                padding: 0.5rem 1.5rem;
+                border-radius: 20px;
+                font-family: 'Bangers', cursive;
+                font-size: 1.2rem;
+                font-weight: 700;
+                border: 3px solid var(--dark-blue);
+                box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+                z-index: 10;
+            }
+
+            /* Card khusus untuk embed */
+            .embed-comic-card {
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+                border-radius: 20px;
+                padding: 2rem;
+                height: 100%;
+                position: relative;
+                border: 5px solid var(--dark-blue);
+                box-shadow: 
+                    0 0 0 2px var(--comic-yellow),
+                    8px 8px 0 rgba(0, 0, 0, 0.3),
+                    inset 0 0 20px rgba(255, 78, 80, 0.1);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .embed-comic-card::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
+                animation: rotate 20s linear infinite;
+                z-index: -1;
+            }
+
+            @keyframes rotate {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+
+            .embed-comic-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                box-shadow: 
+                    0 0 0 2px var(--primary-red),
+                    12px 12px 0 rgba(0, 0, 0, 0.4),
+                    inset 0 0 30px rgba(255, 78, 80, 0.2);
+            }
+
+            /* Title untuk embed card */
+            .embed-comic-card h4 {
+                font-family: 'Bangers', cursive;
+                font-size: 2rem;
+                color: var(--primary-blue);
+                margin-bottom: 1.5rem;
+                text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+                position: relative;
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+            }
+
+            .embed-comic-card h4::after {
+                content: "";
+                position: absolute;
+                bottom: -5px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80%;
+                height: 4px;
+                background: linear-gradient(90deg, transparent, var(--comic-yellow), transparent);
+                border-radius: 2px;
+            }
+
+            /* Container khusus untuk embed image */
+            .embed-img-wrapper {
+                position: relative;
+                margin: 1.5rem 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 350px;
+                background: linear-gradient(135deg, 
+                    rgba(30, 60, 114, 0.05), 
+                    rgba(255, 78, 80, 0.05), 
+                    rgba(249, 212, 35, 0.05));
+                border-radius: 15px;
+                padding: 1rem;
+                border: 2px solid rgba(30, 60, 114, 0.2);
+                overflow: hidden;
+            }
+
+            .embed-img-wrapper::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, 
+                    transparent 30%, 
+                    rgba(255, 255, 255, 0.2) 50%, 
+                    transparent 70%);
+                transform: translateX(-100%);
+                transition: transform 0.8s ease;
+                border-radius: 15px;
+            }
+
+            .embed-img-wrapper:hover::before {
+                transform: translateX(100%);
+            }
+
+            /* Style khusus untuk embed SVG */
+            .embed-svg {
+                width: 100%;
+                max-width: 450px;
+                height: 320px;
+                border: 4px solid var(--dark-blue);
+                border-radius: 15px;
+                box-shadow: 
+                    0 0 0 2px var(--comic-yellow),
+                    6px 6px 0 rgba(0, 0, 0, 0.3);
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                background: var(--white);
+                position: relative;
+                z-index: 2;
+            }
+
+            .embed-svg:hover {
+                transform: scale(1.05) rotate(1deg);
+                box-shadow: 
+                    0 0 0 2px var(--primary-red),
+                    10px 10px 0 rgba(0, 0, 0, 0.4);
+                border-color: var(--primary-red);
+            }
+
+            /* Caption khusus untuk embed */
+            .embed-caption {
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, var(--comic-yellow), var(--light-orange));
+                color: var(--dark-blue);
+                padding: 0.8rem 2rem;
+                border-radius: 30px;
+                font-family: 'Bangers', cursive;
+                font-size: 1.3rem;
+                font-weight: 700;
+                box-shadow: 
+                    0 0 0 3px var(--dark-blue),
+                    4px 4px 0 rgba(0, 0, 0, 0.3);
+                white-space: nowrap;
+                z-index: 5;
+                animation: bounce 2s ease-in-out infinite;
+            }
+
+            @keyframes bounce {
+                0%, 100% { transform: translateX(-50%) translateY(0); }
+                50% { transform: translateX(-50%) translateY(-5px); }
+            }
+
+            /* Deskripsi text untuk embed */
+            .embed-description {
+                text-align: center;
+                font-family: 'Comic Neue', cursive;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--dark-blue);
+                margin-top: 2.5rem;
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: 10px;
+                border: 2px dashed var(--primary-blue);
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Efek khusus untuk row embed */
+            .embed-row {
+                margin: 0;
+                gap: 2rem;
+            }
+
+            .embed-row > .col-md-6 {
+                padding: 0;
+                margin-bottom: 2rem;
+            }
+
+            /* Badge animasi untuk setiap card */
+            .embed-badge {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: var(--primary-red);
+                color: var(--white);
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Bangers', cursive;
+                font-size: 1.2rem;
+                font-weight: 700;
+                border: 3px solid var(--dark-blue);
+                box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+                animation: pulse 2s ease-in-out infinite;
+                z-index: 10;
+            }
+
+            /* Responsive untuk embed section */
+            @media (max-width: 992px) {
+                .embed-svg {
+                    max-width: 380px;
+                    height: 280px;
+                }
+                
+                .embed-img-wrapper {
+                    min-height: 300px;
+                }
+                
+                .embed-caption {
+                    font-size: 1.1rem;
+                    padding: 0.6rem 1.5rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .embed-section-container {
+                    padding: 1.5rem;
+                    margin: 1.5rem 0;
+                }
+                
+                .embed-comic-card {
+                    padding: 1.5rem;
+                }
+                
+                .embed-comic-card h4 {
+                    font-size: 1.6rem;
+                }
+                
+                .embed-svg {
+                    max-width: 320px;
+                    height: 240px;
+                }
+                
+                .embed-img-wrapper {
+                    min-height: 260px;
+                    padding: 0.5rem;
+                }
+                
+                .embed-caption {
+                    font-size: 1rem;
+                    padding: 0.5rem 1rem;
+                    bottom: -15px;
+                }
+                
+                .embed-description {
+                    font-size: 1rem;
+                    margin-top: 2rem;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .embed-section-container::before {
+                    font-size: 1rem;
+                    padding: 0.4rem 1rem;
+                }
+                
+                .embed-comic-card {
+                    padding: 1rem;
+                    margin-bottom: 1.5rem;
+                }
+                
+                .embed-comic-card h4 {
+                    font-size: 1.4rem;
+                }
+                
+                .embed-svg {
+                    max-width: 280px;
+                    height: 200px;
+                }
+                
+                .embed-img-wrapper {
+                    min-height: 220px;
+                }
+                
+                .embed-caption {
+                    font-size: 0.9rem;
+                    padding: 0.4rem 0.8rem;
+                }
+                
+                .embed-description {
+                    font-size: 0.9rem;
+                    padding: 0.8rem;
+                }
+                
+                .embed-badge {
+                    width: 35px;
+                    height: 35px;
+                    font-size: 1rem;
+                }
+            }
+
+            /* Loading animation untuk embed */
+            .embed-loading {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: none;
+            }
+
+            .embed-loading::before {
+                content: "⚡";
+                font-size: 3rem;
+                color: var(--comic-yellow);
+                animation: lightning 1s ease-in-out infinite;
+            }
+
+            @keyframes lightning {
+                0%, 100% { opacity: 0.3; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.2); }
+            }
+
+            /* Efek glow untuk embed saat hover */
+            .embed-glow-effect {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 15px;
+                opacity: 0;
+                transition: opacity 0.4s ease;
+                pointer-events: none;
+                background: radial-gradient(circle at center, 
+                    rgba(255, 78, 80, 0.3) 0%, 
+                    transparent 70%);
+                z-index: 1;
+            }
+
+            .embed-img-wrapper:hover .embed-glow-effect {
+                opacity: 1;
+            }
+
+        /* Navigasi Tab */
+        .comic-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .comic-nav-item {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: var(--white);
+            border: 3px solid var(--dark-blue);
+            border-radius: 15px;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            transform: rotate(-2deg);
+        }
+        
+        .comic-nav-item:nth-child(even) {
+            transform: rotate(2deg);
+        }
+        
+        .comic-nav-item:hover {
+            transform: translateY(-5px) rotate(0);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--light-blue), var(--primary-red));
+        }
+        
+        .comic-nav-item.active {
+            background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+            transform: translateY(0) rotate(0);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .comic-nav-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .comic-nav-item:hover::before {
+            left: 100%;
+        }
+        
+        /* Comic Section */
+        .comic-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .comic-section.active {
+            display: block;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 0.5rem;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comic-progress {
+            height: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comic-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            width: 33.33%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .comic-progress-bar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        /* Comic Table */
+        .comic-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border: 3px solid var(--dark-blue);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .comic-table th {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: var(--white);
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            padding: 1rem;
+            text-align: center;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .comic-table td {
+            padding: 0.8rem 1rem;
+            text-align: center;
+            border-top: 2px solid var(--dark-blue);
+            background: rgba(255, 255, 255, 0.7);
+            font-weight: 700;
+        }
+        
+        .comic-table tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Comic Image */
+        .comic-img-container {
+            position: relative;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        .comic-img {
+            max-width: 100%;
+            height: auto;
+            border: 4px solid var(--dark-blue);
+            border-radius: 10px;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .comic-img:hover {
+            transform: translateY(-5px);
+            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .comic-img-caption {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--comic-yellow);
+            color: var(--dark-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+        }
+        
+        /* Comic Form */
+        .comic-formula {
+            background: rgba(255, 255, 255, 0.8);
+            border: 3px solid var(--dark-blue);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .comic-formula h4 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .comic-formula p {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Comic Input */
+        .comic-input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 3px solid var(--dark-blue);
+            border-radius: 10px;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .comic-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(255, 78, 80, 0.3);
+        }
+        
+        .comic-input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            color: var(--dark-blue);
+        }
+        
+        /* Comic Button */
+        .comic-btn {
+            background: linear-gradient(135deg, var(--primary-red), var(--light-red));
+            color: var(--white);
+            border: 3px solid var(--dark-blue);
+            border-radius: 15px;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Bangers', cursive;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            width: 100%;
+        }
+        
+        .comic-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--light-red), var(--primary-orange));
+        }
+        
+        .comic-btn:active {
+            transform: translateY(0);
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .comic-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .comic-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Comic Result */
+        .comic-result {
+            background: linear-gradient(135deg, var(--comic-yellow), var(--light-orange));
+            border: 3px solid var(--dark-blue);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            position: relative;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: popIn 0.5s ease;
+        }
+        
+        .comic-result::before {
+            content: "BOOM!";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-red);
+            color: var(--white);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid var(--dark-blue);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Accordion */
+        .accordion-item {
+            background: transparent;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        
+        .accordion-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 15px;
+            border: 3px solid var(--dark-blue);
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .accordion-header:hover {
+            transform: translateY(-3px);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, var(--light-blue), var(--primary-red));
+        }
+        
+        .accordion-header::after {
+            content: "+";
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion-header.active::after {
+            transform: translateY(-50%) rotate(45deg);
+        }
+        
+        .accordion-body {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 0 0 15px 15px;
+            border: 3px solid var(--dark-blue);
+            border-top: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Flip Card */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 300px;
+            perspective: 1000px;
+            margin: 1.5rem 0;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .flip-card-front {
+            background-color: var(--white);
+            border: 3px solid var(--dark-blue);
+        }
+        
+        .flip-card-back {
+            background-color: var(--white);
+            transform: rotateY(180deg);
+            border: 3px solid var(--dark-blue);
+        }
+        
+        /* Ikon berterbangan */
+        .floating-icon {
+            position: fixed;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            opacity: 0.7;
+            animation: floatAround 15s linear infinite;
+            z-index: 0;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .floating-icon:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+        
+        .floating-icon:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .floating-icon:nth-child(3) {
+            bottom: 30%;
+            left: 5%;
+            animation-duration: 18s;
+            animation-delay: 4s;
+        }
+        
+        .floating-icon:nth-child(4) {
+            bottom: 20%;
+            right: 10%;
+            animation-duration: 22s;
+            animation-delay: 6s;
+        }
+        
+        .floating-icon:nth-child(5) {
+            top: 50%;
+            left: 50%;
+            animation-duration: 30s;
+            animation-delay: 8s;
+        }
+        
+        .floating-icon:nth-child(6) {
+            top: 70%;
+            left: 80%;
+            animation-duration: 17s;
+            animation-delay: 10s;
+        }
+        
+        /* Animasi */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes floatAround {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, -50px) rotate(90deg); }
+            50% { transform: translate(-50px, -100px) rotate(180deg); }
+            75% { transform: translate(-100px, 50px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .close-button {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .close-button i {
+                font-size: 1.2rem;
+            }
+            
+            .comic-nav-item {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .comic-title {
+                font-size: 1.5rem;
+            }
+            
+            .flip-card {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .close-button {
+                width: 45px;
+                height: 45px;
+                top: 15px;
+                right: 15px;
+            }
+            
+            .close-button i {
+                font-size: 1rem;
+            }
+            
+            .close-tooltip {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .comic-nav-item {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.8rem;
+            }
+            
+            .comic-title {
+                font-size: 1.3rem;
+            }
+            
+            .flip-card {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ikon berterbangan -->
+    <i class="fas fa-shapes floating-icon"></i>
+    <i class="fas fa-cube floating-icon"></i>
+    <i class="fas fa-dice floating-icon"></i>
+    <i class="fas fa-square floating-icon"></i>
+    <i class="fas fa-star floating-icon"></i>
+    <i class="fas fa-asterisk floating-icon"></i>
+    
+    <!-- Tombol Close -->
+    <div class="close-button" onclick="window.close()">
+        <i class="fas fa-times"></i>
+        <div class="close-tooltip">Tutup Halaman</div>
+    </div>
+    
+    <!-- Container Utama -->
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header-section">
+            <h1 class="main-title">Bangun Ruang Sisi Datar</h1>
+        </header>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="comic-progress">
+                <div class="comic-progress-bar" id="progressBar">1/3</div>
+            </div>
+        </div>
+        
+        <!-- Navigasi -->
+        <nav class="comic-nav">
+            <div class="comic-nav-item active" onclick="showSection(0)">
+                <i class="fas fa-cube me-2"></i>Mengenal Bangun Ruang
+            </div>
+            <div class="comic-nav-item" onclick="showSection(1)">
+                <i class="fas fa-calculator me-2"></i>Hitung Volume
+            </div>
+            <div class="comic-nav-item" onclick="showSection(2)">
+                <i class="fas fa-ruler-combined me-2"></i>Hitung Luas Permukaan
+            </div>
+        </nav>
+        
+        <!-- Section 1: Mengenal Bangun Ruang Sisi Datar -->
+        <section class="comic-section active" id="section-0">
+            <div class="comic-card">
+                <h2 class="comic-title">Mengenal Bangun Ruang Sisi Datar</h2>
+                
+                <!-- Definisi -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Definisi Bangun Ruang Sisi Datar</h3>
+                    <p>Bangun ruang sisi datar adalah bangun ruang yang semua sisinya berbentuk bangun datar (segi-n). Bangun ruang ini memiliki volume dan luas permukaan yang dapat dihitung.</p>
+                </div>
+                
+                <!-- Ciri Umum -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Ciri Umum Bangun Ruang Sisi Datar</h3>
+                    <ul>
+                        <li>Memiliki ruang (volume)</li>
+                        <li>Memiliki sisi-sisi yang berbentuk bangun datar</li>
+                        <li>Memiliki rusuk (pertemuan dua sisi)</li>
+                        <li>Memiliki titik sudut (pertemuan tiga rusuk atau lebih)</li>
+                        <li>Memiliki bidang alas dan bidang atap</li>
+                    </ul>
+                </div>
+                
+                <!-- Elemen Bangun Ruang -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Elemen-Elemen Bangun Ruang</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Sisi:</strong> Bidang yang membatasi bangun ruang</li>
+                                <li><strong>Rusuk:</strong> Garis pertemuan antara dua sisi</li>
+                                <li><strong>Titik Sudut:</strong> Titik pertemuan antara tiga rusuk atau lebih</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li><strong>Bidang Alas:</strong> Sisi yang menjadi dasar bangun ruang</li>
+                                <li><strong>Bidang Tegak:</strong> Sisi yang berdiri tegak lurus terhadap alas</li>
+                                <li><strong>Sisi Atas:</strong> Sisi yang berada di puncak bangun ruang</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contoh Benda Sehari-hari -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Contoh Benda Sehari-hari</h3>
+                    <div class="row">
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-dice fa-3x mb-2" style="color: var(--primary-blue);"></i>
+                                <p>Kubus (Dadu)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-box fa-3x mb-2" style="color: var(--primary-red);"></i>
+                                <p>Balok (Kardus)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-mountain fa-3x mb-2" style="color: var(--primary-orange);"></i>
+                                <p>Prisma (Atap Rumah)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-landmark fa-3x mb-2" style="color: var(--primary-green);"></i>
+                                <p>Limas (Piramida)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabel Unsur-unsur -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Tabel Unsur-unsur Bangun Ruang</h3>
+                    <div class="table-responsive">
+                        <table class="comic-table">
+                            <thead>
+                                <tr>
+                                    <th>Bangun Ruang</th>
+                                    <th>Banyak Sisi</th>
+                                    <th>Banyak Rusuk</th>
+                                    <th>Banyak Titik Sudut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kubus</td>
+                                    <td>6</td>
+                                    <td>12</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>Balok</td>
+                                    <td>6</td>
+                                    <td>12</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>Prisma Segitiga</td>
+                                    <td>5</td>
+                                    <td>9</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>Limas Segiempat</td>
+                                    <td>5</td>
+                                    <td>8</td>
+                                    <td>5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Visual Asset -->
+                <h3 class="comic-title">Visual Bangun Ruang</h3>
+                <!-- Embed Section dengan Style Khusus -->
+                <div class="embed-section-container">
+                    <div class="embed-row row">
+                        <div class="col-md-6 col-lg-5 mb-4 ml-3">
+                            <div class="embed-comic-card">
+                                <div class="embed-badge">1</div>
+                                <h4 class="text-center">Kubus</h4>
+                                <div class="embed-img-wrapper">
+                                    <div class="embed-glow-effect"></div>
+                                    <embed src="https://bangun-ruang.digowave.com/kubus" alt="Kubus" class="embed-svg"
+                                        type="image/svg+xml">
+                                    <div class="embed-loading"></div>
+                                    <div class="embed-caption">6 Sisi Persegi</div>
+                                </div>
+                                <p class="embed-description">Kubus memiliki 6 sisi berbentuk persegi yang sama besar.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-5 mb-4">
+                            <div class="embed-comic-card">
+                                <div class="embed-badge">2</div>
+                                <h4 class="text-center">Balok</h4>
+                                <div class="embed-img-wrapper">
+                                    <div class="embed-glow-effect"></div>
+                                    <embed src="https://bangun-ruang.digowave.com/balok" alt="Balok" class="embed-svg"
+                                        type="image/svg+xml">
+                                    <div class="embed-loading"></div>
+                                    <div class="embed-caption">6 Sisi Persegi Panjang</div>
+                                </div>
+                                <p class="embed-description">Balok memiliki 6 sisi berbentuk persegi panjang.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="embed-row row">
+                        <div class="col-md-6 col-lg-5 mb-4">
+                            <div class="embed-comic-card">
+                                <div class="embed-badge">3</div>
+                                <h4 class="text-center">Prisma Segitiga</h4>
+                                <div class="embed-img-wrapper">
+                                    <div class="embed-glow-effect"></div>
+                                    <embed src="https://bangun-ruang.digowave.com/prisma-segitiga" alt="Prisma Segitiga"
+                                        class="embed-svg" type="image/svg+xml">
+                                    <div class="embed-loading"></div>
+                                    <div class="embed-caption">5 Sisi</div>
+                                </div>
+                                <p class="embed-description">Prisma segitiga memiliki 2 sisi segitiga dan 3 sisi persegi panjang.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-5 mb-4">
+                            <div class="embed-comic-card">
+                                <div class="embed-badge">4</div>
+                                <h4 class="text-center">Limas</h4>
+                                <div class="embed-img-wrapper">
+                                    <div class="embed-glow-effect"></div>
+                                    <embed src="https://bangun-ruang.digowave.com/limas" alt="Limas" class="embed-svg"
+                                        type="image/svg+xml">
+                                    <div class="embed-loading"></div>
+                                    <div class="embed-caption">5 Sisi</div>
+                                </div>
+                                <p class="embed-description">Limas memiliki 1 sisi alas dan beberapa sisi segitiga.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Jaring-jaring -->
+                <h3 class="comic-title">Jaring-jaring Bangun Ruang</h3>
+                
+                <!-- Accordion untuk Jaring-jaring -->
+                <div class="accordion" id="jaringJaringAccordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-bs-toggle="collapse" data-bs-target="#jaringKubus">
+                            <i class="fas fa-cube me-2"></i>Jaring-jaring Kubus
+                        </div>
+                        <div class="collapse" id="jaringKubus" data-bs-parent="#jaringJaringAccordion">
+                            <div class="accordion-body">
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front">
+                                            <img src="kubus.png" alt="Kubus" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                        <div class="flip-card-back">
+                                            <img src="kubus.png" alt="Jaring-jaring Kubus" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Jaring-jaring kubus terdiri dari 6 persegi yang tersusun dalam bentuk salib.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-bs-toggle="collapse" data-bs-target="#jaringBalok">
+                            <i class="fas fa-box me-2"></i>Jaring-jaring Balok
+                        </div>
+                        <div class="collapse" id="jaringBalok" data-bs-parent="#jaringJaringAccordion">
+                            <div class="accordion-body">
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front">
+                                            <img src="balok.png" alt="Balok" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                        <div class="flip-card-back">
+                                            <img src="balok.png" alt="Jaring-jaring Balok" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Jaring-jaring balok terdiri dari 6 persegi panjang yang tersusun dalam bentuk salib.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-bs-toggle="collapse" data-bs-target="#jaringPrisma">
+                            <i class="fas fa-mountain me-2"></i>Jaring-jaring Prisma Segitiga
+                        </div>
+                        <div class="collapse" id="jaringPrisma" data-bs-parent="#jaringJaringAccordion">
+                            <div class="accordion-body">
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front">
+                                            <img src="prisma.png" alt="Prisma Segitiga" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                        <div class="flip-card-back">
+                                            <img src="prisma.png" alt="Jaring-jaring Prisma Segitiga" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Jaring-jaring prisma segitiga terdiri dari 2 segitiga dan 3 persegi panjang.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-bs-toggle="collapse" data-bs-target="#jaringLimas">
+                            <i class="fas fa-landmark me-2"></i>Jaring-jaring Limas
+                        </div>
+                        <div class="collapse" id="jaringLimas" data-bs-parent="#jaringJaringAccordion">
+                            <div class="accordion-body">
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front">
+                                            <img src="limas.png" alt="Limas" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                        <div class="flip-card-back">
+                                            <img src="limas.png" alt="Jaring-jaring Limas" style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Jaring-jaring limas segiempat terdiri dari 1 persegi dan 4 segitiga.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 2: Menghitung Volume -->
+        <section class="comic-section" id="section-1">
+            <div class="comic-card">
+                <h2 class="comic-title">Menghitung Volume Bangun Ruang Sisi Datar</h2>
+                
+                <!-- Rumus Volume -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Rumus Volume</h3>
+                    
+                    <div class="comic-formula">
+                        <h4>Kubus</h4>
+                        <p>V = s³</p>
+                        <p>Dimana s = panjang sisi kubus</p>
+                    </div>
+                    
+                    <div class="comic-formula">
+                        <h4>Balok</h4>
+                        <p>V = p × l × t</p>
+                        <p>Dimana p = panjang, l = lebar, t = tinggi</p>
+                    </div>
+                    
+                    <div class="comic-formula">
+                        <h4>Prisma Segitiga</h4>
+                        <p>V = ½ × a × t_alas × T</p>
+                        <p>Dimana a = alas segitiga, t_alas = tinggi segitiga, T = tinggi prisma</p>
+                    </div>
+                    
+                    <div class="comic-formula">
+                        <h4>Limas</h4>
+                        <p>V = ⅓ × LA × T</p>
+                        <p>Dimana LA = luas alas, T = tinggi limas</p>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Volume Kubus -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Volume Kubus</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="sisiKubus" class="comic-input-label">Panjang Sisi (s)</label>
+                            <input type="number" id="sisiKubus" class="comic-input" placeholder="Masukkan panjang sisi">
+                            <button class="comic-btn" onclick="hitungVolumeKubus()">
+                                <i class="fas fa-calculator me-2"></i>Hitung Volume!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilVolumeKubus" class="comic-result">
+                                Volume = <span id="nilaiVolumeKubus">0</span> satuan³
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Volume Balok -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Volume Balok</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="panjangBalok" class="comic-input-label">Panjang (p)</label>
+                            <input type="number" id="panjangBalok" class="comic-input" placeholder="Masukkan panjang">
+                            
+                            <label for="lebarBalok" class="comic-input-label">Lebar (l)</label>
+                            <input type="number" id="lebarBalok" class="comic-input" placeholder="Masukkan lebar">
+                            
+                            <label for="tinggiBalok" class="comic-input-label">Tinggi (t)</label>
+                            <input type="number" id="tinggiBalok" class="comic-input" placeholder="Masukkan tinggi">
+                            
+                            <button class="comic-btn" onclick="hitungVolumeBalok()">
+                                <i class="fas fa-calculator me-2"></i>Hitung Volume!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilVolumeBalok" class="comic-result">
+                                Volume = <span id="nilaiVolumeBalok">0</span> satuan³
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Volume Prisma Segitiga -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Volume Prisma Segitiga</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="alasPrisma" class="comic-input-label">Alas Segitiga (a)</label>
+                            <input type="number" id="alasPrisma" class="comic-input" placeholder="Masukkan alas segitiga">
+                            
+                            <label for="tinggiAlasPrisma" class="comic-input-label">Tinggi Segitiga (t_alas)</label>
+                            <input type="number" id="tinggiAlasPrisma" class="comic-input" placeholder="Masukkan tinggi segitiga">
+                            
+                            <label for="tinggiPrisma" class="comic-input-label">Tinggi Prisma (T)</label>
+                            <input type="number" id="tinggiPrisma" class="comic-input" placeholder="Masukkan tinggi prisma">
+                            
+                            <button class="comic-btn" onclick="hitungVolumePrisma()">
+                                <i class="fas fa-calculator me-2"></i>Hitung Volume!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilVolumePrisma" class="comic-result">
+                                Volume = <span id="nilaiVolumePrisma">0</span> satuan³
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Volume Limas -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Volume Limas</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="luasAlasLimas" class="comic-input-label">Luas Alas (LA)</label>
+                            <input type="number" id="luasAlasLimas" class="comic-input" placeholder="Masukkan luas alas">
+                            
+                            <label for="tinggiLimas" class="comic-input-label">Tinggi (T)</label>
+                            <input type="number" id="tinggiLimas" class="comic-input" placeholder="Masukkan tinggi">
+                            
+                            <button class="comic-btn" onclick="hitungVolumeLimas()">
+                                <i class="fas fa-calculator me-2"></i>Hitung Volume!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilVolumeLimas" class="comic-result">
+                                Volume = <span id="nilaiVolumeLimas">0</span> satuan³
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 3: Menghitung Luas Permukaan -->
+        <section class="comic-section" id="section-2">
+            <div class="comic-card">
+                <h2 class="comic-title">Menghitung Luas Permukaan Bangun Ruang Sisi Datar</h2>
+                
+                <!-- Rumus Luas Permukaan -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Rumus Luas Permukaan</h3>
+                    
+                    <div class="comic-formula">
+                        <h4>Kubus</h4>
+                        <p>L = 6s²</p>
+                        <p>Dimana s = panjang sisi kubus</p>
+                    </div>
+                    
+                    <div class="comic-formula">
+                        <h4>Balok</h4>
+                        <p>L = 2(pl + pt + lt)</p>
+                        <p>Dimana p = panjang, l = lebar, t = tinggi</p>
+                    </div>
+                    
+                    <div class="comic-formula">
+                        <h4>Prisma Segitiga</h4>
+                        <p>L = Luas Alas + Luas Sisi Tegak + Luas Sisi Atas</p>
+                        <p>L = (2 × Luas Segitiga) + (Keliling Alas × Tinggi Prisma)</p>
+                    </div>
+                    
+                    <div class="comic-formula">
+                        <h4>Limas</h4>
+                        <p>L = Luas Alas + Σ Luas Sisi Tegak</p>
+                        <p>L = Luas Alas + (Luas Sisi 1 + Luas Sisi 2 + ...)</p>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Luas Permukaan Kubus -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Luas Permukaan Kubus</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="sisiKubusLP" class="comic-input-label">Panjang Sisi (s)</label>
+                            <input type="number" id="sisiKubusLP" class="comic-input" placeholder="Masukkan panjang sisi">
+                            <button class="comic-btn" onclick="hitungLuasPermukaanKubus()">
+                                <i class="fas fa-ruler-combined me-2"></i>Hitung Luas Permukaan!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilLuasKubus" class="comic-result">
+                                Luas Permukaan = <span id="nilaiLuasKubus">0</span> satuan²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Luas Permukaan Balok -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Luas Permukaan Balok</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="panjangBalokLP" class="comic-input-label">Panjang (p)</label>
+                            <input type="number" id="panjangBalokLP" class="comic-input" placeholder="Masukkan panjang">
+                            
+                            <label for="lebarBalokLP" class="comic-input-label">Lebar (l)</label>
+                            <input type="number" id="lebarBalokLP" class="comic-input" placeholder="Masukkan lebar">
+                            
+                            <label for="tinggiBalokLP" class="comic-input-label">Tinggi (t)</label>
+                            <input type="number" id="tinggiBalokLP" class="comic-input" placeholder="Masukkan tinggi">
+                            
+                            <button class="comic-btn" onclick="hitungLuasPermukaanBalok()">
+                                <i class="fas fa-ruler-combined me-2"></i>Hitung Luas Permukaan!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilLuasBalok" class="comic-result">
+                                Luas Permukaan = <span id="nilaiLuasBalok">0</span> satuan²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Luas Permukaan Prisma Segitiga -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Luas Permukaan Prisma Segitiga</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="alasPrismaLP" class="comic-input-label">Alas Segitiga (a)</label>
+                            <input type="number" id="alasPrismaLP" class="comic-input" placeholder="Masukkan alas segitiga">
+                            
+                            <label for="tinggiAlasPrismaLP" class="comic-input-label">Tinggi Segitiga (t_alas)</label>
+                            <input type="number" id="tinggiAlasPrismaLP" class="comic-input" placeholder="Masukkan tinggi segitiga">
+                            
+                            <label for="sisi1PrismaLP" class="comic-input-label">Sisi Miring 1</label>
+                            <input type="number" id="sisi1PrismaLP" class="comic-input" placeholder="Masukkan sisi miring 1">
+                            
+                            <label for="sisi2PrismaLP" class="comic-input-label">Sisi Miring 2</label>
+                            <input type="number" id="sisi2PrismaLP" class="comic-input" placeholder="Masukkan sisi miring 2">
+                            
+                            <label for="tinggiPrismaLP" class="comic-input-label">Tinggi Prisma (T)</label>
+                            <input type="number" id="tinggiPrismaLP" class="comic-input" placeholder="Masukkan tinggi prisma">
+                            
+                            <button class="comic-btn" onclick="hitungLuasPermukaanPrisma()">
+                                <i class="fas fa-ruler-combined me-2"></i>Hitung Luas Permukaan!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilLuasPrisma" class="comic-result">
+                                Luas Permukaan = <span id="nilaiLuasPrisma">0</span> satuan²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulasi Luas Permukaan Limas -->
+                <div class="comic-card">
+                    <h3 class="comic-title">Simulasi Luas Permukaan Limas</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="luasAlasLimasLP" class="comic-input-label">Luas Alas</label>
+                            <input type="number" id="luasAlasLimasLP" class="comic-input" placeholder="Masukkan luas alas">
+                            
+                            <label for="luasSisi1LimasLP" class="comic-input-label">Luas Sisi Tegak 1</label>
+                            <input type="number" id="luasSisi1LimasLP" class="comic-input" placeholder="Masukkan luas sisi tegak 1">
+                            
+                            <label for="luasSisi2LimasLP" class="comic-input-label">Luas Sisi Tegak 2</label>
+                            <input type="number" id="luasSisi2LimasLP" class="comic-input" placeholder="Masukkan luas sisi tegak 2">
+                            
+                            <label for="luasSisi3LimasLP" class="comic-input-label">Luas Sisi Tegak 3</label>
+                            <input type="number" id="luasSisi3LimasLP" class="comic-input" placeholder="Masukkan luas sisi tegak 3">
+                            
+                            <label for="luasSisi4LimasLP" class="comic-input-label">Luas Sisi Tegak 4</label>
+                            <input type="number" id="luasSisi4LimasLP" class="comic-input" placeholder="Masukkan luas sisi tegak 4">
+                            
+                            <button class="comic-btn" onclick="hitungLuasPermukaanLimas()">
+                                <i class="fas fa-ruler-combined me-2"></i>Hitung Luas Permukaan!
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="hasilLuasLimas" class="comic-result">
+                                Luas Permukaan = <span id="nilaiLuasLimas">0</span> satuan²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript Kustom -->
+    <script>
+        // Fungsi untuk menampilkan section
+        function showSection(index) {
+            // Sembunyikan semua section
+            const sections = document.querySelectorAll('.comic-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Tampilkan section yang dipilih
+            document.getElementById(`section-${index}`).classList.add('active');
+            
+            // Update navigasi
+            const navItems = document.querySelectorAll('.comic-nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            navItems[index].classList.add('active');
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${(index + 1) * 33.33}%`;
+            progressBar.textContent = `${index + 1}/3`;
+        }
+        
+        // Fungsi untuk menghitung volume kubus
+        function hitungVolumeKubus() {
+            const s = parseFloat(document.getElementById('sisiKubus').value);
+            
+            if (isNaN(s) || s <= 0) {
+                showNotification('Masukkan nilai sisi yang valid!', 'error');
+                return;
+            }
+            
+            const volume = Math.pow(s, 3);
+            document.getElementById('nilaiVolumeKubus').textContent = volume.toFixed(2);
+            document.getElementById('hasilVolumeKubus').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilVolumeKubus');
+        }
+        
+        // Fungsi untuk menghitung volume balok
+        function hitungVolumeBalok() {
+            const p = parseFloat(document.getElementById('panjangBalok').value);
+            const l = parseFloat(document.getElementById('lebarBalok').value);
+            const t = parseFloat(document.getElementById('tinggiBalok').value);
+            
+            if (isNaN(p) || isNaN(l) || isNaN(t) || p <= 0 || l <= 0 || t <= 0) {
+                showNotification('Masukkan nilai panjang, lebar, dan tinggi yang valid!', 'error');
+                return;
+            }
+            
+            const volume = p * l * t;
+            document.getElementById('nilaiVolumeBalok').textContent = volume.toFixed(2);
+            document.getElementById('hasilVolumeBalok').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilVolumeBalok');
+        }
+        
+        // Fungsi untuk menghitung volume prisma segitiga
+        function hitungVolumePrisma() {
+            const a = parseFloat(document.getElementById('alasPrisma').value);
+            const t_alas = parseFloat(document.getElementById('tinggiAlasPrisma').value);
+            const T = parseFloat(document.getElementById('tinggiPrisma').value);
+            
+            if (isNaN(a) || isNaN(t_alas) || isNaN(T) || a <= 0 || t_alas <= 0 || T <= 0) {
+                showNotification('Masukkan nilai alas, tinggi segitiga, dan tinggi prisma yang valid!', 'error');
+                return;
+            }
+            
+            const volume = 0.5 * a * t_alas * T;
+            document.getElementById('nilaiVolumePrisma').textContent = volume.toFixed(2);
+            document.getElementById('hasilVolumePrisma').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilVolumePrisma');
+        }
+        
+        // Fungsi untuk menghitung volume limas
+        function hitungVolumeLimas() {
+            const LA = parseFloat(document.getElementById('luasAlasLimas').value);
+            const T = parseFloat(document.getElementById('tinggiLimas').value);
+            
+            if (isNaN(LA) || isNaN(T) || LA <= 0 || T <= 0) {
+                showNotification('Masukkan nilai luas alas dan tinggi yang valid!', 'error');
+                return;
+            }
+            
+            const volume = (1/3) * LA * T;
+            document.getElementById('nilaiVolumeLimas').textContent = volume.toFixed(2);
+            document.getElementById('hasilVolumeLimas').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilVolumeLimas');
+        }
+        
+        // Fungsi untuk menghitung luas permukaan kubus
+        function hitungLuasPermukaanKubus() {
+            const s = parseFloat(document.getElementById('sisiKubusLP').value);
+            
+            if (isNaN(s) || s <= 0) {
+                showNotification('Masukkan nilai sisi yang valid!', 'error');
+                return;
+            }
+            
+            const luas = 6 * Math.pow(s, 2);
+            document.getElementById('nilaiLuasKubus').textContent = luas.toFixed(2);
+            document.getElementById('hasilLuasKubus').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilLuasKubus');
+        }
+        
+        // Fungsi untuk menghitung luas permukaan balok
+        function hitungLuasPermukaanBalok() {
+            const p = parseFloat(document.getElementById('panjangBalokLP').value);
+            const l = parseFloat(document.getElementById('lebarBalokLP').value);
+            const t = parseFloat(document.getElementById('tinggiBalokLP').value);
+            
+            if (isNaN(p) || isNaN(l) || isNaN(t) || p <= 0 || l <= 0 || t <= 0) {
+                showNotification('Masukkan nilai panjang, lebar, dan tinggi yang valid!', 'error');
+                return;
+            }
+            
+            const luas = 2 * (p * l + p * t + l * t);
+            document.getElementById('nilaiLuasBalok').textContent = luas.toFixed(2);
+            document.getElementById('hasilLuasBalok').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilLuasBalok');
+        }
+        
+        // Fungsi untuk menghitung luas permukaan prisma segitiga
+        function hitungLuasPermukaanPrisma() {
+            const a = parseFloat(document.getElementById('alasPrismaLP').value);
+            const t_alas = parseFloat(document.getElementById('tinggiAlasPrismaLP').value);
+            const s1 = parseFloat(document.getElementById('sisi1PrismaLP').value);
+            const s2 = parseFloat(document.getElementById('sisi2PrismaLP').value);
+            const T = parseFloat(document.getElementById('tinggiPrismaLP').value);
+            
+            if (isNaN(a) || isNaN(t_alas) || isNaN(s1) || isNaN(s2) || isNaN(T) || 
+                a <= 0 || t_alas <= 0 || s1 <= 0 || s2 <= 0 || T <= 0) {
+                showNotification('Masukkan semua nilai yang valid!', 'error');
+                return;
+            }
+            
+            // Luas alas dan atap (2 segitiga)
+            const luasAlas = 0.5 * a * t_alas;
+            const totalLuasAlas = 2 * luasAlas;
+            
+            // Luas sisi tegak (3 persegi panjang)
+            const kelilingAlas = a + s1 + s2;
+            const luasSisiTegak = kelilingAlas * T;
+            
+            const totalLuas = totalLuasAlas + luasSisiTegak;
+            document.getElementById('nilaiLuasPrisma').textContent = totalLuas.toFixed(2);
+            document.getElementById('hasilLuasPrisma').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilLuasPrisma');
+        }
+        
+        // Fungsi untuk menghitung luas permukaan limas
+        function hitungLuasPermukaanLimas() {
+            const LA = parseFloat(document.getElementById('luasAlasLimasLP').value);
+            const LS1 = parseFloat(document.getElementById('luasSisi1LimasLP').value);
+            const LS2 = parseFloat(document.getElementById('luasSisi2LimasLP').value);
+            const LS3 = parseFloat(document.getElementById('luasSisi3LimasLP').value);
+            const LS4 = parseFloat(document.getElementById('luasSisi4LimasLP').value);
+            
+            if (isNaN(LA) || isNaN(LS1) || isNaN(LS2) || isNaN(LS3) || isNaN(LS4) || 
+                LA <= 0 || LS1 <= 0 || LS2 <= 0 || LS3 <= 0 || LS4 <= 0) {
+                showNotification('Masukkan semua nilai yang valid!', 'error');
+                return;
+            }
+            
+            const totalLuas = LA + LS1 + LS2 + LS3 + LS4;
+            document.getElementById('nilaiLuasLimas').textContent = totalLuas.toFixed(2);
+            document.getElementById('hasilLuasLimas').style.display = 'block';
+            
+            // Animasi hasil
+            animateResult('hasilLuasLimas');
+        }
+        
+        // Fungsi untuk animasi hasil
+        function animateResult(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.animation = 'none';
+            setTimeout(() => {
+                element.style.animation = 'popIn 0.5s ease';
+            }, 10);
+        }
+        
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type) {
+            // Buat elemen notifikasi
+            const notification = document.createElement('div');
+            notification.className = `comic-notification ${type}`;
+            notification.textContent = message;
+            
+            // Style untuk notifikasi
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.background = type === 'error' ? 'var(--primary-red)' : 'var(--primary-green)';
+            notification.style.color = 'var(--white)';
+            notification.style.padding = '1rem 2rem';
+            notification.style.borderRadius = '15px';
+            notification.style.border = '3px solid var(--dark-blue)';
+            notification.style.fontFamily = 'Bangers, cursive';
+            notification.style.fontSize = '1.2rem';
+            notification.style.fontWeight = '700';
+            notification.style.boxShadow = '5px 5px 0 rgba(0, 0, 0, 0.3)';
+            notification.style.zIndex = '1000';
+            notification.style.animation = 'fadeIn 0.5s ease';
+            
+            // Tambahkan ke body
+            document.body.appendChild(notification);
+            
+            // Hapus setelah 3 detik
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.5s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+        
+        // Event listener untuk accordion
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+        
+        // Animasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efek animasi untuk card
+            const cards = document.querySelectorAll('.comic-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s, transform 0.5s';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>

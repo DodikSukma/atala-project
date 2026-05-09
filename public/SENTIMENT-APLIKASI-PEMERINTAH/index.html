@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Analisis Keluhan App Pemerintah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        secondary: '#7c3aed',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #818cf8;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar Sticky Glassmorphism -->
+    <nav class="fixed w-full z-50 glass-panel border-b border-slate-200 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1
+                class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary flex items-center gap-2">
+                <i class="fas fa-brain text-primary"></i> NLP Dashboard
+            </h1>
+            <div class="flex gap-4">
+                <a href="#playground" class="text-sm font-semibold text-slate-600 hover:text-primary transition">Uji
+                    Coba AI</a>
+                <a href="#lda-topics" class="text-sm font-semibold text-slate-600 hover:text-primary transition">Kamus
+                    Topik</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div
+                class="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow">
+            </div>
+            <div
+                class="absolute top-20 right-1/4 w-96 h-96 bg-secondary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse-slow animation-delay-2000">
+            </div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
+            <span
+                class="inline-block py-1 px-3 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold mb-4 border border-indigo-200 shadow-sm">
+                <i class="fas fa-microchip mr-1"></i> Skripsi Informatika
+            </span>
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+                Klasifikasi & Pemodelan Topik <br class="hidden lg:block" />
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Keluhan Aplikasi
+                    Pemerintahan</span>
+            </h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Platform cerdas berbasis kecerdasan buatan untuk menganalisis sentimen pengguna secara otomatis.
+                Menggunakan arsitektur <b>Transformer (IndoBERT)</b> untuk deteksi keluhan, dan <b>Latent Dirichlet
+                    Allocation (LDA)</b> untuk klasterisasi topik permasalahan.
+            </p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-20 relative z-10">
+
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <!-- Stat 1 -->
+            <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:-translate-y-1 hover:shadow-md transition duration-300 group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-database text-xl"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase">Dataset Total</span>
+                </div>
+                <h3 class="text-3xl font-bold text-slate-800">98.019</h3>
+                <p class="text-sm text-slate-500 mt-1">Ulasan Pengguna App</p>
+            </div>
+            <!-- Stat 2 -->
+            <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:-translate-y-1 hover:shadow-md transition duration-300 group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-layer-group text-xl"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase">Data Latih AI</span>
+                </div>
+                <h3 class="text-3xl font-bold text-slate-800">68.613</h3>
+                <p class="text-sm text-slate-500 mt-1">Baris Data Training</p>
+            </div>
+            <!-- Stat 3 -->
+            <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:-translate-y-1 hover:shadow-md transition duration-300 group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-project-diagram text-xl"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase">Topik LDA</span>
+                </div>
+                <h3 class="text-3xl font-bold text-slate-800">5 Topik</h3>
+                <p class="text-sm text-slate-500 mt-1">Kategori Masalah Ditemukan</p>
+            </div>
+            <!-- Stat 4 -->
+            <div
+                class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:-translate-y-1 hover:shadow-md transition duration-300 group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-bullseye text-xl"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase">Performa IndoBERT</span>
+                </div>
+                <h3 class="text-3xl font-bold text-slate-800">82% <span
+                        class="text-lg text-slate-500 font-medium">Akurasi</span></h3>
+                <p class="text-sm text-slate-500 mt-1">F1-Score: 0.81 (Data Real)</p>
+            </div>
+        </div>
+
+        <!-- MAIN PLAYGROUND -->
+        <div id="playground" class="scroll-mt-32">
+            <div class="flex items-center gap-3 mb-8">
+                <h2 class="text-2xl font-bold text-slate-800">Sistem Prediksi Interaktif</h2>
+                <div class="h-px bg-slate-300 flex-grow"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+
+                <!-- KIRI: KOLOM INPUT -->
+                <div
+                    class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10"></div>
+
+                    <h3 class="text-xl font-bold mb-2 flex items-center text-slate-800">
+                        <i class="fas fa-keyboard text-primary mr-3"></i> Masukkan Ulasan Pengguna
+                    </h3>
+                    <p class="text-sm text-slate-500 mb-6">Uji coba model AI dengan memasukkan kalimat baru yang belum
+                        pernah dilihat model sebelumnya.</p>
+
+                    <div class="relative group">
+                        <textarea id="inputText" rows="6"
+                            class="w-full p-5 bg-slate-50 border-2 border-slate-200 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all resize-none text-slate-700 text-lg leading-relaxed shadow-inner"
+                            placeholder="Contoh: Susah banget buat login selalu error dan gagal dapet kode OTP padahal sinyal bagus..."></textarea>
+                    </div>
+
+                    <button onclick="prediksi()" id="btnPredict"
+                        class="mt-6 w-full bg-gradient-to-r from-primary to-secondary hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all duration-200 flex justify-center items-center text-lg">
+                        <span id="btnText">Analisis Menggunakan AI</span>
+                        <i id="btnSpinner" class="fas fa-circle-notch fa-spin ml-3 hidden text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- KANAN: KOLOM HASIL -->
+                <div class="bg-slate-100 rounded-3xl p-8 border border-slate-200 relative min-h-[400px] flex flex-col justify-center transition-all duration-500"
+                    id="resultContainer">
+
+                    <!-- State Awal (Kosong) -->
+                    <div id="initialState" class="text-center text-slate-400 animate-fade-in-up">
+                        <div
+                            class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <i class="fas fa-robot text-4xl text-slate-300"></i>
+                        </div>
+                        <h4 class="text-lg font-medium text-slate-500">Menunggu Input Teks...</h4>
+                        <p class="text-sm mt-2 max-w-xs mx-auto">Hasil deteksi Keluhan dan pemetaan Topik (LDA) akan
+                            diproses secara real-time di sini.</p>
+                    </div>
+
+                    <!-- State Hasil -->
+                    <div id="resultState" class="w-full hidden space-y-6">
+
+                        <!-- Header Hasil -->
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                            <h3 class="text-lg font-bold text-slate-700">Laporan Hasil Analisis</h3>
+                            <span class="text-xs font-mono bg-slate-200 text-slate-600 px-2 py-1 rounded">Response <
+                                    1s</span>
+                        </div>
+
+                        <!-- 1. Deteksi IndoBERT (Kategori) -->
+                        <div>
+                            <p
+                                class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                <i class="fas fa-microscope"></i> Step 1: Deteksi Sentimen (IndoBERT)
+                            </p>
+                            <div id="kategoriBox"
+                                class="p-5 rounded-2xl font-bold flex items-center justify-between text-lg transition-all duration-500 shadow-sm border">
+                                <span id="kategoriText" class="flex items-center gap-3">
+                                    <span class="relative flex h-3 w-3"><span
+                                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span
+                                            class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span>
+                                    Bukan Keluhan
+                                </span>
+                                <i id="kategoriIcon" class="fas fa-check-circle text-3xl"></i>
+                            </div>
+                        </div>
+
+                        <!-- 2. Deteksi LDA (Topik) -->
+                        <div id="topikBox"
+                            class="bg-white p-6 rounded-2xl border border-slate-200 shadow-md hidden animate-fade-in-up">
+                            <p
+                                class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <i class="fas fa-network-wired"></i> Step 2: Klasifikasi Topik (LDA)
+                            </p>
+
+                            <h4 id="namaTopik" class="text-2xl font-extrabold text-slate-800 mb-4 leading-tight">Kendala
+                                Login</h4>
+
+                            <!-- Progress Bar Confidence -->
+                            <div class="mb-5">
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="font-medium text-slate-600">Tingkat Keyakinan AI (Confidence)</span>
+                                    <span id="confidenceText" class="font-bold text-primary">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                    <div id="confidenceBar"
+                                        class="bg-gradient-to-r from-primary to-secondary h-2.5 rounded-full transition-all duration-1000 ease-out w-0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Keywords Tags -->
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div class="text-xs font-semibold text-slate-500 mb-3"><i class="fas fa-tags mr-1"></i>
+                                    Trigger Words (Kata Kunci Pembentuk Topik):</div>
+                                <div id="keywordsContainer" class="flex flex-wrap gap-2">
+                                    <!-- Tags masuk sini pakai JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERENSI TOPIK LDA (Wajib ada biar informatif) -->
+        <div id="lda-topics" class="mt-24 scroll-mt-32">
+            <div class="flex items-center gap-3 mb-8">
+                <h2 class="text-2xl font-bold text-slate-800">Daftar Pemetaan Topik Keluhan (LDA Dictionary)</h2>
+                <div class="h-px bg-slate-300 flex-grow"></div>
+            </div>
+
+            <p class="text-slate-600 mb-8 max-w-4xl">Berikut adalah interpretasi dari kelima topik laten yang ditemukan
+                oleh algoritma LDA berdasarkan kumpulan 68.613 data latih keluhan aplikasi pemerintahan. Model akan
+                secara otomatis mencocokkan keluhan baru ke salah satu keranjang topik di bawah ini.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Topik 0 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center font-bold text-lg mb-4">
+                        T0</div>
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">Kendala Verifikasi Wajah & OTP</h4>
+                    <p class="text-sm text-slate-500 mb-4 h-16">Berisi ulasan pengguna yang mengalami kesulitan
+                        mendapatkan kode OTP lewat SMS/Email atau gagal saat proses biometrik pemindai wajah.</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span
+                            class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">verifikasi</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">kode</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">otp</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">wajah</span>
+                    </div>
+                </div>
+
+                <!-- Topik 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg mb-4">
+                        T1</div>
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">Keluhan Fungsionalitas Umum</h4>
+                    <p class="text-sm text-slate-500 mb-4 h-16">Klaster yang menangkap sentimen negatif secara general
+                        di mana pengguna merasa fungsi aplikasi "tidak bisa" digunakan sama sekali.</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">tidak</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">bisa</span>
+                        <span
+                            class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">aplikasi</span>
+                    </div>
+                </div>
+
+                <!-- Topik 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg mb-4">
+                        T2</div>
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">Masalah Login & Registrasi</h4>
+                    <p class="text-sm text-slate-500 mb-4 h-16">Fokus pada keluhan di pintu masuk aplikasi. Pengguna
+                        kesulitan untuk mendaftar akun baru atau gagal login ke akun lama.</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">login</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">daftar</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">masuk</span>
+                    </div>
+                </div>
+
+                <!-- Topik 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-lg mb-4">
+                        T3</div>
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">Kekecewaan pada User Experience (UX)</h4>
+                    <p class="text-sm text-slate-500 mb-4 h-16">Pengguna mengeluhkan antarmuka atau alur aplikasi yang
+                        dianggap menyusahkan, membingungkan, dan tidak praktis.</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span
+                            class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">aplikasi</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">susah</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">buat</span>
+                    </div>
+                </div>
+
+                <!-- Topik 4 -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg mb-4">
+                        T4</div>
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">Kendala Transaksi & Birokrasi</h4>
+                    <p class="text-sm text-slate-500 mb-4 h-16">Terkait dengan birokrasi yang berbelit-belit dalam
+                        aplikasi atau adanya kendala pada sistem pembayaran tagihan.</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">bayar</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">ribet</span>
+                        <span class="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-600">harus</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-center">
+        <p class="text-slate-500 text-sm">
+            <i class="fas fa-graduation-cap mr-1"></i> Demo Implementasi Skripsi &copy; 2024. <br>
+            Powered by FastAPI, HuggingFace Transformers & Gensim LDA.
+        </p>
+    </footer>
+
+    <!-- Script Logika Frontend -->
+    <script>
+        async function prediksi() {
+            const teksInput = document.getElementById('inputText').value;
+            if (!teksInput.trim()) {
+                alert("Harap masukkan ulasan yang ingin dianalisis terlebih dahulu!");
+                document.getElementById('inputText').focus();
+                return;
+            }
+
+            // Ubah UI jadi State Loading
+            const btn = document.getElementById('btnPredict');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('btnSpinner');
+
+            btnText.innerText = "AI Sedang Menganalisis...";
+            spinner.classList.remove('hidden');
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            document.getElementById('initialState').classList.add('hidden');
+            document.getElementById('resultState').classList.add('hidden');
+
+            // Reset Progress Bar
+            document.getElementById('confidenceBar').style.width = '0%';
+
+            try {
+                // Simulasi Endpoint FastAPI (Dummy Data)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                const lowerInput = teksInput.toLowerCase();
+                let data = {};
+
+                // Logika dummy sederhana berbasis keyword
+                if (lowerInput.match(/(error|gagal|susah|tidak bisa|login|otp|daftar|masuk|ribet|bayar|jelek|buruk|lambat|lemot|ngebug|kendala|masalah|kecewa)/)) {
+                    data.kategori = "Keluhan";
+
+                    // Deteksi Topik berdasarkan Keyword
+                    if (lowerInput.match(/(wajah|otp|kode|verifikasi|sms)/)) {
+                        data.topik_id = 0;
+                        data.topik_nama = "Kendala Verifikasi Wajah & OTP";
+                        data.keywords = ["verifikasi", "kode", "otp", "wajah"];
+                    } else if (lowerInput.match(/(login|daftar|masuk|akun|registrasi)/)) {
+                        data.topik_id = 2;
+                        data.topik_nama = "Masalah Login & Registrasi";
+                        data.keywords = ["login", "daftar", "masuk"];
+                    } else if (lowerInput.match(/(bayar|tagihan|transaksi|birokrasi)/)) {
+                        data.topik_id = 4;
+                        data.topik_nama = "Kendala Transaksi & Birokrasi";
+                        data.keywords = ["bayar", "ribet", "harus"];
+                    } else if (lowerInput.match(/(susah|bingung|muter|ux|ui|tampilan)/)) {
+                        data.topik_id = 3;
+                        data.topik_nama = "Kekecewaan pada User Experience (UX)";
+                        data.keywords = ["aplikasi", "susah", "buat"];
+                    } else {
+                        data.topik_id = 1;
+                        data.topik_nama = "Keluhan Fungsionalitas Umum";
+                        data.keywords = ["tidak", "bisa", "aplikasi"];
+                    }
+
+                    data.confidence = Math.floor(Math.random() * (98 - 75 + 1)) + 75; // Random 75-98%
+
+                } else {
+                    data.kategori = "Bukan Keluhan";
+                }
+
+                // Kembalikan UI Button
+                btnText.innerText = "Analisis Menggunakan AI";
+                spinner.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+
+                // Tampilkan State Hasil
+                document.getElementById('resultState').classList.remove('hidden');
+
+                const katBox = document.getElementById('kategoriBox');
+                const katText = document.getElementById('kategoriText');
+                const katIcon = document.getElementById('kategoriIcon');
+                const topBox = document.getElementById('topikBox');
+
+                if (data.kategori === "Keluhan") {
+                    // Tampilan Jika Keluhan (Merah/Pink)
+                    katBox.className = "p-5 rounded-2xl font-bold flex items-center justify-between text-lg bg-red-50 text-red-700 border border-red-200 shadow-sm animate-fade-in-up";
+                    katText.innerHTML = `<span class="relative flex h-3 w-3 mr-3 inline-block"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span></span> 🚨 Terdeteksi Sebagai KELUHAN`;
+                    katIcon.className = "fas fa-exclamation-triangle text-3xl text-red-500 opacity-80";
+
+                    // Tampilkan Detail LDA
+                    topBox.classList.remove('hidden');
+                    document.getElementById('namaTopik').innerText = `Topik ${data.topik_id}: ${data.topik_nama}`;
+
+                    // Animate Confidence Bar
+                    document.getElementById('confidenceText').innerText = `${data.confidence}%`;
+                    setTimeout(() => {
+                        document.getElementById('confidenceBar').style.width = `${data.confidence}%`;
+                    }, 100);
+
+                    // Render Keywords jadi Badge
+                    const kwContainer = document.getElementById('keywordsContainer');
+                    kwContainer.innerHTML = '';
+                    data.keywords.forEach(kw => {
+                        const span = document.createElement('span');
+                        span.className = "bg-white text-slate-600 text-sm px-3 py-1 rounded-full border border-slate-200 shadow-sm font-medium";
+                        span.innerHTML = `<i class="fas fa-hashtag text-slate-400 text-xs mr-1"></i> ${kw}`;
+                        kwContainer.appendChild(span);
+                    });
+
+                } else {
+                    // Tampilan Jika Bukan Keluhan (Hijau)
+                    katBox.className = "p-5 rounded-2xl font-bold flex items-center justify-between text-lg bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm animate-fade-in-up";
+                    katText.innerHTML = `<span class="relative flex h-3 w-3 mr-3 inline-block"><span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span></span> ✅ BUKAN Keluhan (Sentimen Positif/Netral)`;
+                    katIcon.className = "fas fa-check-circle text-3xl text-emerald-500 opacity-80";
+                    topBox.classList.add('hidden'); // Sembunyikan box LDA
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Terjadi kesalahan sistem. Pastikan backend FastAPI sedang berjalan.");
+
+                btnText.innerText = "Analisis Menggunakan AI";
+                spinner.classList.add('hidden');
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+
+</html>

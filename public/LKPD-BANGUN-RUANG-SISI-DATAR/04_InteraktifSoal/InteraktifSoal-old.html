@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD Level 4 - Rumus Luas Permukaan</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+        }
+        
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            padding: 1rem;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            display: none; /* Sembunyikan dulu */
+        }
+        
+        .game-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Efek komik di container */
+        .game-container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                        linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        /* Tombol Close */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 3px 3px 0 #000;
+            font-size: 1.2rem;
+        }
+        
+        .close-btn:hover {
+            background-color: var(--dark-red);
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        .close-btn::before {
+            content: "!";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--comic-yellow);
+            color: var(--dark-red);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            box-shadow: 1px 1px 0 #000;
+            font-family: 'Bangers', cursive;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.9), rgba(255, 78, 80, 0.9));
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Efek ledakan komik di header */
+        .header-section::before {
+            content: "BAM!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+        
+        .main-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: white;
+            font-weight: 500;
+            text-shadow: 1px 1px 0 #000;
+        }
+        
+        .level-indicator {
+            display: inline-block;
+            background: var(--comic-yellow);
+            color: var(--dark-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            box-shadow: 2px 2px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .instructions {
+            background: linear-gradient(135deg, rgba(249, 212, 35, 0.2), rgba(255, 78, 80, 0.2));
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--comic-yellow);
+            position: relative;
+        }
+        
+        /* Efek bubble komik di instruksi */
+        .instructions::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions h3 {
+            font-family: 'Bangers', cursive;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .instructions p {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .shape-section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-red);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Efek burst di pojok kanan atas shape card */
+        .shape-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, transparent 50%, var(--comic-yellow) 50%);
+            border-radius: 0 20px 0 0;
+        }
+        
+        .shape-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .shape-content {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .geogebra-container {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Gaya untuk Flip Card */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px; /* Menambahkan efek kedalaman */
+            margin-bottom: 1rem;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .flip-card-front {
+            background-color: #f1f1f1;
+            color: black;
+        }
+        
+        .flip-card-back {
+            background-color: #f1f1f1;
+            color: black;
+            transform: rotateY(180deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .flip-card-back img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .geogebra-placeholder {
+            width: 100%;
+            height: 250px;
+            background: rgba(30, 60, 114, 0.1);
+            border: 2px dashed var(--primary-blue);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .geogebra-placeholder:hover {
+            background: rgba(30, 60, 114, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .geogebra-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+        
+        .geogebra-text {
+            font-size: 1.1rem;
+            color: var(--dark-blue);
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .formula-container {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .formula-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .blank-input {
+            display: inline-block;
+            width: 100px;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 2px dashed var(--primary-red);
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .blank-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.2);
+        }
+        
+        .blank-input.correct {
+            border-color: var(--primary-orange);
+            background: rgba(249, 212, 35, 0.2);
+        }
+        
+        .blank-input.incorrect {
+            border-color: var(--dark-red);
+            background: rgba(201, 42, 42, 0.1);
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .hint-btn, .flip-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 2px 2px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+        
+        .hint-btn:hover, .flip-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 #000;
+        }
+        
+        .formula-popup {
+            display: none;
+            background: var(--comic-yellow);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: 2px 2px 0 #000;
+            position: relative;
+        }
+        
+        .formula-popup.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .formula-popup::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--comic-yellow);
+            transform: rotate(45deg);
+            box-shadow: -2px -2px 0 #000;
+        }
+        
+        .formula-popup h4 {
+            font-family: 'Bangers', cursive;
+            color: var(--dark-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .formula-popup p {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .drag-drop-section {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-red);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Efek burst di pojok kanan atas drag drop section */
+        .drag-drop-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, transparent 50%, var(--comic-yellow) 50%);
+            border-radius: 0 20px 0 0;
+        }
+        
+        .drag-drop-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .drag-drop-area {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .formulas-container {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .shapes-container {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .section-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .formulas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            border: 2px dashed var(--primary-blue);
+            min-height: 200px;
+        }
+        
+        .formula-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 0 #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .formula-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 4px 4px 0 #000;
+        }
+        
+        .formula-item.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        
+        .formula-text {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark-blue);
+        }
+        
+        .shapes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            border: 2px dashed var(--primary-red);
+            min-height: 200px;
+        }
+        
+        .shape-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0 #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shape-item.drag-over {
+            background: rgba(255, 235, 59, 0.3);
+            border-color: var(--comic-yellow);
+        }
+        
+        .shape-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark-blue);
+        }
+        
+        .dropped-formula {
+            background: var(--light-blue);
+            border-radius: 10px;
+            padding: 0.5rem;
+            text-align: center;
+            box-shadow: 1px 1px 0 #000;
+            animation: dropIn 0.3s ease;
+        }
+        
+        @keyframes dropIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .dropped-formula .formula-text {
+            font-size: 0.9rem;
+            color: white;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .control-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .check-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+        }
+        
+        .check-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        /* Modal untuk kode masuk */
+        .code-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .code-modal.hide {
+            display: none;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Efek ledakan di modal kode */
+        .modal-content::before {
+            content: "CODE!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+        
+        .code-icon {
+            font-size: 4rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .code-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .code-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        
+        .code-input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .code-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid var(--primary-red);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.2);
+        }
+        
+        .code-input.incorrect {
+            border-color: var(--dark-red);
+            animation: shake 0.5s;
+        }
+        
+        .submit-code-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+        
+        .submit-code-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        /* Modal Success */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .success-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .success-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Efek ledakan di modal success */
+        .success-content::before {
+            content: "WOW!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 2px 2px 0 #000;
+            opacity: 0.7;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite;
+        }
+        
+        .success-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-message {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        
+        .code-box {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            box-shadow: 2px 2px 0 #000;
+        }
+        
+        .next-level-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .next-level-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 #000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .shape-title {
+                font-size: 1.5rem;
+            }
+            
+            .drag-drop-title {
+                font-size: 1.5rem;
+            }
+            
+            .shape-content {
+                flex-direction: column;
+            }
+            
+            .drag-drop-area {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal Kode Masuk -->
+    <div class="code-modal" id="codeModal">
+        <div class="modal-content">
+            <div class="code-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <h2 class="code-title">MASUKKAN KODE</h2>
+            <p class="code-message">Masukkan kode dari Level 3 untuk melanjutkan ke Level 4</p>
+            <div class="code-input-group">
+                <input type="text" class="code-input" id="codeInput" placeholder="KODE" maxlength="20">
+            </div>
+            <button class="submit-code-btn" id="submitCodeBtn">
+                <i class="fas fa-unlock"></i>
+                Buka Level 4
+            </button>
+        </div>
+    </div>
+    
+    <div class="game-container" id="gameContainer">
+        <!-- Tombol Close -->
+        <button class="close-btn" id="closeBtn" title="Kembali ke LKPD">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <header class="header-section">
+            <div class="level-indicator">LEVEL 4</div>
+            <h1 class="main-title">E-LKPD INTERAKTIF</h1>
+            <p class="subtitle">Rumus Luas Permukaan Bangun Ruang Sisi Datar</p>
+        </header>
+        
+        <main>
+            <section class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> Petunjuk Permainan</h3>
+                <p>1. Pelajari rumus luas permukaan setiap bangun ruang</p>
+                <p>2. Klik tombol untuk melihat visualisasi 3D dan jaring-jaringnya</p>
+                <p>3. Isi bagian kosong dengan jawaban yang tepat</p>
+                <p>4. Seret rumus ke bangun ruang yang sesuai di bagian drag and drop</p>
+            </section>
+            
+            <!-- Kubus Section -->
+            <section class="shape-section" id="kubusSection">
+                <h2 class="shape-title">Kubus</h2>
+                <div class="shape-content">
+                    <div class="geogebra-container">
+                        <!-- Flip Card untuk Kubus -->
+                        <div class="flip-card" id="kubusFlipCard">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <iframe src="https://bangun-ruang.digowave.com/kubus" width="100%" height="100%" frameborder="0" style="border-radius: 15px;"></iframe>
+                                </div>
+                                <div class="flip-card-back">
+                                    <img src="kubus.png" alt="Gambar Jaring-jaring Kubus">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="flip-btn" id="kubusFlipBtn">
+                            <i class="fas fa-sync-alt"></i> Lihat Jaring-jaring
+                        </button>
+                    </div>
+                    
+                    <div class="formula-container">
+                        <p class="formula-description">
+                            Kubus memiliki 12 rusuk dan 6 sisi, dengan Panjang rusuk tertentu, misalkan s
+                        </p>
+                        <p class="formula-description">
+                            sisi depan : s×s=<input type="text" class="blank-input" id="kubus1" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            sisi belakang : s×s=<input type="text" class="blank-input" id="kubus2" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            sisi kanan: s×s=<input type="text" class="blank-input" id="kubus3" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            sisi kiri : s×s=<input type="text" class="blank-input" id="kubus4" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            sisi atas: s×s=<input type="text" class="blank-input" id="kubus5" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            sisi bawah: s×s=<input type="text" class="blank-input" id="kubus6" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            luas permukaan kubus adalah jumlah semua luas sisi-sisinya,
+                        </p>
+                        <p class="formula-description">
+                            maka, luas permukaan =<input type="text" class="blank-input" id="kubus7" data-answer="s²">+<input type="text" class="blank-input" id="kubus8" data-answer="s²">+<input type="text" class="blank-input" id="kubus9" data-answer="s²">+<input type="text" class="blank-input" id="kubus10" data-answer="s²">+<input type="text" class="blank-input" id="kubus11" data-answer="s²">+<input type="text" class="blank-input" id="kubus12" data-answer="s²"> 
+                        </p>
+                        <p class="formula-description">
+                            L=<input type="text" class="blank-input" id="kubus13" data-answer="6">×s²
+                        </p>
+                        
+                        <button class="hint-btn" id="kubusHintBtn">
+                            <i class="fas fa-lightbulb"></i>
+                            Petunjuk
+                        </button>
+                        <div class="formula-popup" id="kubusHint">
+                            <h4>Rumus Luas Permukaan Kubus</h4>
+                            <p>L = 6 × s²</p>
+                            <p>dimana s adalah panjang rusuk kubus</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Balok Section -->
+            <section class="shape-section" id="balokSection">
+                <h2 class="shape-title">Balok</h2>
+                <div class="shape-content">
+                    <div class="geogebra-container">
+                        <!-- Flip Card untuk Balok -->
+                        <div class="flip-card" id="balokFlipCard">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <iframe src="https://bangun-ruang.digowave.com/balok" width="100%" height="100%" frameborder="0" style="border-radius: 15px;"></iframe>
+                                </div>
+                                <div class="flip-card-back">
+                                    <img src="balok.png" alt="Gambar Jaring-jaring Balok">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="flip-btn" id="balokFlipBtn">
+                            <i class="fas fa-sync-alt"></i> Lihat Jaring-jaring
+                        </button>
+                    </div>
+                    
+                    <div class="formula-container">
+                        <p class="formula-description">
+                            Balok memiliki 12 rusuk, 6 sisi dengan sisi yang berhadapan kongruen.
+                        </p>
+                        <p class="formula-description">
+                            Pasangan sisi berhadapan 1 : 2(p×l)=<input type="text" class="blank-input" id="balok1" data-answer="2pl"> 
+                        </p>
+                        <p class="formula-description">
+                            Pasangan sisi berhadapan 2 : 2(p×t)=<input type="text" class="blank-input" id="balok2" data-answer="2pt"> 
+                        </p>
+                        <p class="formula-description">
+                            Pasangan sisi berhadapan 3 : 2(l×t)=<input type="text" class="blank-input" id="balok3" data-answer="2lt"> 
+                        </p>
+                        <p class="formula-description">
+                            Luas permukaan balok adalah jumlah semua luas sisi yang berhadapan
+                        </p>
+                        <p class="formula-description">
+                            Luas permukaan = 2(<input type="text" class="blank-input" id="balok4" data-answer="p">×<input type="text" class="blank-input" id="balok5" data-answer="l">)+2(<input type="text" class="blank-input" id="balok6" data-answer="p">×<input type="text" class="blank-input" id="balok7" data-answer="t">)+2(<input type="text" class="blank-input" id="balok8" data-answer="l">×<input type="text" class="blank-input" id="balok9" data-answer="t">)
+                        </p>
+                        <p class="formula-description">
+                            L=2 (<input type="text" class="blank-input" id="balok10" data-answer="pl">+<input type="text" class="blank-input" id="balok11" data-answer="pt">+<input type="text" class="blank-input" id="balok12" data-answer="lt">)
+                        </p>
+                        
+                        <button class="hint-btn" id="balokHintBtn">
+                            <i class="fas fa-lightbulb"></i>
+                            Petunjuk
+                        </button>
+                        <div class="formula-popup" id="balokHint">
+                            <h4>Rumus Luas Permukaan Balok</h4>
+                            <p>L = 2(pl + pt + lt)</p>
+                            <p>dimana p = panjang, l = lebar, t = tinggi balok</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Prisma Segitiga Section -->
+            <section class="shape-section" id="prismaSection">
+                <h2 class="shape-title">Prisma Segitiga</h2>
+                <div class="shape-content">
+                    <div class="geogebra-container">
+                        <!-- Flip Card untuk Prisma -->
+                        <div class="flip-card" id="prismaFlipCard">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <iframe src="https://bangun-ruang.digowave.com/prisma-segitiga" width="100%" height="100%" frameborder="0" style="border-radius: 15px;"></iframe>
+                                </div>
+                                <div class="flip-card-back">
+                                    <img src="prisma.png" alt="Gambar Jaring-jaring Prisma">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="flip-btn" id="prismaFlipBtn">
+                            <i class="fas fa-sync-alt"></i> Lihat Jaring-jaring
+                        </button>
+                    </div>
+                    
+                    <div class="formula-container">
+                        <p class="formula-description">
+                            Prisma segitiga memiliki 2 alas yang kongruen bentuk segitiga, serta 3 sisi tegak bentuk persegi panjang
+                        </p>
+                        <p class="formula-description">
+                            Luas alas 1 =L<sub>a1</sub>
+                        </p>
+                        <p class="formula-description">
+                            Luas alas 2 =L<sub>a2</sub>
+                        </p>
+                        <p class="formula-description">
+                            Maka, luas alas =L<sub>a1</sub>+L<sub>a2</sub>=<input type="text" class="blank-input" id="prisma1" data-answer="2">(luas alas)
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 1 =panjang ×tinggi =sisi alas 1×t
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 2 =<input type="text" class="blank-input" id="prisma2" data-answer="sisi alas 2">×t
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 3 =<input type="text" class="blank-input" id="prisma3" data-answer="sisi alas 3">×t
+                        </p>
+                        <p class="formula-description">
+                            Maka jumlah luas sisi tegak yaitu : =(sisi alas 1 + sisi alas 2 + sisi alas 3)×t =keliling alas ×tinggi
+                        </p>
+                        <p class="formula-description">
+                            Luas permukaan prisma segitiga =luas alas+jumlah luas sisi tegak =<input type="text" class="blank-input" id="prisma4" data-answer="2">(luas alas)+<input type="text" class="blank-input" id="prisma5" data-answer="keliling alas×tinggi">
+                        </p>
+                        
+                        <button class="hint-btn" id="prismaHintBtn">
+                            <i class="fas fa-lightbulb"></i>
+                            Petunjuk
+                        </button>
+                        <div class="formula-popup" id="prismaHint">
+                            <h4>Rumus Luas Permukaan Prisma Segitiga</h4>
+                            <p>L = 2(luas alas) + keliling alas × tinggi</p>
+                            <p>dimana luas alas = ½ × alas × tinggi segitiga</p>
+                            <p>dan keliling alas = jumlah semua sisi segitiga</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Limas Segiempat Section -->
+            <section class="shape-section" id="limasSection">
+                <h2 class="shape-title">Limas Segiempat</h2>
+                <div class="shape-content">
+                    <div class="geogebra-container">
+                        <!-- Flip Card untuk Limas -->
+                        <div class="flip-card" id="limasFlipCard">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <iframe src="https://bangun-ruang.digowave.com/limas" width="100%" height="100%" frameborder="0" style="border-radius: 15px;"></iframe>
+                                </div>
+                                <div class="flip-card-back">
+                                    <img src="limas.png" alt="Gambar Jaring-jaring Limas">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="flip-btn" id="limasFlipBtn">
+                            <i class="fas fa-sync-alt"></i> Lihat Jaring-jaring
+                        </button>
+                    </div>
+                    
+                    <div class="formula-container">
+                        <p class="formula-description">
+                            Limas segiempat memiliki sebuah sisi alas berbentuk segi empat, dan 4 sisi tegak bentuk segitiga
+                        </p>
+                        <p class="formula-description">
+                            Luas alas =L<sub>a</sub>
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 1 =T<sub>1</sub>
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 2 =T<sub>2</sub>
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 3 =T<sub>3</sub>
+                        </p>
+                        <p class="formula-description">
+                            Luas sisi tegak 4 =T<sub>4</sub>
+                        </p>
+                        <p class="formula-description">
+                            Maka jumlah luas sisi tegak limas =<input type="text" class="blank-input" id="limas1" data-answer="T₁">+<input type="text" class="blank-input" id="limas2" data-answer="T₂">+<input type="text" class="blank-input" id="limas3" data-answer="T₃">+<input type="text" class="blank-input" id="limas4" data-answer="T₄">
+                        </p>
+                        <p class="formula-description">
+                            Luas permukaan limas =luas alas+jumlah luas sisi tegak =<input type="text" class="blank-input" id="limas5" data-answer="Lₐ">+<input type="text" class="blank-input" id="limas6" data-answer="T₁+T₂+T₃+T₄">
+                        </p>
+                        
+                        <button class="hint-btn" id="limasHintBtn">
+                            <i class="fas fa-lightbulb"></i>
+                            Petunjuk
+                        </button>
+                        <div class="formula-popup" id="limasHint">
+                            <h4>Rumus Luas Permukaan Limas Segiempat</h4>
+                            <p>L = Lₐ + T₁ + T₂ + T₃ + T₄</p>
+                            <p>dimana Lₐ = luas alas (p × l)</p>
+                            <p>dan T₁, T₂, T₃, T₄ = luas masing-masing sisi tegak</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Drag and Drop Section -->
+            <section class="drag-drop-section">
+                <h2 class="drag-drop-title">Game: Cocokkan Rumus dengan Bangun Ruang</h2>
+                <div class="drag-drop-area">
+                    <div class="formulas-container">
+                        <h3 class="section-title">Rumus Luas Permukaan</h3>
+                        <div class="formulas-grid" id="formulasGrid">
+                            <!-- Rumus akan di-generate oleh JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="shapes-container">
+                        <h3 class="section-title">Bangun Ruang Sisi Datar</h3>
+                        <div class="shapes-grid" id="shapesGrid">
+                            <!-- Bangun ruang akan di-generate oleh JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="control-buttons">
+                <button class="control-btn check-btn" id="checkBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Periksa Jawaban
+                </button>
+                <button class="control-btn reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i>
+                    Reset
+                </button>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2 class="success-title">LUAR BIASA!</h2>
+            <p class="success-message">Selamat! Kamu telah menyelesaikan semua tantangan di Level 4 dengan sempurna.</p>
+            <div class="code-box">matrixmaster</div>
+            <p class="success-message">Gunakan kode ini untuk melanjutkan ke level selanjutnya</p>
+            <button class="next-level-btn" id="nextLevelBtn">
+                <i class="fas fa-arrow-right"></i>
+                Lanjut ke Level 5
+            </button>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Data rumus untuk drag and drop
+            const formulas = [
+                { id: 'formula1', text: 'Luas alas + jumlah luas sisi tegak', shape: 'prisma' },
+                { id: 'formula2', text: '2(luas alas)+keliling alas×tinggi', shape: 'prisma' },
+                { id: 'formula3', text: '2(pl+pt+lt)', shape: 'balok' },
+                { id: 'formula4', text: '6×s²', shape: 'kubus' },
+                { id: 'formula5', text: 'Luas alas+jumlah luas sisi tegak', shape: 'limas' }
+            ];
+            
+            // State permainan
+            let gameState = {
+                formulas: [...formulas],
+                droppedFormulas: {
+                    kubus: null,
+                    balok: null,
+                    prisma: null,
+                    limas: null
+                }
+            };
+            
+            // Elemen DOM
+            const codeModal = document.getElementById('codeModal');
+            const gameContainer = document.getElementById('gameContainer');
+            const codeInput = document.getElementById('codeInput');
+            const submitCodeBtn = document.getElementById('submitCodeBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const formulasGrid = document.getElementById('formulasGrid');
+            const shapesGrid = document.getElementById('shapesGrid');
+            const checkBtn = document.getElementById('checkBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const successModal = document.getElementById('successModal');
+            const nextLevelBtn = document.getElementById('nextLevelBtn');
+            const blankInputs = document.querySelectorAll('.blank-input');
+            
+            // Kode yang benar
+            const correctCode = 'matrixjuara';
+            const nextLevelCode = 'matrixmaster';
+            
+            // Inisialisasi permainan
+            function initGame() {
+                setupEventListeners();
+                setupFlipButtons();
+                setupHintButtons();
+                renderFormulas();
+                setupDragAndDrop();
+            }
+            
+            // Render rumus untuk drag and drop
+            function renderFormulas() {
+                formulasGrid.innerHTML = '';
+                
+                // Acak urutan rumus
+                const shuffledFormulas = [...gameState.formulas].sort(() => Math.random() - 0.5);
+                
+                shuffledFormulas.forEach(formula => {
+                    const formulaElement = createFormulaElement(formula);
+                    formulasGrid.appendChild(formulaElement);
+                });
+            }
+            
+            // Membuat elemen rumus
+            function createFormulaElement(formula) {
+                const div = document.createElement('div');
+                div.className = 'formula-item';
+                div.draggable = true;
+                div.dataset.formulaId = formula.id;
+                div.dataset.shape = formula.shape;
+                
+                div.innerHTML = `
+                    <div class="formula-text">${formula.text}</div>
+                `;
+                
+                return div;
+            }
+            
+            // Setup drag and drop
+            function setupDragAndDrop() {
+                let draggedElement = null;
+                
+                // Buat elemen shape untuk drop target
+                const shapes = [
+                    { id: 'kubus', name: 'Kubus' },
+                    { id: 'balok', name: 'Balok' },
+                    { id: 'prisma', name: 'Prisma' },
+                    { id: 'limas', name: 'Limas' }
+                ];
+                
+                shapesGrid.innerHTML = '';
+                
+                shapes.forEach(shape => {
+                    const shapeElement = document.createElement('div');
+                    shapeElement.className = 'shape-item';
+                    shapeElement.dataset.shapeId = shape.id;
+                    
+                    shapeElement.innerHTML = `
+                        <div class="shape-name">${shape.name}</div>
+                    `;
+                    
+                    shapesGrid.appendChild(shapeElement);
+                });
+                
+                // Drag start
+                document.addEventListener('dragstart', function(e) {
+                    if (e.target.classList.contains('formula-item')) {
+                        draggedElement = e.target;
+                        e.target.classList.add('dragging');
+                        e.dataTransfer.effectAllowed = 'move';
+                    }
+                });
+                
+                // Drag end
+                document.addEventListener('dragend', function(e) {
+                    if (e.target.classList.contains('formula-item')) {
+                        e.target.classList.remove('dragging');
+                    }
+                });
+                
+                // Drag over
+                document.querySelectorAll('.shape-item').forEach(shape => {
+                    shape.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        shape.classList.add('drag-over');
+                    });
+                    
+                    shape.addEventListener('dragleave', function(e) {
+                        if (e.target === shape) {
+                            shape.classList.remove('drag-over');
+                        }
+                    });
+                    
+                    shape.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        shape.classList.remove('drag-over');
+                        
+                        if (draggedElement) {
+                            const formulaId = draggedElement.dataset.formulaId;
+                            const formula = gameState.formulas.find(f => f.id === formulaId);
+                            const shapeId = shape.dataset.shapeId;
+                            
+                            // Hapus dari posisi sebelumnya
+                            Object.keys(gameState.droppedFormulas).forEach(s => {
+                                if (gameState.droppedFormulas[s] === formulaId) {
+                                    gameState.droppedFormulas[s] = null;
+                                    
+                                    // Hapus elemen dari shape sebelumnya
+                                    const prevShape = document.querySelector(`[data-shape-id="${s}"] .dropped-formula`);
+                                    if (prevShape) {
+                                        prevShape.remove();
+                                    }
+                                }
+                            });
+                            
+                            // Tambahkan ke shape baru
+                            gameState.droppedFormulas[shapeId] = formulaId;
+                            
+                            // Pindahkan elemen
+                            const droppedFormula = createDroppedFormula(formula);
+                            shape.appendChild(droppedFormula);
+                            
+                            // Hapus dari grid jika ada
+                            const existingFormula = formulasGrid.querySelector(`[data-formula-id="${formulaId}"]`);
+                            if (existingFormula) {
+                                existingFormula.remove();
+                            }
+                            
+                            draggedElement = null;
+                        }
+                    });
+                });
+            }
+            
+            // Membuat elemen rumus yang di-drop
+            function createDroppedFormula(formula) {
+                const div = document.createElement('div');
+                div.className = 'dropped-formula';
+                div.dataset.formulaId = formula.id;
+                
+                div.innerHTML = `
+                    <div class="formula-text">${formula.text}</div>
+                `;
+                
+                return div;
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Submit kode
+                submitCodeBtn.addEventListener('click', validateCode);
+                codeInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        validateCode();
+                    }
+                });
+                
+                // Event listener untuk tombol close
+                closeBtn.addEventListener('click', function() {
+                    window.close();
+                });
+                
+                checkBtn.addEventListener('click', checkAnswers);
+                resetBtn.addEventListener('click', resetGame);
+                nextLevelBtn.addEventListener('click', function() {
+                    // Arahkan ke level 5 (placeholder)
+                    alert('Arahkan ke Level 5 dengan kode: ' + nextLevelCode);
+                    successModal.classList.remove('show');
+                    window.location.href = "../05_SceneGame/SceneGame.html";
+                });
+                
+                // Event listener untuk input fields
+                blankInputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        // Hapus kelas correct/incorrect saat user mengetik
+                        this.classList.remove('correct', 'incorrect');
+                    });
+                });
+            }
+            
+            // Setup flip buttons
+            function setupFlipButtons() {
+                const flipButtons = document.querySelectorAll('.flip-btn');
+
+                flipButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Find the sibling flip-card element
+                        const flipCard = this.previousElementSibling;
+                        if (flipCard && flipCard.classList.contains('flip-card')) {
+                            flipCard.classList.toggle('flipped');
+                        }
+                    });
+                });
+            }
+            
+            // Setup hint buttons
+            function setupHintButtons() {
+                const hintButtons = document.querySelectorAll('.hint-btn');
+                
+                hintButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const shapeId = this.id.replace('HintBtn', '');
+                        const hintPopup = document.getElementById(shapeId + 'Hint');
+                        
+                        // Toggle popup
+                        hintPopup.classList.toggle('show');
+                        
+                        // Tutup popup lain
+                        document.querySelectorAll('.formula-popup').forEach(popup => {
+                            if (popup.id !== shapeId + 'Hint') {
+                                popup.classList.remove('show');
+                            }
+                        });
+                    });
+                });
+            }
+            
+            // Validasi kode
+            function validateCode() {
+                const enteredCode = codeInput.value.trim().toLowerCase();
+                
+                if (enteredCode === correctCode) {
+                    // Kode benar, tampilkan game
+                    codeModal.classList.add('hide');
+                    gameContainer.classList.add('show');
+                } else {
+                    // Kode salah, tampilkan pesan error
+                    codeInput.classList.add('incorrect');
+                    
+                    setTimeout(() => {
+                        codeInput.classList.remove('incorrect');
+                    }, 1000);
+                    
+                    // Tampilkan pesan error
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.style.position = 'fixed';
+                    errorDiv.style.top = '20px';
+                    errorDiv.style.right = '20px';
+                    errorDiv.style.zIndex = '999';
+                    errorDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Kode salah! Coba lagi.
+                    `;
+                    document.body.appendChild(errorDiv);
+                    
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 3000);
+                }
+            }
+            
+            // Memeriksa jawaban
+            function checkAnswers() {
+                let allCorrect = true;
+                
+                // Periksa jawaban fill the blank
+                blankInputs.forEach(input => {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswer = input.dataset.answer.toLowerCase();
+                    
+                    if (userAnswer === correctAnswer) {
+                        input.classList.add('correct');
+                        input.classList.remove('incorrect');
+                    } else {
+                        input.classList.add('incorrect');
+                        input.classList.remove('correct');
+                        allCorrect = false;
+                    }
+                });
+                
+                // Periksa jawaban drag and drop
+                const correctMatches = {
+                    kubus: 'formula4',
+                    balok: 'formula3',
+                    prisma: ['formula1', 'formula2'],
+                    limas: 'formula5'
+                };
+                
+                for (const shape in correctMatches) {
+                    const expectedFormulas = Array.isArray(correctMatches[shape]) 
+                        ? correctMatches[shape] 
+                        : [correctMatches[shape]];
+                    
+                    const droppedFormula = gameState.droppedFormulas[shape];
+                    
+                    if (!expectedFormulas.includes(droppedFormula)) {
+                        allCorrect = false;
+                        break;
+                    }
+                }
+                
+                // Tampilkan hasil
+                if (allCorrect) {
+                    successModal.classList.add('show');
+                } else {
+                    // Tampilkan pesan error
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.style.position = 'fixed';
+                    errorDiv.style.top = '20px';
+                    errorDiv.style.right = '20px';
+                    errorDiv.style.zIndex = '999';
+                    errorDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Masih ada jawaban yang salah! Periksa kembali jawaban Anda.
+                    `;
+                    document.body.appendChild(errorDiv);
+                    
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 3000);
+                }
+            }
+            
+            // Reset permainan
+            function resetGame() {
+                // Reset fill the blank
+                blankInputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+                
+                // Reset drag and drop
+                gameState.droppedFormulas = {
+                    kubus: null,
+                    balok: null,
+                    prisma: null,
+                    limas: null
+                };
+                
+                // Kosongkan shape items
+                document.querySelectorAll('.shape-item').forEach(shape => {
+                    const droppedFormula = shape.querySelector('.dropped-formula');
+                    if (droppedFormula) {
+                        droppedFormula.remove();
+                    }
+                });
+                
+                // Render ulang rumus
+                renderFormulas();
+            }
+            
+            // Jalankan permainan
+            initGame();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LKPD BANGUN RUANG SISI DATAR - Halaman Utama</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --comic-blue: #1e3c72;
+            --comic-darkblue: #0f2444;
+            --comic-red: #ff4e50;
+            --comic-darkred: #c92a2a;
+            --comic-orange: #f9d423;
+            --comic-yellow: #ffeb3b;
+            --comic-cyan: #00bcd4;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            color: #333;
+            overflow: hidden; /* Prevent scrolling on landing page */
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        /* Halftone Comic Background Pattern */
+        .halftone-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                radial-gradient(var(--comic-yellow) 15%, transparent 16%),
+                radial-gradient(var(--comic-yellow) 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Three.js Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1; /* Di atas background, di bawah konten UI */
+            pointer-events: none; /* Agar tidak menghalangi klik tombol */
+        }
+
+        /* Container utama UI */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; /* Biarkan klik tembus ke bawah kecuali pada elemen spesifik */
+        }
+
+        .main-container > * {
+            pointer-events: auto; /* Kembalikan event klik untuk konten */
+        }
+
+        /* Header dengan logo */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logo-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 4px solid var(--comic-darkblue);
+            border-radius: 50%;
+            padding: 15px;
+            box-shadow: 8px 8px 0 var(--comic-darkblue);
+            animation: floatLogo 4s ease-in-out infinite;
+        }
+
+        .logo-container img {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+        }
+
+        .title {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            color: var(--white);
+            text-shadow: 
+                4px 4px 0 #000,
+                -2px -2px 0 #000,
+                2px -2px 0 #000,
+                -2px 2px 0 #000,
+                2px 2px 0 #000,
+                8px 8px 0 var(--comic-red);
+            margin-bottom: 0.5rem;
+            letter-spacing: 3px;
+            line-height: 1.1;
+            transform: rotate(-2deg);
+        }
+
+        .subtitle {
+            font-family: 'Comic Neue', cursive;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--comic-yellow);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0 var(--comic-darkblue);
+            background: var(--comic-darkblue);
+            padding: 5px 20px;
+            border-radius: 10px;
+            border: 3px solid var(--white);
+            display: inline-block;
+            transform: rotate(1deg);
+        }
+
+        /* Tombol Mulai yang Menonjol */
+        .btn-mulai {
+            background: linear-gradient(135deg, var(--comic-red), var(--comic-darkred));
+            border: 6px solid var(--comic-darkblue);
+            border-radius: 25px;
+            padding: 1.5rem 4rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 10px 10px 0 var(--comic-darkblue);
+            text-decoration: none;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            animation: pulse-large 2s infinite, fadeInUp 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both;
+            margin-top: 1rem;
+        }
+
+        .btn-mulai:hover {
+            transform: translateY(-8px) scale(1.05) rotate(-2deg);
+            box-shadow: 15px 15px 0 var(--comic-darkblue);
+            background: linear-gradient(135deg, var(--comic-orange), var(--comic-yellow));
+            color: var(--comic-darkblue);
+            animation: none;
+        }
+
+        .btn-mulai:active {
+            transform: translateY(2px) scale(0.95);
+            box-shadow: 4px 4px 0 var(--comic-darkblue);
+        }
+
+        .btn-mulai .level-icon {
+            font-size: 4rem;
+            animation: wiggle 2s infinite;
+        }
+
+        .btn-mulai .level-text {
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+            letter-spacing: 4px;
+        }
+
+        /* Floating Buttons (Help & Music side-by-side) */
+        .floating-btn {
+            position: fixed;
+            border: 4px solid var(--comic-darkblue);
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 6px 6px 0 var(--comic-darkblue);
+            z-index: 1000;
+            color: var(--white);
+            pointer-events: auto;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 8px 8px 0 var(--comic-darkblue);
+        }
+
+        .floating-btn:active {
+            transform: scale(0.9) rotate(0deg);
+            box-shadow: 3px 3px 0 var(--comic-darkblue);
+        }
+
+        .floating-btn i {
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .help-button {
+            top: 25px;
+            right: 25px;
+            background: var(--comic-cyan);
+            animation: floatUI 4s ease-in-out infinite;
+        }
+
+        .music-button {
+            top: 25px;
+            right: 105px; /* Berada di sebelah kiri tombol help */
+            background: #e91e63;
+            animation: floatUI 4s ease-in-out infinite reverse;
+        }
+
+        /* Footer */
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            color: var(--white);
+            animation: fadeIn 1s ease 1s both;
+            background: rgba(15, 36, 68, 0.7);
+            padding: 8px 25px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .developer-info {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .nim-info {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Modal Petunjuk Penggunaan (Comic Style) */
+        .help-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 36, 68, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .help-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .help-modal-content {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 15px 15px 0 #000;
+            border: 6px solid var(--comic-darkblue);
+            position: relative;
+            transform: scale(0.8) translateY(50px) rotate(-2deg);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .help-modal.show .help-modal-content {
+            transform: scale(1) translateY(0) rotate(0deg);
+        }
+
+        .help-modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 4px dashed var(--comic-darkblue);
+            padding-bottom: 1rem;
+        }
+
+        .help-modal-title {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: var(--comic-red);
+            text-shadow: 3px 3px 0 var(--comic-darkblue);
+            margin: 0 0 0.5rem 0;
+            letter-spacing: 2px;
+        }
+
+        .help-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding: 1rem;
+            background: var(--comic-yellow);
+            border: 3px solid var(--comic-darkblue);
+            border-radius: 15px;
+            box-shadow: 4px 4px 0 var(--comic-darkblue);
+            transition: transform 0.2s;
+        }
+
+        .help-item:hover {
+            transform: translateX(10px);
+        }
+
+        .help-icon {
+            background: var(--white);
+            color: var(--comic-darkblue);
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            border: 3px solid var(--comic-darkblue);
+            display: flex; justify-content: center; align-items: center;
+            margin-right: 1.2rem;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .help-text {
+            font-size: 1.2rem;
+            color: var(--comic-darkblue);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .help-modal-close {
+            position: absolute;
+            top: -20px; right: -20px;
+            background: var(--comic-red);
+            color: white;
+            border: 4px solid var(--comic-darkblue);
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--comic-darkblue);
+            font-size: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .help-modal-close:hover {
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        @keyframes floatUI {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulse-large {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 12px 12px 0 var(--comic-darkblue); }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        .music-button.playing i {
+            animation: wiggle 0.5s infinite;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .logo-container img { width: 120px; height: 120px; }
+            .btn-mulai { padding: 1rem 2.5rem; min-width: 250px; }
+            .btn-mulai .level-icon { font-size: 2.5rem; }
+            .btn-mulai .level-text { font-size: 2.2rem; }
+            
+            /* Penyesuaian tombol melayang agar tetap berdampingan di mobile */
+            .floating-btn { width: 50px; height: 50px; }
+            .floating-btn i { font-size: 1.3rem; }
+            .help-button { top: 15px; right: 15px; }
+            .music-button { top: 15px; right: 75px; } 
+
+            .help-modal-content { padding: 1.5rem; }
+            .help-modal-title { font-size: 2.2rem; }
+            .help-text { font-size: 1rem; }
+            .help-item { flex-direction: column; text-align: center; gap: 10px; }
+            .help-icon { margin-right: 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1. Halftone Background -->
+    <div class="halftone-bg"></div>
+
+    <!-- 2. Three.js Canvas untuk Objek 3D Comic -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Tombol Bantuan -->
+    <button class="floating-btn help-button" id="helpButton" aria-label="Petunjuk Penggunaan" title="Petunjuk">
+        <i class="fas fa-question"></i>
+    </button>
+
+    <!-- Tombol Musik -->
+    <button class="floating-btn music-button" id="musicButton" aria-label="Musik" title="Mainkan Musik">
+        <i class="fas fa-music" id="musicIcon"></i>
+    </button>
+
+    <!-- Audio Background -->
+    <audio id="backgroundMusic" loop>
+        <source src="BackSound.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <!-- Fallback to a geometric icon if logo.png fails to load -->
+                <img src="logo.png" alt="Logo" onerror="this.outerHTML='<i class=\'fas fa-cube text-comic-darkblue\' style=\'font-size: 80px; line-height: 130px;\'></i>'">
+            </div>
+            <h1 class="title">E-LKPD BANGUN RUANG<br>SISI DATAR</h1>
+            <div class="subtitle">Petualangan 3D Matematika!</div>
+        </header>
+
+        <!-- Tombol Mulai -->
+        <a href="myunit.html" class="btn-mulai">
+            <i class="fas fa-play-circle level-icon"></i>
+            <span class="level-text">MULAI !</span>
+        </a>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="developer-info">Dikembangkan oleh I Komang Adi Wiguna</p>
+            <p class="nim-info">NIM: 2213011094</p>
+        </footer>
+    </div>
+
+    <!-- Modal Petunjuk Penggunaan -->
+    <div class="help-modal" id="helpModal">
+        <div class="help-modal-content">
+            <button class="help-modal-close" id="helpModalClose" aria-label="Tutup">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="help-modal-header">
+                <h2 class="help-modal-title">CARA PENGGUNAAN</h2>
+                <span class="badge bg-comic-darkblue text-white px-3 py-2" style="font-family: 'Comic Neue'; font-size: 1rem;">Panduan E-LKPD</span>
+            </div>
+
+            <div class="help-items">
+                <div class="help-item">
+                    <div class="help-icon"><i class="fas fa-mouse-pointer"></i></div>
+                    <div class="help-text">Gunakan mouse/jari untuk memutar objek 3D di layar utama ini!</div>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"><i class="fas fa-edit"></i></div>
+                    <div class="help-text">Jika ada inputan, silakan diisi dengan jawaban yang benar.</div>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"><i class="fas fa-gamepad"></i></div>
+                    <div class="help-text">Jika ada mini-game, baca terlebih dahulu arahan permainannya.</div>
+                </div>
+                <div class="help-item">
+                    <div class="help-icon"><i class="fas fa-music"></i></div>
+                    <div class="help-text">Klik ikon nada di pojok kanan atas untuk menyalakan musik latar.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Utama -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            /* ==========================================
+               1. UI Interactions (Modal & Music)
+               ========================================== */
+            const helpButton = document.getElementById('helpButton');
+            const helpModal = document.getElementById('helpModal');
+            const helpModalClose = document.getElementById('helpModalClose');
+            
+            const musicButton = document.getElementById('musicButton');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const musicIcon = document.getElementById('musicIcon');
+            let isMusicPlaying = false;
+
+            // Modal Logic
+            helpButton.addEventListener('click', () => helpModal.classList.add('show'));
+            helpModalClose.addEventListener('click', () => helpModal.classList.remove('show'));
+            helpModal.addEventListener('click', (e) => {
+                if (e.target === helpModal) helpModal.classList.remove('show');
+            });
+
+            // Music Logic
+            musicButton.addEventListener('click', function () {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    musicIcon.className = 'fas fa-music';
+                    musicButton.classList.remove('playing');
+                } else {
+                    backgroundMusic.play().catch(e => {
+                        console.error("Audio error:", e);
+                        alert("Silakan klik di area halaman terlebih dahulu untuk memutar musik.");
+                    });
+                    musicIcon.className = 'fas fa-volume-up';
+                    musicButton.classList.add('playing');
+                }
+                isMusicPlaying = !isMusicPlaying;
+            });
+
+            /* ==========================================
+               2. THREE.JS 3D COMIC BACKGROUND
+               ========================================== */
+            const canvas = document.getElementById('bg-canvas');
+            const scene = new THREE.Scene();
+            
+            // Renderer dengan Alpha transparan (agar background CSS terlihat)
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.z = 20;
+
+            // Pencahayaan untuk Toon Shading
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 10, 10);
+            scene.add(dirLight);
+
+            // Menyimpan objek untuk dianimasikan
+            const shapes = [];
+            
+            // Palet Warna Comic
+            const colors = [0xffeb3b, 0x00bcd4, 0x2ecc71, 0xff4e50, 0xf9d423, 0xff9a00];
+
+            // Fungsi Membuat Bangun Ruang dengan Outline Comic
+            function createComicShape(geometry, colorHex, x, y, z, hideOnMobile = false) {
+                // Material Toon (Sel shading effect)
+                const material = new THREE.MeshToonMaterial({ 
+                    color: colorHex,
+                    shininess: 0 
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                
+                // Outline Hitam Tebal (Inverted Hull Method)
+                const outlineMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x0f2444, // Dark Blue comic color
+                    side: THREE.BackSide 
+                });
+                const outline = new THREE.Mesh(geometry, outlineMaterial);
+                outline.scale.multiplyScalar(1.08); // Ketebalan outline
+                mesh.add(outline);
+
+                // Posisi awal
+                mesh.position.set(x, y, z);
+
+                // Data Animasi Acak & Flag Mobile
+                mesh.userData = {
+                    rotX: (Math.random() - 0.5) * 0.02,
+                    rotY: (Math.random() - 0.5) * 0.02,
+                    floatSpeed: Math.random() * 0.015 + 0.005,
+                    floatOffset: Math.random() * Math.PI * 2,
+                    baseY: y,
+                    hideOnMobile: hideOnMobile
+                };
+
+                // Cek visibilitas awal jika di mobile
+                if (window.innerWidth <= 768 && hideOnMobile) {
+                    mesh.visible = false;
+                }
+
+                scene.add(mesh);
+                shapes.push(mesh);
+            }
+
+            // Membangun bentuk-bentuk "Bangun Ruang Sisi Datar"
+            // (Parameter terakhir 'true' berarti bentuk akan disembunyikan di layar mobile)
+            
+            // 1. Kubus (Box) - Tampil di Mobile
+            createComicShape(new THREE.BoxGeometry(2.5, 2.5, 2.5), colors[0], -8, 4, -2, false);
+            
+            // 2. Limas Segiempat - Tampil di Mobile
+            createComicShape(new THREE.ConeGeometry(2, 3, 4), colors[1], 8, 5, -5, false);
+            
+            // 3. Prisma Segitiga - Disembunyikan di Mobile
+            createComicShape(new THREE.CylinderGeometry(2, 2, 4, 3), colors[2], -9, -5, -4, true);
+            
+            // 4. Limas Segitiga (Tetrahedron) - Tampil di Mobile
+            createComicShape(new THREE.TetrahedronGeometry(2.5), colors[3], 7, -6, -2, false);
+            
+            // 5. Prisma Segienam - Disembunyikan di Mobile
+            createComicShape(new THREE.CylinderGeometry(2, 2, 3, 6), colors[4], 0, 8, -8, true);
+            
+            // 6. Balok - Disembunyikan di Mobile
+            createComicShape(new THREE.BoxGeometry(3.5, 1.5, 2), colors[5], 0, -8, -6, true);
+
+            // Interaksi Mouse (Parallax)
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - window.innerWidth / 2);
+                mouseY = (event.clientY - window.innerHeight / 2);
+            });
+
+            // Animasi Loop
+            const clock = new THREE.Clock();
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const time = clock.getElapsedTime();
+
+                // Rotasi & Melayang
+                shapes.forEach(shape => {
+                    if(shape.visible) {
+                        shape.rotation.x += shape.userData.rotX;
+                        shape.rotation.y += shape.userData.rotY;
+                        shape.position.y = shape.userData.baseY + Math.sin(time * shape.userData.floatSpeed * 100 + shape.userData.floatOffset) * 0.5;
+                    }
+                });
+
+                // Efek Parallax Kamera berdasarkan Mouse
+                targetX = mouseX * 0.005;
+                targetY = mouseY * 0.005;
+                
+                camera.position.x += (targetX - camera.position.x) * 0.05;
+                camera.position.y += (-targetY - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Handle Resize Layar & Update Visibilitas 3D
+            window.addEventListener('resize', () => {
+                const isMobile = window.innerWidth <= 768;
+                
+                // Sembunyikan atau tampilkan objek 3D berdasarkan ukuran layar
+                shapes.forEach(shape => {
+                    if (shape.userData.hideOnMobile) {
+                        shape.visible = !isMobile;
+                    }
+                });
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        });
+    </script>
+</body>
+
+</html>

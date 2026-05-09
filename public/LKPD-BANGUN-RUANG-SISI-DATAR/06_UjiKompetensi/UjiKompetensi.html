@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUIZ - Luas Permukaan dan Volume Bangun Ruang</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- MathJax untuk notasi matematika -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --light-blue: #2a5298;
+            --dark-blue: #0f2444;
+            --primary-red: #ff4e50;
+            --light-red: #fc913a;
+            --dark-red: #c92a2a;
+            --primary-orange: #f9d423;
+            --light-orange: #ff9a00;
+            --dark-orange: #e47600;
+            --white: #ffffff;
+            --comic-yellow: #ffeb3b;
+            --comic-blue: #00bcd4;
+            --primary-green: #2ecc71;
+            --dark-green: #27ae60;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red), var(--primary-orange));
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Efek komik di background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+            z-index: -1;
+        }
+
+        /* Container utama */
+        .main-container {
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tombol Close */
+        .close-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: 4px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-decoration: none;
+            color: var(--white);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .close-button::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 15px 15px;
+            background-position: 0 0, 7.5px 7.5px;
+            z-index: -1;
+            opacity: 0.3;
+            border-radius: 50%;
+        }
+
+        .close-button:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--dark-red), #8b0000);
+        }
+
+        .close-button:active {
+            transform: scale(0.95) rotate(0deg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .close-button i {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .close-tooltip {
+            position: absolute;
+            top: 70px;
+            right: 50%;
+            transform: translateX(50%);
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .close-tooltip::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid var(--dark-blue);
+        }
+
+        .close-button:hover .close-tooltip {
+            opacity: 1;
+            visibility: visible;
+            top: 75px;
+        }
+
+        /* Game Container */
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid var(--comic-yellow);
+        }
+
+        /* Efek burst di container */
+        .game-container::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow)),
+                linear-gradient(45deg, var(--comic-yellow) 25%, transparent 25%, transparent 75%, var(--comic-yellow) 75%, var(--comic-yellow));
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.9), rgba(255, 78, 80, 0.9));
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--comic-yellow);
+        }
+
+        /* Efek ledakan komik di header */
+        .header-section::before {
+            content: "BAM!";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(15deg);
+            text-shadow: 3px 3px 0 #000;
+            opacity: 0.8;
+        }
+
+        .main-title {
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0 #000;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.5rem;
+            color: var(--white);
+            font-weight: 700;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        /* Identity Card */
+        .identity-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid var(--primary-blue);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--primary-red);
+        }
+
+        /* Efek bubble komik */
+        .identity-card::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 30px;
+            width: 40px;
+            height: 40px;
+            background: var(--comic-yellow);
+            border-radius: 50%;
+            box-shadow: 3px 3px 0 #000;
+            z-index: -1;
+        }
+
+        .card-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-family: 'Bangers', cursive;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1.1rem;
+            border: 3px solid var(--primary-red);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            font-family: 'Comic Neue', cursive;
+            font-weight: 600;
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .form-input:focus {
+            border-color: var(--comic-yellow);
+            box-shadow: 0 0 0 0.2rem rgba(255, 235, 59, 0.25);
+            outline: none;
+            background: rgba(255, 235, 59, 0.1);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 5px 5px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .start-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 #000;
+        }
+
+        .start-btn:active {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 #000;
+        }
+
+        .start-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Questions Section */
+        .questions-section {
+            margin-bottom: 2rem;
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .questions-section.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid var(--primary-red);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--primary-blue);
+        }
+
+        /* Efek burst di pojok kanan atas */
+        .question-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, transparent 50%, var(--comic-yellow) 50%);
+            border-radius: 0 25px 0 0;
+        }
+
+        .question-number {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 0 #000;
+            display: inline-block;
+            background: var(--comic-yellow);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            box-shadow: 3px 3px 0 #000;
+        }
+
+        .question-text {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.3rem;
+            color: var(--dark-blue);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            margin-bottom: 1rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid var(--primary-blue);
+            position: relative;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        .option-label:hover {
+            background: var(--comic-yellow);
+            border-color: var(--primary-orange);
+            transform: translateX(5px);
+            box-shadow: 5px 5px 0 #000;
+        }
+
+        .option-radio {
+            margin-right: 1rem;
+            width: 25px;
+            height: 25px;
+            accent-color: var(--primary-red);
+        }
+
+        .option-text {
+            flex-grow: 1;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        /* Score Section */
+        .score-section {
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.9), rgba(255, 78, 80, 0.9));
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: none;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--comic-yellow);
+        }
+
+        /* Efek ledakan di score section */
+        .score-section::before {
+            content: "WOW!";
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: var(--comic-yellow);
+            transform: rotate(-15deg);
+            text-shadow: 3px 3px 0 #000;
+            opacity: 0.8;
+        }
+
+        .score-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .score-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        .score-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--comic-yellow);
+            margin-bottom: 1rem;
+            text-shadow: 4px 4px 0 #000;
+            font-family: 'Bangers', cursive;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 3px 3px 0 #000;
+        }
+
+        .score-message {
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 0 #000;
+            font-weight: 600;
+        }
+
+        .answers-summary {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: left;
+            border: 3px solid var(--primary-blue);
+        }
+
+        .summary-title {
+            font-family: 'Bangers', cursive;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .summary-item {
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .summary-question {
+            font-family: 'Comic Neue', cursive;
+            font-weight: 600;
+            color: var(--dark-blue);
+        }
+
+        .summary-answer {
+            font-family: 'Comic Neue', cursive;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .text-success {
+            color: var(--primary-green) !important;
+        }
+
+        .text-danger {
+            color: var(--primary-red) !important;
+        }
+
+        /* Control Buttons */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 5px 5px 0 #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-red));
+            color: white;
+        }
+
+        .submit-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 #000;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--primary-red));
+            color: white;
+        }
+
+        .print-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 8px 8px 0 #000;
+        }
+
+        /* Key Section */
+        .key-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border: 3px solid var(--primary-blue);
+        }
+
+        /* Efik bubble komik di key section */
+        .key-section::after {
+            content: "";
+            position: absolute;
+            top: -20px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            background: var(--comic-yellow);
+            border-radius: 50%;
+            box-shadow: 3px 3px 0 #000;
+            z-index: -1;
+        }
+
+        .key-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .key-title {
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-btn {
+            background: var(--primary-red);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 3px 3px 0 #000;
+            color: white;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: var(--dark-red);
+        }
+
+        .key-content {
+            display: none;
+        }
+
+        .key-content.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .key-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px dashed var(--primary-blue);
+        }
+
+        .key-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .key-question {
+            font-family: 'Comic Neue', cursive;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .key-answer {
+            color: var(--primary-red);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1rem;
+        }
+
+        .key-explanation {
+            color: #666;
+            font-style: italic;
+            background-color: rgba(255, 235, 59, 0.2);
+            padding: 1rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--comic-yellow);
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1rem;
+        }
+
+        /* MathJax styling */
+        .math-formula {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(255, 235, 59, 0.2);
+            border-radius: 10px;
+            border-left: 3px solid var(--comic-yellow);
+            font-family: 'Comic Neue', cursive;
+            font-size: 1.1rem;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--primary-red);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 3px 3px 0 #000;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 235, 59, 0.3);
+            border-color: var(--primary-orange);
+            color: var(--dark-blue);
+        }
+
+        /* Efek bubble komik di alert */
+        .alert-warning::before {
+            content: "!";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--primary-red);
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 100px;
+            height: 100px;
+            border: 15px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--comic-yellow);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .loading-text {
+            position: absolute;
+            color: white;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 0 #000;
+            margin-top: 150px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Ikon berterbangan */
+        .floating-icon {
+            position: fixed;
+            font-size: 2rem;
+            color: var(--comic-yellow);
+            opacity: 0.7;
+            animation: floatAround 15s linear infinite;
+            z-index: 0;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 30%;
+            left: 5%;
+            animation-duration: 18s;
+            animation-delay: 4s;
+        }
+
+        .floating-icon:nth-child(4) {
+            bottom: 20%;
+            right: 10%;
+            animation-duration: 22s;
+            animation-delay: 6s;
+        }
+
+        .floating-icon:nth-child(5) {
+            top: 50%;
+            left: 50%;
+            animation-duration: 30s;
+            animation-delay: 8s;
+        }
+
+        .floating-icon:nth-child(6) {
+            top: 70%;
+            left: 80%;
+            animation-duration: 17s;
+            animation-delay: 10s;
+        }
+
+        /* Animasi */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes floatAround {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(100px, -50px) rotate(90deg);
+            }
+
+            50% {
+                transform: translate(-50px, -100px) rotate(180deg);
+            }
+
+            75% {
+                transform: translate(-100px, 50px) rotate(270deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .game-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .close-button,
+            .control-buttons,
+            .key-section {
+                display: none;
+            }
+
+            .question-card {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Responsif untuk mobile */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .score-value {
+                font-size: 3rem;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+            }
+
+            .control-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .close-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .close-button i {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .game-container {
+                padding: 1rem;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .identity-card,
+            .question-card {
+                padding: 1rem;
+            }
+
+            .score-value {
+                font-size: 2.5rem;
+            }
+
+            .close-button {
+                width: 45px;
+                height: 45px;
+                top: 15px;
+                right: 15px;
+            }
+
+            .close-button i {
+                font-size: 1rem;
+            }
+
+            .close-tooltip {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ikon berterbangan -->
+    <i class="fas fa-star floating-icon"></i>
+    <i class="fas fa-calculator floating-icon"></i>
+    <i class="fas fa-shapes floating-icon"></i>
+    <i class="fas fa-ruler floating-icon"></i>
+    <i class="fas fa-cube floating-icon"></i>
+    <i class="fas fa-graduation-cap floating-icon"></i>
+
+    <!-- Tombol Close -->
+    <!-- <button class="close-btn" id="closeBtn" title="Kembali ke LKPD">
+        <i class="fas fa-times"></i>
+    </button> -->
+
+    <div class="main-container">
+        <div class="game-container">
+            <header class="header-section">
+                <h1 class="main-title">QUIZ</h1>
+                <p class="subtitle">Luas Permukaan dan Volume Bangun Ruang</p>
+            </header>
+
+            <main>
+                <section class="identity-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-user-graduate"></i>
+                        Identitas Siswa
+                    </h2>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="studentName" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Nama Lengkap
+                                </label>
+                                <input type="text" class="form-input" id="studentName"
+                                    placeholder="Masukkan nama lengkap" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="studentClass" class="form-label">
+                                    <i class="fas fa-school"></i>
+                                    Kelas
+                                </label>
+                                <input type="text" class="form-input" id="studentClass" placeholder="Masukkan kelas"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="studentNumber" class="form-label">
+                                    <i class="fas fa-hashtag"></i>
+                                    Nomor Absen
+                                </label>
+                                <input type="number" class="form-input" id="studentNumber"
+                                    placeholder="Masukkan nomor absen" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="start-btn" id="startBtn" disabled>
+                            <i class="fas fa-play"></i>
+                            Mulai Quiz
+                        </button>
+                    </div>
+                </section>
+
+                <section class="questions-section" id="questionsSection">
+                    <div class="alert alert-warning" id="warningAlert" style="display: none;">
+                        <span id="warningText">Peringatan: Ada soal yang belum dijawab!</span>
+                    </div>
+
+                    <div class="question-card">
+                        <div class="question-number">Soal 1</div>
+                        <div class="question-text">Budi membuat sebuah kotak penyimpanan berbentuk balok dengan panjang
+                            10 cm, lebar 5 cm, dan tinggi 8 cm. Berapakah volume kotak tersebut?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q1" value="A" class="option-radio">
+                                    <span class="option-text">58 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q1" value="B" class="option-radio">
+                                    <span class="option-text">400 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q1" value="C" class="option-radio">
+                                    <span class="option-text">340 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q1" value="D" class="option-radio">
+                                    <span class="option-text">200 cm³</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="question-card">
+                        <div class="question-number">Soal 2</div>
+                        <div class="question-text">Sebuah kubus memiliki panjang rusuk 7 cm. Berapakah luas permukaan
+                            kubus tersebut?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q2" value="A" class="option-radio">
+                                    <span class="option-text">343 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q2" value="B" class="option-radio">
+                                    <span class="option-text">294 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q2" value="C" class="option-radio">
+                                    <span class="option-text">196 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q2" value="D" class="option-radio">
+                                    <span class="option-text">49 cm²</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="question-card">
+                        <div class="question-number">Soal 3</div>
+                        <div class="question-text">Sebuah akuarium berbentuk prisma segitiga dengan alas segitiga sama
+                            kaki berukuran alas 8 cm dan tinggi alas 6 cm, serta tinggi prisma 10 cm. Berapakah volume
+                            prisma tersebut?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q3" value="A" class="option-radio">
+                                    <span class="option-text">24 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q3" value="B" class="option-radio">
+                                    <span class="option-text">480 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q3" value="C" class="option-radio">
+                                    <span class="option-text">120 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q3" value="D" class="option-radio">
+                                    <span class="option-text">240 cm³</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="question-card">
+                        <div class="question-number">Soal 4</div>
+                        <div class="question-text">Sebuah limas segiempat beraturan memiliki panjang sisi alas 8 cm dan
+                            tinggi limas 15 cm. Berapakah volume limas tersebut?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q4" value="A" class="option-radio">
+                                    <span class="option-text">960 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q4" value="B" class="option-radio">
+                                    <span class="option-text">320 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q4" value="C" class="option-radio">
+                                    <span class="option-text">64 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q4" value="D" class="option-radio">
+                                    <span class="option-text">160 cm³</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="question-card">
+                        <div class="question-number">Soal 5</div>
+                        <div class="question-text">Budi memiliki kotak kado berbentuk balok dengan panjang 12 cm, lebar
+                            5 cm, dan tinggi 3 cm. Berapakah luas permukaan kotak tersebut?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q5" value="A" class="option-radio">
+                                    <span class="option-text">111 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q5" value="B" class="option-radio">
+                                    <span class="option-text">150 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q5" value="C" class="option-radio">
+                                    <span class="option-text">180 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q5" value="D" class="option-radio">
+                                    <span class="option-text">222 cm²</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Soal 6 - Ganti -->
+                    <div class="question-card">
+                        <div class="question-number">Soal 6</div>
+                        <div class="question-text">Sebuah prisma dengan alas berbentuk segitiga. Panjang alas 8 cm,
+                            tinggi alas 5 cm, dan tinggi prisma 10 cm. Hitunglah volume prisma tersebut!</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q6" value="A" class="option-radio">
+                                    <span class="option-text">58 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q6" value="B" class="option-radio">
+                                    <span class="option-text">200 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q6" value="C" class="option-radio">
+                                    <span class="option-text">400 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q6" value="D" class="option-radio">
+                                    <span class="option-text">240 cm³</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Soal 7 - Ganti -->
+                    <div class="question-card">
+                        <div class="question-number">Soal 7</div>
+                        <div class="question-text">Sebuah UMKM membuat kerangka lampu dari kawat panjang 240 cm. Semua
+                            kerangka berbentuk kubus yang ukurannya sama. Setiap kubus memiliki volume 8 cm³. Berapa
+                            banyak kerangka kubus maksimal yang dapat dibuat dari 240 cm kawat?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q7" value="A" class="option-radio">
+                                    <span class="option-text">8 buah</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q7" value="B" class="option-radio">
+                                    <span class="option-text">10 buah</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q7" value="C" class="option-radio">
+                                    <span class="option-text">12 buah</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q7" value="D" class="option-radio">
+                                    <span class="option-text">15 buah</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Soal 8 - Ganti -->
+                    <div class="question-card">
+                        <div class="question-number">Soal 8</div>
+                        <div class="question-text">Sebuah prisma segiempat beraturan dengan ukuran panjang, lebar, dan
+                            tinggi yaitu 6 cm, 4 cm, dan 9 cm. Dari dalam prisma segiempat beraturan itu dipotong sebuah
+                            kubus kecil dengan panjang rusuk 2 cm. Hitung volume sisa balok setelah kubus kecil
+                            dipotong!</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q8" value="A" class="option-radio">
+                                    <span class="option-text">208 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q8" value="B" class="option-radio">
+                                    <span class="option-text">216 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q8" value="C" class="option-radio">
+                                    <span class="option-text">224 cm³</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q8" value="D" class="option-radio">
+                                    <span class="option-text">200 cm³</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Soal 9 - Ganti -->
+                    <div class="question-card">
+                        <div class="question-number">Soal 9</div>
+                        <div class="question-text">Sebuah limas segiempat mempunyai alas persegi dengan panjang sisi 4
+                            cm. Masing-masing sisi tegak adalah segitiga sama kaki dengan tinggi segitiga 5 cm. Namun,
+                            salah satu sisi tegak tidak dihitung. Hitung luas seluruh permukaan limas tersebut dengan
+                            ketentuan satu sisi tegak diabaikan!</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q9" value="A" class="option-radio">
+                                    <span class="option-text">46 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q9" value="B" class="option-radio">
+                                    <span class="option-text">56 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q9" value="C" class="option-radio">
+                                    <span class="option-text">66 cm²</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q9" value="D" class="option-radio">
+                                    <span class="option-text">76 cm²</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Soal 10 - Ganti -->
+                    <div class="question-card">
+                        <div class="question-number">Soal 10</div>
+                        <div class="question-text">Kubus B panjang rusuknya adalah 9 cm, kubus K panjang rusuknya 2 cm.
+                            Berapa maksimum banyak kubus K yang bisa dimasukkan ke dalam kubus B?</div>
+                        <ul class="options-list">
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q10" value="A" class="option-radio">
+                                    <span class="option-text">64 buah</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q10" value="B" class="option-radio">
+                                    <span class="option-text">81 buah</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q10" value="C" class="option-radio">
+                                    <span class="option-text">100 buah</span>
+                                </label>
+                            </li>
+                            <li class="option-item">
+                                <label class="option-label">
+                                    <input type="radio" name="q10" value="D" class="option-radio">
+                                    <span class="option-text">125 buah</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="control-buttons">
+                        <button class="control-btn submit-btn" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            Kumpulkan Jawaban
+                        </button>
+                    </div>
+                </section>
+
+                <section class="score-section" id="scoreSection">
+                    <h2 class="score-title">Hasil Quiz</h2>
+                    <div class="score-value" id="scoreValue">0/100</div>
+                    <div class="score-message" id="scoreMessage"></div>
+
+                    <div class="answers-summary">
+                        <h3 class="summary-title">Ringkasan Jawaban</h3>
+                        <div id="summaryContent"></div>
+                    </div>
+                </section>
+
+                <section class="key-section">
+                    <div class="key-header">
+                        <h2 class="key-title">
+                            <i class="fas fa-key"></i>
+                            Kunci Jawaban & Pembahasan
+                        </h2>
+                        <button class="toggle-btn" id="toggleKey" aria-label="Toggle Kunci">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+
+                    <div class="key-content" id="keyContent">
+                        <div class="key-item">
+                            <div class="key-question">1. Budi membuat sebuah kotak penyimpanan berbentuk balok dengan
+                                panjang 10 cm, lebar 5 cm, dan tinggi 8 cm. Berapakah volume kotak tersebut?</div>
+                            <div class="key-answer">Jawaban: B - 400 cm³</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Volume balok = panjang × lebar × tinggi<br>
+                                    Volume = 10 cm × 5 cm × 8 cm<br>
+                                    Volume = 400 cm³
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="key-item">
+                            <div class="key-question">2. Sebuah kubus memiliki panjang rusuk 7 cm. Berapakah luas
+                                permukaan kubus tersebut?</div>
+                            <div class="key-answer">Jawaban: B - 294 cm²</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Luas permukaan kubus = 6 × (rusuk)²<br>
+                                    Luas = 6 × (7 cm)²<br>
+                                    Luas = 6 × 49 cm²<br>
+                                    Luas = 294 cm²
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="key-item">
+                            <div class="key-question">3. Sebuah akuarium berbentuk prisma segitiga dengan alas segitiga
+                                sama kaki berukuran alas 8 cm dan tinggi alas 6 cm, serta tinggi prisma 10 cm. Berapakah
+                                volume prisma tersebut?</div>
+                            <div class="key-answer">Jawaban: D - 240 cm³</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Luas alas prisma = ½ × alas × tinggi segitiga<br>
+                                    Luas = ½ × 8 cm × 6 cm = 24 cm²<br><br>
+                                    Volume prisma = luas alas × tinggi prisma<br>
+                                    Volume = 24 cm² × 10 cm<br>
+                                    Volume = 240 cm³
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="key-item">
+                            <div class="key-question">4. Sebuah limas segiempat beraturan memiliki panjang sisi alas 8
+                                cm dan tinggi limas 15 cm. Berapakah volume limas tersebut?</div>
+                            <div class="key-answer">Jawaban: B - 320 cm³</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Luas alas limas = sisi × sisi<br>
+                                    Luas = 8 cm × 8 cm = 64 cm²<br><br>
+                                    Volume limas = 1/3 × luas alas × tinggi<br>
+                                    Volume = 1/3 × 64 cm² × 15 cm<br>
+                                    Volume = 320 cm³
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="key-item">
+                            <div class="key-question">5. Budi memiliki kotak kado berbentuk balok dengan panjang 12 cm,
+                                lebar 5 cm, dan tinggi 3 cm. Berapakah luas permukaan kotak tersebut?</div>
+                            <div class="key-answer">Jawaban: D - 222 cm²</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Luas permukaan balok = 2 × ((panjang × lebar) + (panjang × tinggi) + (lebar ×
+                                    tinggi))<br>
+                                    Luas = 2 × ((12 cm × 5 cm) + (12 cm × 3 cm) + (5 cm × 3 cm))<br>
+                                    Luas = 2 × (60 cm² + 36 cm² + 15 cm²)<br>
+                                    Luas = 2 × 111 cm²<br>
+                                    Luas = 222 cm²
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pembahasan soal 6 -->
+                        <div class="key-item">
+                            <div class="key-question">6. Sebuah prisma dengan alas berbentuk segitiga. Panjang alas 8
+                                cm, tinggi alas 5 cm, dan tinggi prisma 10 cm. Hitunglah volume prisma tersebut!</div>
+                            <div class="key-answer">Jawaban: B - 200 cm³</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Diketahui:<br>
+                                    Prisma segitiga dengan alas = 8 cm, tinggi alas = 5 cm, tinggi prisma = 10
+                                    cm<br><br>
+                                    Volume prisma = Luas alas × tinggi prisma<br>
+                                    Luas alas segitiga = ½ × alas × tinggi segitiga<br>
+                                    Luas alas = ½ × 8 × 5 = 20 cm²<br><br>
+                                    Volume prisma = 20 cm² × 10 cm = 200 cm³<br><br>
+                                    Maka, volume prisma adalah 200 cm³
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pembahasan soal 7 -->
+                        <div class="key-item">
+                            <div class="key-question">7. Sebuah UMKM membuat kerangka lampu dari kawat panjang 240 cm.
+                                Semua kerangka berbentuk kubus yang ukurannya sama. Setiap kubus memiliki volume 8 cm³.
+                                Berapa banyak kerangka kubus maksimal yang dapat dibuat dari 240 cm kawat?</div>
+                            <div class="key-answer">Jawaban: B - 10 buah</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Diketahui:<br>
+                                    Panjang kawat = 240 cm<br>
+                                    Volume setiap kubus = 8 cm³<br><br>
+                                    Panjang rusuk kubus:<br>
+                                    Volume = s³ = 8 cm³<br>
+                                    s = ∛8 = 2 cm<br><br>
+                                    Panjang kawat untuk 1 kubus:<br>
+                                    Jumlah rusuk kubus = 12<br>
+                                    Panjang kawat 1 kubus = 12 × 2 cm = 24 cm<br><br>
+                                    Banyak kubus yang dapat dibuat:<br>
+                                    Banyak kubus = 240 cm ÷ 24 cm = 10 buah<br><br>
+                                    Jadi banyak kerangka kubus yang dapat dibuat adalah 10 buah.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pembahasan soal 8 -->
+                        <div class="key-item">
+                            <div class="key-question">8. Sebuah prisma segiempat beraturan dengan ukuran panjang, lebar,
+                                dan tinggi yaitu 6 cm, 4 cm, dan 9 cm. Dari dalam prisma segiempat beraturan itu
+                                dipotong sebuah kubus kecil dengan panjang rusuk 2 cm. Hitung volume sisa balok setelah
+                                kubus kecil dipotong!</div>
+                            <div class="key-answer">Jawaban: A - 208 cm³</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Diketahui:<br>
+                                    Prisma segiempat: p = 6 cm, l = 4 cm, t = 9 cm<br>
+                                    Kubus kecil: s = 2 cm<br><br>
+                                    Volume sisa = Volume prisma - Volume kubus<br><br>
+                                    Volume prisma = p × l × t<br>
+                                    Volume prisma = 6 × 4 × 9 = 216 cm³<br><br>
+                                    Volume kubus = s³<br>
+                                    Volume kubus = 2³ = 8 cm³<br><br>
+                                    Volume sisa = 216 cm³ - 8 cm³ = 208 cm³<br><br>
+                                    Maka, sisa volume prisma segiempat beraturan tersebut adalah 208 cm³
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pembahasan soal 9 -->
+                        <div class="key-item">
+                            <div class="key-question">9. Sebuah limas segiempat mempunyai alas persegi dengan panjang
+                                sisi 4 cm. Masing-masing sisi tegak adalah segitiga sama kaki dengan tinggi segitiga 5
+                                cm. Namun, salah satu sisi tegak tidak dihitung. Hitung luas seluruh permukaan limas
+                                tersebut dengan ketentuan satu sisi tegak diabaikan!</div>
+                            <div class="key-answer">Jawaban: A - 46 cm²</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Diketahui:<br>
+                                    Limas segiempat dengan alas persegi<br>
+                                    Panjang sisi alas = 4 cm<br>
+                                    Tinggi segitiga sisi tegak = 5 cm<br>
+                                    Salah satu sisi tegak tidak dihitung<br><br>
+                                    Luas permukaan limas = Luas alas + Jumlah luas sisi tegak<br><br>
+                                    Luas alas persegi = s × s = 4 × 4 = 16 cm²<br><br>
+                                    Luas satu segitiga sisi tegak = ½ × alas × tinggi<br>
+                                    Luas satu segitiga = ½ × 4 × 5 = 10 cm²<br><br>
+                                    Total luas 4 sisi tegak = 4 × 10 = 40 cm²<br><br>
+                                    Karena satu sisi tegak tidak dihitung:<br>
+                                    Luas sisi tegak yang dihitung = 40 - 10 = 30 cm²<br><br>
+                                    Total luas permukaan limas = 16 + 30 = 46 cm²<br><br>
+                                    Jadi total luas limas tersebut adalah 46 cm²
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pembahasan soal 10 -->
+                        <div class="key-item">
+                            <div class="key-question">10. Kubus B panjang rusuknya adalah 9 cm, kubus K panjang rusuknya
+                                2 cm. Berapa maksimum banyak kubus K yang bisa dimasukkan ke dalam kubus B?</div>
+                            <div class="key-answer">Jawaban: A - 64 buah</div>
+                            <div class="key-explanation">
+                                <div class="math-formula">
+                                    Diketahui:<br>
+                                    Kubus B: s = 9 cm<br>
+                                    Kubus K: s = 2 cm<br><br>
+                                    Banyak kubus kecil yang bisa dimasukkan:<br>
+                                    Karena kubus kecil harus masuk utuh, maka dihitung per dimensi:<br><br>
+                                    Jumlah kubus K sepanjang rusuk kubus B:<br>
+                                    9 cm ÷ 2 cm = 4,5 ≈ 4 kubus (pembulatan ke bawah karena kubus harus utuh)<br><br>
+                                    Banyak kubus K dalam satu dimensi = 4 kubus<br><br>
+                                    Total kubus K dalam kubus B:<br>
+                                    Volume yang terisi = 4 × 4 × 4 = 64 kubus<br><br>
+                                    Volume kubus B = 9³ = 729 cm³<br>
+                                    Volume kubus K = 2³ = 8 cm³<br><br>
+                                    64 kubus K memiliki volume = 64 × 8 = 512 cm³<br>
+                                    Masih ada sisa ruang, tetapi tidak bisa dimasukkan kubus K utuh karena dimensi sisa
+                                    < 2 cm<br><br>
+                                        Jadi maksimum banyak kubus K yang bisa dimasukkan adalah 64 buah.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="control-buttons" id="printButtons" style="display: none;">
+                    <button class="control-btn print-btn" id="printBtn">
+                        <i class="fas fa-print"></i>
+                        Cetak Hasil Quiz
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Variabel global
+            // Update kunci jawaban sesuai dengan soal baru
+            const correctAnswers = {
+                q1: 'B',
+                q2: 'B',
+                q3: 'D',
+                q4: 'B',
+                q5: 'D',
+                q6: 'B',  // Volume prisma segitiga: 200 cm³
+                q7: 'B',  // Jumlah kubus: 10 buah
+                q8: 'A',  // Volume sisa: 208 cm³
+                q9: 'A',  // Luas permukaan limas: 46 cm²
+                q10: 'A'  // Jumlah kubus kecil: 64 buah
+            };
+
+            // Ganti dengan URL Google Apps Script Web App Anda
+            const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw7sjwKdUDVJJru094MvUiU9tbQJxE8jn4-F3480OK1VhStjb_hkHdhO1Hvj4SD85ispw/exec';
+
+            let studentData = {
+                name: '',
+                class: '',
+                number: '',
+                answers: {},
+                score: 0,
+                timestamp: null
+            };
+
+            // Elemen DOM
+            const studentName = document.getElementById('studentName');
+            const studentClass = document.getElementById('studentClass');
+            const studentNumber = document.getElementById('studentNumber');
+            const startBtn = document.getElementById('startBtn');
+            const questionsSection = document.getElementById('questionsSection');
+            const submitBtn = document.getElementById('submitBtn');
+            const scoreSection = document.getElementById('scoreSection');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreMessage = document.getElementById('scoreMessage');
+            const summaryContent = document.getElementById('summaryContent');
+            const toggleKey = document.getElementById('toggleKey');
+            const keyContent = document.getElementById('keyContent');
+            const printBtn = document.getElementById('printBtn');
+            const printButtons = document.getElementById('printButtons');
+            const warningAlert = document.getElementById('warningAlert');
+            const warningText = document.getElementById('warningText');
+            const closeBtn = document.getElementById('closeBtn');
+
+            closeBtn.addEventListener('click', function () {
+                window.close();
+            });
+
+            // Event Listeners
+            studentName.addEventListener('input', validateForm);
+            studentClass.addEventListener('input', validateForm);
+            studentNumber.addEventListener('input', validateForm);
+
+            startBtn.addEventListener('click', startExam);
+            submitBtn.addEventListener('click', confirmSubmit);
+            toggleKey.addEventListener('click', toggleKeyContent);
+            printBtn.addEventListener('click', printResults);
+
+            // Fungsi untuk memvalidasi form identitas
+            function validateForm() {
+                const isNameValid = studentName.value.trim() !== '';
+                const isClassValid = studentClass.value.trim() !== '';
+                const isNumberValid = studentNumber.value.trim() !== '';
+
+                if (isNameValid && isClassValid && isNumberValid) {
+                    startBtn.disabled = false;
+                } else {
+                    startBtn.disabled = true;
+                }
+            }
+
+            // Fungsi untuk memulai ujian
+            function startExam() {
+                // Simpan data siswa
+                studentData.name = studentName.value.trim();
+                studentData.class = studentClass.value.trim();
+                studentData.number = studentNumber.value.trim();
+
+                // Aktifkan bagian soal
+                questionsSection.classList.add('enabled');
+
+                // Scroll ke bagian soal
+                questionsSection.scrollIntoView({ behavior: 'smooth' });
+
+                // Nonaktifkan form identitas
+                studentName.disabled = true;
+                studentClass.disabled = true;
+                studentNumber.disabled = true;
+                startBtn.disabled = true;
+            }
+
+            // Fungsi untuk konfirmasi pengumpulan jawaban
+            function confirmSubmit() {
+                // Periksa apakah semua soal sudah dijawab
+                const unansweredQuestions = [];
+
+                for (let i = 1; i <= 10; i++) {
+                    const questionName = `q${i}`;
+                    const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+
+                    if (!selectedOption) {
+                        unansweredQuestions.push(i);
+                    }
+                }
+
+                if (unansweredQuestions.length > 0) {
+                    // Tampilkan peringatan
+                    warningText.textContent = `Peringatan: Soal nomor ${unansweredQuestions.join(', ')} belum dijawab!`;
+                    warningAlert.style.display = 'block';
+
+                    // Scroll ke peringatan
+                    warningAlert.scrollIntoView({ behavior: 'smooth' });
+
+                    return;
+                }
+
+                // Konfirmasi pengumpulan
+                const isConfirmed = confirm("Apakah Anda yakin ingin mengumpulkan jawaban? Setelah dikumpulkan, Anda tidak dapat mengubah jawaban.");
+
+                if (isConfirmed) {
+                    submitExam();
+                }
+            }
+
+            // Fungsi untuk mengumpulkan jawaban
+            function submitExam() {
+                // Sembunyikan peringatan
+                warningAlert.style.display = 'none';
+
+                // Tampilkan loading
+                showLoading();
+
+                // Kumpulkan jawaban
+                for (let i = 1; i <= 10; i++) {
+                    const questionName = `q${i}`;
+                    const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+
+                    if (selectedOption) {
+                        studentData.answers[questionName] = selectedOption.value;
+                    } else {
+                        studentData.answers[questionName] = null;
+                    }
+                }
+
+                // Hitung skor
+                calculateScore();
+
+                // Simpan timestamp
+                studentData.timestamp = new Date().toISOString();
+
+                // Kirim data ke Google Sheets
+                sendDataToGoogleSheets()
+                    .then(response => {
+                        console.log('Data berhasil dikirim ke Google Sheets:', response);
+                        // Sembunyikan loading
+                        hideLoading();
+                        // Tampilkan hasil
+                        showResults();
+                        // Simpan ke localStorage
+                        localStorage.setItem('quizResults', JSON.stringify(studentData));
+                    })
+                    .catch(error => {
+                        console.error('Error mengirim data ke Google Sheets:', error);
+                        // Sembunyikan loading
+                        hideLoading();
+                        // Tampilkan hasil meskipun gagal mengirim ke Google Sheets
+                        showResults();
+                        // Simpan ke localStorage
+                        localStorage.setItem('quizResults', JSON.stringify(studentData));
+                        // Tampilkan pesan error
+                        alert('Terjadi kesalahan saat mengirim data ke server. Hasil quiz tersimpan di perangkat Anda.');
+                    });
+            }
+
+            // Fungsi untuk menghitung skor
+            function calculateScore() {
+                let correctCount = 0;
+
+                for (const question in correctAnswers) {
+                    if (studentData.answers[question] === correctAnswers[question]) {
+                        correctCount++;
+                    }
+                }
+
+                studentData.score = correctCount * 10; // Setiap soal bernilai 10 poin
+            }
+
+            // Fungsi untuk menampilkan hasil
+            function showResults() {
+                // Update nilai
+                scoreValue.textContent = `${studentData.score}/100`;
+
+                // Update pesan berdasarkan skor
+                let message = '';
+                if (studentData.score >= 80) {
+                    message = 'Luar biasa! Kamu sudah memahami materi dengan sangat baik.';
+                } else if (studentData.score >= 60) {
+                    message = 'Bagus! Kamu sudah memahami sebagian besar materi.';
+                } else {
+                    message = 'Terus belajar! Kamu pasti bisa lebih baik lagi.';
+                }
+                scoreMessage.textContent = message;
+
+                // Buat ringkasan jawaban
+                createSummary();
+
+                // Tampilkan bagian skor
+                scoreSection.classList.add('show');
+
+                // Tampilkan tombol cetak
+                printButtons.style.display = 'flex';
+
+                // Scroll ke bagian skor
+                scoreSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Fungsi untuk membuat ringkasan jawaban
+            function createSummary() {
+                let summaryHTML = '';
+
+                for (let i = 1; i <= 10; i++) {
+                    const questionName = `q${i}`;
+                    const answer = studentData.answers[questionName] || 'Tidak dijawab';
+                    const isCorrect = answer === correctAnswers[questionName];
+
+                    summaryHTML += `
+                        <div class="summary-item">
+                            <span class="summary-question">Soal ${i}:</span>
+                            <span class="summary-answer ${isCorrect ? 'text-success' : 'text-danger'}">
+                                ${answer} ${isCorrect ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>'}
+                            </span>
+                        </div>
+                    `;
+                }
+
+                summaryContent.innerHTML = summaryHTML;
+            }
+
+            // Fungsi untuk toggle konten kunci
+            function toggleKeyContent() {
+                keyContent.classList.toggle('show');
+
+                // Ubah ikon
+                const icon = toggleKey.querySelector('i');
+                if (keyContent.classList.contains('show')) {
+                    icon.className = 'fas fa-chevron-up';
+                } else {
+                    icon.className = 'fas fa-chevron-down';
+                }
+            }
+
+            // Fungsi untuk mencetak hasil
+            function printResults() {
+                // Buat konten cetak
+                const printContent = `
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <h1 class="text-center mb-4">HASIL QUIZ</h1>
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Data Siswa</h5>
+                                        <p><strong>Nama:</strong> ${studentData.name}</p>
+                                        <p><strong>Kelas:</strong> ${studentData.class}</p>
+                                        <p><strong>Nomor Absen:</strong> ${studentData.number}</p>
+                                        <p><strong>Waktu Pengerjaan:</strong> ${new Date(studentData.timestamp).toLocaleString('id-ID')}</p>
+                                    </div>
+                                </div>
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Hasil Nilai</h5>
+                                        <h2 class="text-center">${studentData.score}/100</h2>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Ringkasan Jawaban</h5>
+                                        ${summaryContent.innerHTML}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Buka jendela cetak
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Hasil Quiz</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <style>
+                            body { font-family: 'Comic Neue', cursive; }
+                            .text-success { color: #f9d423 !important; }
+                            .text-danger { color: #ff4e50 !important; }
+                            @media print {
+                                body { padding: 20px; }
+                                .card { page-break-inside: avoid; margin-bottom: 20px; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(function() {
+                                    window.close();
+                                }, 500);
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+
+            // Fungsi untuk menampilkan loading
+            function showLoading() {
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.id = 'loadingOverlay';
+                loadingOverlay.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Mengirim data...</div>
+                `;
+                document.body.appendChild(loadingOverlay);
+            }
+
+            // Fungsi untuk menyembunyikan loading
+            function hideLoading() {
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                if (loadingOverlay) {
+                    loadingOverlay.remove();
+                }
+            }
+
+            // Fungsi untuk mengirim data ke Google Sheets
+            async function sendDataToGoogleSheets() {
+                // Siapkan data untuk dikirim
+                const data = {
+                    name: studentData.name,
+                    class: studentData.class,
+                    number: studentData.number,
+                    score: studentData.score,
+                    timestamp: studentData.timestamp
+                };
+
+                // Tambahkan jawaban untuk setiap soal
+                for (let i = 1; i <= 10; i++) {
+                    const questionName = `q${i}`;
+                    data[`answer${i}`] = studentData.answers[questionName] || '';
+                }
+
+                // Kirim data ke Google Sheets
+                const response = await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                return response;
+            }
+
+            // Tambahkan lebih banyak floating icons secara dinamis
+            function createRandomIcon() {
+                const icons = ['fa-star', 'fa-calculator', 'fa-shapes', 'fa-ruler', 'fa-cube', 'fa-graduation-cap', 'fa-book', 'fa-pencil-ruler', 'fa-chart-line', 'fa-square-root-alt'];
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                const iconElement = document.createElement('i');
+                iconElement.className = `fas ${randomIcon} floating-icon`;
+                iconElement.style.top = Math.random() * 100 + '%';
+                iconElement.style.left = Math.random() * 100 + '%';
+                iconElement.style.animationDuration = (15 + Math.random() * 15) + 's';
+                iconElement.style.animationDelay = Math.random() * 5 + 's';
+                iconElement.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+                document.body.appendChild(iconElement);
+
+                // Hapus icon setelah animasi selesai
+                setTimeout(() => {
+                    iconElement.remove();
+                }, 30000);
+            }
+
+            // Buat 3 icon tambahan setiap 5 detik
+            setInterval(createRandomIcon, 5000);
+        });
+    </script>
+</body>
+
+</html>

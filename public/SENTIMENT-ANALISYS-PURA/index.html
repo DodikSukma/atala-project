@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentimen Pura Bali | IndoBERT AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Lora', 'serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        'bali-gold': '#B8860B',
+                        'bali-gold-light': '#D4AF37',
+                        'bali-dark': '#2C2A24',
+                        'bali-cream': '#FAF8F5',
+                        'bali-red': '#8B3A3A',
+                        'bali-green': '#4A5D23',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pattern-bg {
+            background-color: #FAF8F5;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8860b' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+
+<body class="pattern-bg text-bali-dark antialiased">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full bg-bali-cream/95 backdrop-blur-sm z-50 border-b border-bali-gold/30 shadow-sm transition-all">
+        <div class="h-1 bg-gradient-to-r from-bali-gold to-bali-red w-full"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer">
+                    <i class="fa-solid fa-om text-bali-gold text-3xl"></i>
+                    <span class="font-serif font-bold text-2xl tracking-wide text-bali-dark">Pura<span class="text-bali-gold">Sentimen</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#metode" class="text-bali-dark/80 hover:text-bali-gold font-medium tracking-wide transition-all">Metodologi</a>
+                    <a href="#dataset" class="text-bali-dark/80 hover:text-bali-gold font-medium tracking-wide transition-all">Dataset</a>
+                </div>
+                <div>
+                    <a href="#demo" class="bg-bali-gold hover:bg-bali-gold-light text-white px-6 py-2.5 rounded-sm font-semibold tracking-wide transition-all shadow-md">
+                        Coba Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-40 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
+        <div class="text-center max-w-4xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 border border-bali-gold/50 rounded-full text-bali-gold text-sm font-semibold tracking-widest mb-8 uppercase bg-bali-cream">
+                <i class="fa-solid fa-seedling"></i> Teknologi IndoBERT-Base
+            </div>
+            <h1 class="text-5xl md:text-6xl font-serif font-bold text-bali-dark leading-tight mb-6">
+                Analisis Sentimen Ulasan Wisata <br class="hidden md:block" />
+                <span class="text-bali-gold italic">Pura Sad Kahyangan</span>
+            </h1>
+            <p class="text-lg md:text-xl text-bali-dark/70 mb-12 leading-relaxed max-w-3xl mx-auto font-light">
+                Platform kecerdasan buatan untuk mengklasifikasikan opini pengunjung (Positif, Netral, Negatif) secara otomatis menggunakan model Deep Learning <strong class="text-bali-gold font-medium">IndoBERT</strong> yang telah dilatih dengan ribuan data ulasan nyata.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#demo" class="bg-bali-gold hover:bg-bali-gold-light text-white px-8 py-3.5 rounded-sm font-semibold text-lg transition-all shadow-lg flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-leaf"></i> Mulai Demo
+                </a>
+                <a href="https://drive.google.com/file/d/1Veb9BCYfyjiCOKOVfecPB9LOCB4t5TW-/view?usp=sharing" target="_blank" class="bg-white text-bali-dark border border-bali-gold/40 px-8 py-3.5 rounded-sm font-semibold text-lg transition-all shadow-sm hover:bg-bali-cream flex items-center justify-center gap-3">
+                    <i class="fa-brands fa-python text-xl text-bali-gold"></i> Lihat Kode (.ipynb)
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metode Section -->
+    <section id="metode" class="py-24 bg-white border-y border-bali-gold/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <i class="fa-solid fa-fan text-bali-gold text-2xl mb-4 opacity-70"></i>
+                <h2 class="text-4xl font-serif font-bold text-bali-dark mb-4">Arsitektur & Metodologi</h2>
+                <div class="w-24 h-1 bg-bali-gold mx-auto mb-6"></div>
+                <p class="text-bali-dark/70 max-w-2xl mx-auto font-light">Sistem ini mengandalkan pendekatan Natural Language Processing tingkat lanjut untuk memahami konteks bahasa Indonesia, slang, dan emoji secara presisi.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-bali-cream p-10 border border-bali-gold/20 rounded-sm hover:shadow-lg transition-all text-center">
+                    <div class="w-16 h-16 mx-auto bg-bali-gold/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-brain text-2xl text-bali-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-bali-dark mb-3">Model IndoBERT</h3>
+                    <p class="text-bali-dark/70 text-sm leading-relaxed font-light">Menggunakan model BERT yang dilatih khusus dengan corpus bahasa Indonesia oleh IndoBenchmark, memungkinkan pemahaman kalimat secara komprehensif dan dua arah.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-bali-cream p-10 border border-bali-gold/20 rounded-sm hover:shadow-lg transition-all text-center">
+                    <div class="w-16 h-16 mx-auto bg-bali-gold/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-book-open text-2xl text-bali-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-bali-dark mb-3">Lexicon-Based</h3>
+                    <p class="text-bali-dark/70 text-sm leading-relaxed font-light">Pelabelan awal 8.658 ulasan dilakukan secara otomatis menggunakan pendekatan Leksikon dengan mencocokkan kamus kata positif & negatif yang terkalibrasi.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-bali-cream p-10 border border-bali-gold/20 rounded-sm hover:shadow-lg transition-all text-center">
+                    <div class="w-16 h-16 mx-auto bg-bali-gold/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-chart-pie text-2xl text-bali-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-bali-dark mb-3">Akurasi 93.92%</h3>
+                    <p class="text-bali-dark/70 text-sm leading-relaxed font-light">Model di-fine-tuning dengan data latih 70%, validasi 15%, dan uji 15%. Evaluasi klasifikasi mencapai akurasi sebesar 93.92% dengan keseimbangan skor tinggi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Preprocessing Section -->
+    <section id="preprocessing" class="py-24 pattern-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <i class="fa-solid fa-om text-bali-gold text-2xl mb-4 opacity-70"></i>
+                <h2 class="text-4xl font-serif font-bold text-bali-dark mb-4">Prapemrosesan Teks</h2>
+                <div class="w-24 h-1 bg-bali-gold mx-auto mb-6"></div>
+                <p class="text-bali-dark/70 max-w-2xl mx-auto font-light">Sebelum analisis cerdas dimulai, data ulasan akan melalui 5 tahapan pembersihan untuk meningkatkan kualitas ekstraksi informasi.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                <!-- Step 1 -->
+                <div class="bg-white p-6 border border-bali-gold/20 rounded-sm shadow-sm text-center relative">
+                    <div class="text-3xl mb-3">✨</div>
+                    <h4 class="font-serif font-bold text-bali-dark text-sm mb-2">1. Cleansing</h4>
+                    <p class="text-xs text-bali-dark/60">Penerjemahan emoji dan pembersihan tautan.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="bg-white p-6 border border-bali-gold/20 rounded-sm shadow-sm text-center relative">
+                    <div class="text-3xl mb-3">🔡</div>
+                    <h4 class="font-serif font-bold text-bali-dark text-sm mb-2">2. Case Folding</h4>
+                    <p class="text-xs text-bali-dark/60">Penyetaraan karakter ke huruf kecil.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="bg-white p-6 border border-bali-gold/20 rounded-sm shadow-sm text-center relative">
+                    <div class="text-3xl mb-3">✂️</div>
+                    <h4 class="font-serif font-bold text-bali-dark text-sm mb-2">3. Tokenisasi</h4>
+                    <p class="text-xs text-bali-dark/60">Pemecahan kalimat menjadi kesatuan kata.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="bg-white p-6 border border-bali-gold/20 rounded-sm shadow-sm text-center relative">
+                    <div class="text-3xl mb-3">🍃</div>
+                    <h4 class="font-serif font-bold text-bali-dark text-sm mb-2">4. Stopword</h4>
+                    <p class="text-xs text-bali-dark/60">Penghapusan konjungsi yang tidak relevan.</p>
+                </div>
+                <!-- Step 5 -->
+                <div class="bg-white p-6 border border-bali-gold/20 rounded-sm shadow-sm text-center">
+                    <div class="text-3xl mb-3">🌱</div>
+                    <h4 class="font-serif font-bold text-bali-dark text-sm mb-2">5. Stemming</h4>
+                    <p class="text-xs text-bali-dark/60">Pemugaran kata menjadi bentuk dasar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Example -->
+    <section id="dataset" class="py-24 bg-white border-y border-bali-gold/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <i class="fa-solid fa-database text-bali-gold text-2xl mb-4 opacity-70"></i>
+                <h2 class="text-4xl font-serif font-bold text-bali-dark mb-4">Cuplikan Dataset</h2>
+                <div class="w-24 h-1 bg-bali-gold mx-auto mb-6"></div>
+            </div>
+
+            <div class="bg-white border border-bali-gold/20 shadow-sm rounded-sm overflow-x-auto">
+                <table class="min-w-full text-left">
+                    <thead class="bg-bali-cream border-b border-bali-gold/20">
+                        <tr>
+                            <th class="px-6 py-5 font-serif font-bold text-bali-dark">Teks Asli</th>
+                            <th class="px-6 py-5 font-serif font-bold text-bali-dark">Teks Bersih (Input)</th>
+                            <th class="px-6 py-5 font-serif font-bold text-bali-dark text-center">Label Sentimen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-bali-gold/10">
+                        <tr class="hover:bg-bali-cream/50 transition-colors">
+                            <td class="px-6 py-5 text-bali-dark/80 font-light">Pura Uluwatu sangat indah, pemandangan sunset luar biasa! 😍</td>
+                            <td class="px-6 py-5 text-sm text-bali-gold font-light">pura uluwatu sangat indah pandang sunset luar biasa wajah senyum mata hati</td>
+                            <td class="px-6 py-5 text-center">
+                                <span class="bg-bali-green/10 text-bali-green px-4 py-1 rounded-full font-semibold text-xs border border-bali-green/20">Positif</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-bali-cream/50 transition-colors">
+                            <td class="px-6 py-5 text-bali-dark/80 font-light">Biasa saja sih perjalanannya jauh +- 2 jam dari denpasar.</td>
+                            <td class="px-6 py-5 text-sm text-bali-gold font-light">biasa jalan jauh jam denpasar</td>
+                            <td class="px-6 py-5 text-center">
+                                <span class="bg-bali-dark/5 text-bali-dark/70 px-4 py-1 rounded-full font-semibold text-xs border border-bali-dark/10">Netral</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-bali-cream/50 transition-colors">
+                            <td class="px-6 py-5 text-bali-dark/80 font-light">Tempatnya kotor banyak sampah 😡, awas monyet galak!!</td>
+                            <td class="px-6 py-5 text-sm text-bali-gold font-light">tempat kotor banyak sampah wajah cemberut awas monyet galak</td>
+                            <td class="px-6 py-5 text-center">
+                                <span class="bg-bali-red/10 text-bali-red px-4 py-1 rounded-full font-semibold text-xs border border-bali-red/20">Negatif</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Demo Section -->
+    <section id="demo" class="py-24 bg-bali-dark relative overflow-hidden border-t-[4px] border-bali-gold">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-white rounded-sm shadow-2xl p-8 md:p-12 relative">
+                <!-- Ornament corner -->
+                <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-bali-gold m-4"></div>
+                <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-bali-gold m-4"></div>
+                <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-bali-gold m-4"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-bali-gold m-4"></div>
+
+                <div class="text-center mb-10">
+                    <i class="fa-solid fa-sparkles text-bali-gold text-3xl mb-4"></i>
+                    <h2 class="text-4xl font-serif font-bold text-bali-dark mb-2">Simulasi AI Sentimen</h2>
+                    <p class="text-bali-dark/60 font-light">Ketik ulasan dengan kalimat kasual, biarkan IndoBERT mengevaluasi sentimennya secara cerdas.</p>
+                </div>
+
+                <!-- Input Area -->
+                <div class="mb-8 relative z-10">
+                    <label class="block text-sm font-semibold text-bali-dark mb-3 uppercase tracking-wider text-center">Tuliskan Ulasan</label>
+                    <textarea id="reviewText" rows="4"
+                        class="w-full p-5 bg-bali-cream border border-bali-gold/30 rounded-sm focus:border-bali-gold focus:ring-1 focus:ring-bali-gold outline-none transition-all resize-none text-bali-dark font-light text-lg"
+                        placeholder="Contoh: Arsitektur puranya sangat megah, nuansa spiritualnya terasa kuat. Damai sekali. 🙏"></textarea>
+                </div>
+
+                <button type="button" id="btnPredict" onclick="analyzeSentiment()"
+                    class="w-full bg-bali-gold hover:bg-bali-gold-light text-white font-semibold text-lg tracking-wide py-4 rounded-sm transition-all shadow-md flex justify-center items-center gap-3 relative z-10">
+                    <span id="btnText">Mulai Analisis</span>
+                    <i id="btnIcon" class="fa-solid fa-arrow-right"></i>
+                    <!-- Spinner -->
+                    <svg id="loadingIcon" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+
+                <!-- Result Area (Hidden by default) -->
+                <div id="resultBox" class="hidden mt-10 transition-all duration-500 opacity-0 transform translate-y-4">
+                    <div class="border-t border-bali-gold/30 pt-8">
+                        <h3 class="text-center text-sm font-bold text-bali-gold uppercase tracking-widest mb-6">Klasifikasi Model</h3>
+
+                        <div class="flex flex-col items-center justify-center mb-8">
+                            <div id="sentimentBadge" class="px-10 py-3 rounded-full shadow-sm text-2xl font-serif font-bold text-bali-dark flex items-center gap-3 border">
+                                <!-- Diisi JS -->
+                            </div>
+                        </div>
+
+                        <div class="bg-bali-cream p-6 rounded-sm border border-bali-gold/20 text-center">
+                            <p class="text-xs font-semibold text-bali-dark/50 mb-2 uppercase tracking-widest">Teks Terproses (Input Model)</p>
+                            <p id="cleanTextDisplay" class="text-bali-dark/80 font-light italic leading-relaxed">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 relative z-10">
+                 <a href="https://drive.google.com/file/d/1Veb9BCYfyjiCOKOVfecPB9LOCB4t5TW-/view?usp=sharing" target="_blank" class="inline-flex bg-transparent border border-white/30 text-white hover:bg-white/10 px-8 py-3 rounded-sm font-light tracking-wide transition-all items-center justify-center gap-3">
+                    <i class="fa-brands fa-python text-xl text-bali-gold"></i> Akses Source Code (Jupyter)
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-bali-dark py-12 text-center border-t border-bali-gold/20">
+        <h2 class="text-2xl font-serif font-bold text-white mb-2 tracking-wide">Pura<span class="text-bali-gold">Sentimen</span></h2>
+        <p class="font-light text-white/60 text-sm">
+            Developed by <span class="text-bali-gold font-medium">Atala Project</span>
+        </p>
+    </footer>
+
+    <!-- Logic API -->
+    <script>
+        let hideTimeout;
+
+        async function analyzeSentiment() {
+            const textInput = document.getElementById('reviewText').value;
+            if (!textInput.trim()) return alert("Silakan masukkan teks ulasan terlebih dahulu.");
+
+            const btnPredict = document.getElementById('btnPredict');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+            const loadingIcon = document.getElementById('loadingIcon');
+            const resultBox = document.getElementById('resultBox');
+            const sentimentBadge = document.getElementById('sentimentBadge');
+            const cleanTextDisplay = document.getElementById('cleanTextDisplay');
+
+            // Loading state
+            btnPredict.disabled = true;
+            btnText.innerText = "Mengevaluasi...";
+            btnIcon.classList.add('hidden');
+            loadingIcon.classList.remove('hidden');
+
+            clearTimeout(hideTimeout);
+            resultBox.classList.add('opacity-0', 'translate-y-4');
+            hideTimeout = setTimeout(() => { resultBox.classList.add('hidden'); }, 300);
+
+            try {
+                // Simulasi Endpoint FastAPI (Dummy Data)
+                await new Promise(resolve => setTimeout(resolve, 1500)); 
+                
+                let sentimen = "Netral";
+                const lowerInput = textInput.toLowerCase();
+                
+                if (lowerInput.match(/(bagus|indah|keren|mantap|luar biasa|😍|🥰|👍|memuaskan|damai|megah)/)) {
+                    sentimen = "Positif";
+                } else if (lowerInput.match(/(jelek|buruk|kotor|mahal|kecewa|😡|👎|kurang|sampah)/)) {
+                    sentimen = "Negatif";
+                }
+
+                const data = {
+                    teks_bersih: lowerInput.replace(/[^a-z\s]/g, '').trim() || textInput,
+                    sentimen: sentimen
+                };
+
+                btnPredict.disabled = false;
+                btnText.innerText = "Mulai Analisis";
+                btnIcon.classList.remove('hidden');
+                loadingIcon.classList.add('hidden');
+
+                cleanTextDisplay.innerText = data.teks_bersih || "- (kosong) -";
+
+                sentimentBadge.className = "px-10 py-3 rounded-full shadow-sm text-2xl font-serif font-bold flex items-center gap-3 border";
+
+                if (data.sentimen === "Positif") {
+                    sentimentBadge.innerHTML = `<i class="fa-solid fa-seedling"></i> POSITIF`;
+                    sentimentBadge.classList.add("bg-bali-green/10", "text-bali-green", "border-bali-green/30");
+                } else if (data.sentimen === "Negatif") {
+                    sentimentBadge.innerHTML = `<i class="fa-solid fa-fire"></i> NEGATIF`;
+                    sentimentBadge.classList.add("bg-bali-red/10", "text-bali-red", "border-bali-red/30");
+                } else {
+                    sentimentBadge.innerHTML = `<i class="fa-solid fa-water"></i> NETRAL`;
+                    sentimentBadge.classList.add("bg-bali-dark/5", "text-bali-dark", "border-bali-dark/10");
+                }
+
+                clearTimeout(hideTimeout);
+                resultBox.classList.remove('hidden');
+                setTimeout(() => {
+                    resultBox.classList.remove('opacity-0', 'translate-y-4');
+                }, 50);
+
+            } catch (error) {
+                alert("Terjadi kesalahan sistem.");
+                btnPredict.disabled = false;
+                btnText.innerText = "Mulai Analisis";
+                btnIcon.classList.remove('hidden');
+                loadingIcon.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

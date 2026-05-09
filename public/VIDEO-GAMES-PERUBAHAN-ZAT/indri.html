@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 Ayo Memahami Energi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #C0B3A0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px) rotate(-2deg); }
+            40%, 80% { transform: translateX(10px) rotate(2deg); }
+        }
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes flashGreen {
+            0% { background-color: rgba(34, 197, 94, 0); }
+            50% { background-color: rgba(34, 197, 94, 0.4); }
+            100% { background-color: rgba(34, 197, 94, 0); }
+        }
+        .flash-green-overlay {
+            animation: flashGreen 1s ease-out;
+        }
+
+        @keyframes flashRed {
+            0% { background-color: rgba(239, 68, 68, 0); }
+            50% { background-color: rgba(239, 68, 68, 0.4); }
+            100% { background-color: rgba(239, 68, 68, 0); }
+        }
+        .flash-red-overlay {
+            animation: flashRed 1s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.3s ease-out;
+        }
+
+        @keyframes lightning {
+            0% { opacity: 0; transform: scale(0.5); }
+            10% { opacity: 1; transform: scale(1.2); }
+            20% { opacity: 0; }
+            30% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; }
+        }
+        .lightning-effect {
+            animation: lightning 0.5s ease-out forwards;
+        }
+
+        @keyframes float-icon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        .animate-float {
+            animation: float-icon 4s ease-in-out infinite;
+        }
+
+        /* 3D Button styles for game buzzers */
+        .btn-3d {
+            transition: all 0.1s;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+        }
+        .btn-3d:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 rgba(0,0,0,0.2);
+        }
+        
+        .btn-3d-red { box-shadow: 0 8px 0 #991b1b; }
+        .btn-3d-red:active { box-shadow: 0 0px 0 #991b1b; }
+        
+        .btn-3d-green { box-shadow: 0 8px 0 #166534; }
+        .btn-3d-green:active { box-shadow: 0 0px 0 #166534; }
+
+        .btn-answer { box-shadow: 0 6px 0 #ca8a04; }
+        .btn-answer:active { box-shadow: 0 0px 0 #ca8a04; transform: translateY(6px); }
+
+        /* Fancy Premium Buttons for Start Screen */
+        .btn-premium-play {
+            background: linear-gradient(180deg, #fef08a 0%, #ea580c 100%);
+            box-shadow: 0 8px 0 #c2410c, 0 15px 25px rgba(234, 88, 12, 0.4);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-premium-play:active {
+            transform: translateY(8px) scale(0.98);
+            box-shadow: 0 0px 0 #c2410c, 0 5px 10px rgba(234, 88, 12, 0.4);
+        }
+        .btn-premium-play:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-premium-profil {
+            background: linear-gradient(180deg, #67e8f9 0%, #0284c7 100%);
+            box-shadow: 0 8px 0 #0369a1, 0 15px 25px rgba(2, 132, 199, 0.4);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-premium-profil:active {
+            transform: translateY(8px) scale(0.98);
+            box-shadow: 0 0px 0 #0369a1, 0 5px 10px rgba(2, 132, 199, 0.4);
+        }
+        .btn-premium-profil:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Lock screen for inactive state */
+        .locked {
+            opacity: 0.5;
+            pointer-events: none;
+            filter: grayscale(0.5);
+        }
+
+        /* Avatar glow */
+        .glow-active { box-shadow: 0 0 25px 5px currentColor; }
+        
+        #tug-marker {
+            transition: left 0.8s cubic-bezier(0.68, -0.55, 0.26, 1.55); /* Elastic bounce */
+        }
+
+        /* --- PARALLAX BACKGROUND STYLES --- */
+        #parallax-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            overflow: hidden;
+        }
+
+        .paralax {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/background.jpg");
+            background-size: cover;
+            background-position: center; 
+        }
+
+        .paralax .layer {
+            position: absolute;
+            width: 400%;
+        }
+
+        .paralax .foreground {
+            height: 50%;                        
+            bottom: 0;  
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/foreground.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 30s linear infinite;
+        }
+
+        .paralax .hills {
+            height: 40%;                        
+            bottom: 15%;    
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/hills.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 60s linear infinite;
+        }
+
+        .paralax .rocks1 {
+            height: 35%;                        
+            bottom: 25%;    
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/rocks1.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 120s linear infinite;
+        }
+
+        .paralax .rocks2 {
+            height: 40%;                        
+            bottom: 15%;    
+            background: url("https://www.testomic.com/public/codepen-assets/img/paralax/rocks2.png") repeat-x;
+            background-size: 25% 100%;
+            animation: slideshow 240s linear infinite;
+        }
+
+        @keyframes slideshow {
+            0%   { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Profile Modal Pulse Animation */
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+        }
+        .animate-pulse-green {
+            animation: pulse-green 2s infinite;
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col items-center pb-10">
+
+    <!-- Audio Element for Background Music -->
+    <audio id="bgm-audio" loop>
+        <source src="bacground.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Top Left Controls: Back & BGM -->
+    <div class="fixed top-4 left-4 z-[250] flex flex-col items-start gap-2">
+        <button id="btn-back-home" class="hidden bg-red-500/90 backdrop-blur hover:bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg border-2 border-red-300 transition-colors flex items-center gap-2 hover:scale-105">
+            🏠 Kembali
+        </button>
+        <button id="btn-toggle-bgm" class="bg-white/90 backdrop-blur hover:bg-white text-emerald-700 text-sm font-bold px-4 py-2 rounded-full shadow-lg border-2 border-emerald-500 transition-colors flex items-center gap-2 hover:scale-105">
+            🔈 Musik: OFF
+        </button>
+    </div>
+
+    <!-- Parallax Background (Always Active) -->
+    <div id="parallax-bg" class="content">
+        <div class="paralax">
+            <div class="layer rocks2"></div>
+            <div class="layer rocks1"></div>
+            <div class="layer hills"></div>
+            <div class="layer foreground"></div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- START SCREEN (UI BARU & LEBIH RAPI) -->
+    <!-- ========================================== -->
+    <div id="start-screen" class="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center p-4 md:p-8 overflow-y-auto">
+        
+        <!-- Elemen Dekoratif Mengambang -->
+        <div class="absolute top-10 left-[10%] animate-float text-6xl opacity-70 drop-shadow-lg hidden md:block">💡</div>
+        <div class="absolute bottom-20 right-[15%] animate-float text-7xl opacity-70 drop-shadow-lg hidden md:block" style="animation-delay: 1s;">⚡</div>
+        <div class="absolute top-32 right-[10%] animate-float text-5xl opacity-70 drop-shadow-lg hidden md:block" style="animation-delay: 2s;">🌟</div>
+
+        <!-- Container Utama (Kartu Kaca) -->
+        <div class="bg-white/10 backdrop-blur-xl border border-white/40 rounded-[2.5rem] p-6 md:p-12 flex flex-col items-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-5xl w-full relative overflow-hidden mt-10 md:mt-0">
+            <!-- Glow Latar Belakang di dalam Kartu -->
+            <div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
+
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-wide mb-2 drop-shadow-[0_4px_4px_rgba(0,0,0,0.7)] text-center relative z-10">
+                💡 Ayo Memahami Energi
+            </h1>
+            <p class="text-white text-lg md:text-2xl font-bold tracking-widest uppercase mb-8 drop-shadow-md text-center relative z-10 bg-black/30 px-6 py-2 rounded-full inline-block">
+                Transformasi Energi
+            </p>
+            
+            <!-- Container Video (Lebih Proporsional) -->
+            <div class="w-full max-w-3xl aspect-video rounded-3xl overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)] border-[6px] border-white/90 mb-10 bg-black flex-shrink-0 z-10 relative">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/EAAwIH7OUC0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6 items-center z-10 w-full justify-center">
+                <!-- Tombol Mulai Game (Premium) -->
+                <button id="btn-start-game" class="btn-premium-play text-white font-black text-2xl md:text-4xl py-4 px-10 md:py-5 md:px-14 rounded-full border-[3px] border-yellow-200 transition-all uppercase tracking-widest animate-bounce flex-shrink-0 w-full md:w-auto text-center flex items-center justify-center gap-2">
+                    ▶ MULAI GAME
+                </button>
+                
+                <!-- Tombol Profil Pengembang (Premium) -->
+                <button id="btn-show-profil" class="btn-premium-profil text-white font-black text-xl md:text-2xl py-4 px-8 md:py-5 md:px-10 rounded-full border-[3px] border-cyan-200 transition-all flex items-center justify-center gap-3 uppercase tracking-widest w-full md:w-auto text-center">
+                    <svg class="w-7 h-7 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    PROFIL
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ========================================== -->
+
+    <!-- MODAL PROFIL PENGEMBANG (GLASSMORPHISM TAILWIND) -->
+    <div id="modal-profil" class="fixed inset-0 z-[300] bg-emerald-900/60 backdrop-blur-md hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300 overflow-y-auto">
+        
+        <!-- Header Profil -->
+        <div class="w-full max-w-4xl bg-gradient-to-br from-white/95 to-emerald-50/95 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-6 md:p-10 mb-6 relative mt-10 md:mt-0">
+            <button class="close-profil absolute top-4 right-4 text-gray-500 hover:text-red-500 transition bg-gray-100 hover:bg-gray-200 rounded-full p-2 shadow-sm">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="text-center mb-8">
+                <h1 class="text-2xl md:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-500 mb-2">Media Pembelajaran Berbasis Microlearning dan PBL</h1>
+                <p class="text-emerald-800 font-medium">Inovasi Pembelajaran Digital untuk Masa Depan Pendidikan</p>
+            </div>
+
+            <!-- Profil Mahasiswa -->
+            <div class="text-center">
+                <div class="w-40 h-40 mx-auto mb-6 relative">
+                    <div class="w-full h-full rounded-full p-1 bg-gradient-to-br from-emerald-200 to-emerald-500 animate-pulse-green">
+                        <img src="Profil.png" alt="Profil Mahasiswa" class="w-full h-full rounded-full object-cover border-4 border-white shadow-inner bg-white">
+                    </div>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-700 to-emerald-400 mb-6">Ni Luh Putu Andika, S.Pd.,Gr</h2>
+                
+                <div class="flex flex-col gap-2 items-center text-gray-700 font-medium bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100 max-w-lg mx-auto shadow-sm">
+                    <div class="flex items-center gap-3"><svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Bangli, 18 Mei 1999</div>
+                    <div class="flex items-center gap-3"><svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m3-4h1m-1 4h1m-5 8h8"></path></svg> Fakultas Pascasarjana</div>
+                    <div class="flex items-center gap-3"><svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> S2 Teknologi Pendidikan</div>
+                    <div class="flex items-center gap-3"><svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg> Universitas Pendidikan Ganesha</div>
+                    <div class="flex items-center gap-3"><svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> putuandika22552@gmail.com</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dosen Pembimbing Cards -->
+        <div class="w-full max-w-4xl bg-gradient-to-br from-white/95 to-emerald-50/95 backdrop-blur-xl border border-white shadow-2xl rounded-3xl p-6 md:p-8">
+            <h3 class="text-xl font-bold text-center text-emerald-800 mb-6 relative">Dosen Pembimbing
+                <span class="block w-16 h-1 bg-emerald-400 mx-auto mt-2 rounded-full"></span>
+            </h3>
+            
+            <div class="flex flex-col gap-4">
+                <!-- Card Dosen 1 -->
+                <div onclick="openDosenModal('modal-dosen1')" class="flex flex-col md:flex-row items-center p-4 bg-white hover:bg-emerald-50 border border-emerald-100 shadow-sm hover:shadow-lg rounded-2xl transition-all cursor-pointer group">
+                    <div class="w-full md:w-36 h-24 rounded-xl overflow-hidden border-2 border-white shadow-md flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                        <img src="dosen1.jpg" alt="Prof. Ketut Agustini" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 bg-gray-200">
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <h5 class="font-bold text-lg text-emerald-900">Prof. Dr. Ketut Agustini, S.Si., M.Cs.</h5>
+                        <span class="text-gray-600 text-sm">Wakil Dekan III FTK Undiksha</span>
+                    </div>
+                    <div class="mt-4 md:mt-0 text-xs font-bold text-emerald-500 bg-emerald-100 px-3 py-1.5 rounded-full flex items-center gap-1 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Biografi
+                    </div>
+                </div>
+
+                <!-- Card Dosen 2 -->
+                <div onclick="openDosenModal('modal-dosen2')" class="flex flex-col md:flex-row items-center p-4 bg-white hover:bg-emerald-50 border border-emerald-100 shadow-sm hover:shadow-lg rounded-2xl transition-all cursor-pointer group">
+                    <div class="w-full md:w-36 h-24 rounded-xl overflow-hidden border-2 border-white shadow-md flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                        <img src="dosen2.jpg" alt="Prof. I Made Tegeh" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 bg-gray-200">
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <h5 class="font-bold text-lg text-emerald-900">Prof. Dr. I Made Tegeh, S.Pd., M.Pd.</h5>
+                        <span class="text-gray-600 text-sm">Ketua LPMPP Undiksha</span>
+                    </div>
+                    <div class="mt-4 md:mt-0 text-xs font-bold text-emerald-500 bg-emerald-100 px-3 py-1.5 rounded-full flex items-center gap-1 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Biografi
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DOSEN 1 -->
+    <div id="modal-dosen1" class="fixed inset-0 z-[400] bg-black/50 backdrop-blur-sm hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl relative">
+            <div class="bg-gradient-to-r from-emerald-100 to-white p-4 flex justify-between items-center border-b border-gray-100">
+                <h5 class="font-bold text-gray-700">Biografi Dosen Pembimbing I</h5>
+                <button onclick="closeDosenModal('modal-dosen1')" class="text-gray-400 hover:text-red-500 transition p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 md:p-8 text-gray-600 text-justify leading-relaxed">
+                <img src="dosen1.jpg" alt="Prof. Ketut Agustini" class="w-full h-48 md:h-64 object-cover rounded-2xl mb-6 shadow-md border-4 border-gray-50 bg-gray-200">
+                <h4 class="text-xl font-bold text-center text-emerald-900 mb-4">Prof. Dr. Ketut Agustini, S.Si., M.Cs.</h4>
+                <p class="mb-4">Lahir di Singaraja, Bali, pada 1 Agustus 1974. Beliau menyelesaikan pendidikan S1 Matematika di Universitas Airlangga, S2 Ilmu Komputer di Institut Pertanian Bogor, dan S3 Teknologi Pendidikan di Universitas Negeri Jakarta.</p>
+                <p>Saat ini beliau merupakan dosen Program Studi Pendidikan Teknik Informatika (S1) dan Program Magister Teknologi Pendidikan (S2) serta menjabat sebagai Wakil Dekan III Fakultas Teknik dan Kejuruan Universitas Pendidikan Ganesha. Bidang keahlian beliau meliputi teknologi pendidikan dan pengembangan pembelajaran berbasis teknologi.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DOSEN 2 -->
+    <div id="modal-dosen2" class="fixed inset-0 z-[400] bg-black/50 backdrop-blur-sm hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl relative">
+            <div class="bg-gradient-to-r from-emerald-100 to-white p-4 flex justify-between items-center border-b border-gray-100">
+                <h5 class="font-bold text-gray-700">Biografi Dosen Pembimbing II</h5>
+                <button onclick="closeDosenModal('modal-dosen2')" class="text-gray-400 hover:text-red-500 transition p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 md:p-8 text-gray-600 text-justify leading-relaxed max-h-[80vh] overflow-y-auto">
+                <img src="dosen2.jpg" alt="Prof. I Made Tegeh" class="w-full h-48 md:h-64 object-cover rounded-2xl mb-6 shadow-md border-4 border-gray-50 bg-gray-200">
+                <h4 class="text-xl font-bold text-center text-emerald-900 mb-4">Prof. Dr. I Made Tegeh, S.Pd., M.Pd.</h4>
+                <p class="mb-4">Lahir di Buleleng pada 15 Agustus 1971. Beliau menyelesaikan pendidikan S1 Teknologi Pendidikan di STKIP Negeri Singaraja pada tahun 2000, S2 Teknologi Pembelajaran di Universitas Negeri Malang pada tahun 2006, dan S3 Teknologi Pendidikan di Universitas Negeri Malang pada tahun 2009.</p>
+                <p class="mb-4">Saat ini beliau merupakan Guru Besar dan dosen pada Program Studi Teknologi Pendidikan (S1) Jurusan Ilmu Pendidikan, Psikologi, dan Bimbingan, Fakultas Ilmu Pendidikan. Serta dosen pengajar pada Program Pascasarjana khususnya S2 Teknologi Pendidikan di Universitas Pendidikan Ganesha.</p>
+                <p>Beliau menjabat sebagai Ketua Lembaga Penjaminan Mutu dan Pengembangan Pembelajaran (LPMPP) Universitas Pendidikan Ganesha. Bidang keahlian beliau meliputi teknologi pendidikan, teknologi pembelajaran, dan pengembangan media pembelajaran berbasis teknologi.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen Overlays for Effects -->
+    <div id="screen-overlay" class="fixed inset-0 pointer-events-none z-50"></div>
+    <div id="lightning-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center opacity-0 text-yellow-400 text-9xl">⚡</div>
+
+    <!-- Video Collapsible (Secondary) -->
+    <div class="fixed top-4 right-4 z-50 flex flex-col items-end">
+        <button id="toggle-video" class="bg-white/90 backdrop-blur text-sm font-bold px-4 py-2 rounded-full shadow-lg border-2 border-emerald-500 hover:bg-emerald-50 transition-colors">
+            📺 Video Bantuan
+        </button>
+        <div id="video-container" class="hidden mt-2 bg-white p-2 rounded-xl shadow-2xl border-4 border-emerald-500">
+            <iframe width="280" height="157" src="https://www.youtube.com/embed/EAAwIH7OUC0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="rounded-lg"></iframe>
+        </div>
+    </div>
+
+    <!-- 1. TOP BAR -->
+    <div class="sticky top-4 w-11/12 max-w-4xl bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-emerald-400 p-4 z-40 mt-4">
+        <div class="flex justify-between items-center text-center">
+            <div class="w-1/3 text-left pl-4 text-2xl md:text-4xl font-black text-red-500" id="score-left">0</div>
+            <div class="w-1/3">
+                <h1 class="text-2xl md:text-3xl font-black text-emerald-600 tracking-wide">💡 Ayo Memahami Energi</h1>
+                <div class="text-sm font-bold text-gray-400 mt-1 bg-gray-100 rounded-full inline-block px-3 py-1" id="question-progress">Siap-siap...</div>
+            </div>
+            <div class="w-1/3 text-right pr-4 text-2xl md:text-4xl font-black text-green-500" id="score-right">0</div>
+        </div>
+
+        <!-- 2. TUG OF WAR BAR -->
+        <div class="mt-4 px-4 pb-2 relative">
+            <div class="w-full h-4 bg-yellow-900 rounded-full relative overflow-hidden shadow-inner">
+                <!-- Rope texture -->
+                <div class="absolute inset-0 opacity-30" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, #000 5px, #000 10px);"></div>
+            </div>
+            <!-- Center Line -->
+            <div class="absolute top-0 bottom-0 left-1/2 w-1 bg-white/50 -translate-x-1/2 z-0"></div>
+            <!-- Tug Marker -->
+            <div id="tug-marker" class="absolute top-2 w-8 h-8 md:w-10 md:h-10 bg-yellow-400 border-4 border-white rounded-full shadow-lg -translate-y-1/2 -ml-4 md:-ml-5 flex items-center justify-center text-xs" style="left: 50%;">
+                ⭐
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GAME AREA -->
+    <div class="w-11/12 max-w-6xl mt-8 flex flex-col md:flex-row gap-6 md:gap-4 relative">
+        
+        <!-- LEFT TEAM -->
+        <div id="team-left" class="md:w-1/4 flex flex-col items-center bg-white/90 backdrop-blur-md rounded-3xl p-6 shadow-xl border-4 border-red-400 text-red-500 transition-all duration-300">
+            <h2 class="text-xl md:text-2xl font-bold mb-4 uppercase tracking-wider text-red-600 bg-red-100 px-4 py-1 rounded-full">Tim Merah</h2>
+            
+            <!-- Character Avatar -->
+            <img id="avatar-left" src="left_idle.gif" alt="Tim Merah Avatar" class="w-32 h-32 md:w-48 md:h-48 mb-6 transition-transform duration-300 object-contain drop-shadow-lg">
+            
+            <!-- 5. BUZZER -->
+            <button id="btn-buzz-left" class="btn-3d btn-3d-red w-32 h-32 md:w-40 md:h-40 bg-red-500 rounded-full border-8 border-red-300 flex items-center justify-center text-white text-3xl font-black mt-auto uppercase tracking-widest shadow-red-500/50">
+                BUZZ!
+            </button>
+        </div>
+
+        <!-- 3. QUESTION CARD (CENTER) -->
+        <div class="md:w-2/4 flex flex-col items-center z-10">
+            <div id="question-card" class="w-full bg-white/95 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-yellow-400 text-center relative overflow-hidden">
+                <!-- Decorative lightning -->
+                <div class="absolute top-0 left-0 w-16 h-16 opacity-20 transform -rotate-12 -ml-4 -mt-4 text-yellow-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/>
+                    </svg>
+                </div>
+                
+                <h3 id="question-text" class="text-2xl md:text-4xl font-black text-gray-800 leading-tight mb-8">
+                    Memuat pertanyaan...
+                </h3>
+
+                <!-- ANSWERS -->
+                <div id="answers-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 locked">
+                    <!-- Buttons generated by JS -->
+                </div>
+            </div>
+            
+            <!-- Turn Indicator -->
+            <div id="turn-indicator" class="mt-6 bg-yellow-400 text-yellow-900 px-6 py-2 rounded-full font-bold text-lg shadow-md border-2 border-yellow-500 hidden animate-pulse">
+                Menunggu Jawaban...
+            </div>
+        </div>
+
+        <!-- RIGHT TEAM -->
+        <div id="team-right" class="md:w-1/4 flex flex-col items-center bg-white/90 backdrop-blur-md rounded-3xl p-6 shadow-xl border-4 border-green-500 text-green-500 transition-all duration-300">
+            <h2 class="text-xl md:text-2xl font-bold mb-4 uppercase tracking-wider text-green-700 bg-green-100 px-4 py-1 rounded-full">Tim Hijau</h2>
+            
+            <!-- Character Avatar -->
+            <img id="avatar-right" src="right_idle.gif" alt="Tim Hijau Avatar" class="w-32 h-32 md:w-48 md:h-48 mb-6 transition-transform duration-300 object-contain drop-shadow-lg">
+            
+            <!-- 5. BUZZER -->
+            <button id="btn-buzz-right" class="btn-3d btn-3d-green w-32 h-32 md:w-40 md:h-40 bg-green-500 rounded-full border-8 border-green-300 flex items-center justify-center text-white text-3xl font-black mt-auto uppercase tracking-widest shadow-green-500/50">
+                BUZZ!
+            </button>
+        </div>
+
+    </div>
+
+    <!-- WIN OVERLAY -->
+    <div id="win-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-white">
+        <h1 id="win-title" class="text-6xl md:text-8xl font-black mb-4 animate-bounce drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">TIM MENANG!</h1>
+        <img id="win-avatar" src="" alt="Winner" class="w-48 h-48 md:w-64 md:h-64 mb-8 animate-pop object-contain drop-shadow-2xl hidden">
+        <button onclick="location.reload()" class="bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold text-2xl px-10 py-4 rounded-full border-4 border-white shadow-[0_0_20px_rgba(250,204,21,0.5)] transition-transform hover:scale-110">
+            MAIN LAGI!
+        </button>
+    </div>
+
+    <script>
+        // --------------------------------------------------
+        // MODAL PROFIL PENGEMBANG LOGIC
+        // --------------------------------------------------
+        const modalProfil = document.getElementById('modal-profil');
+        const btnShowProfil = document.getElementById('btn-show-profil');
+        const btnsCloseProfil = document.querySelectorAll('.close-profil');
+
+        // Show Main Profile Modal
+        btnShowProfil.addEventListener('click', () => {
+            modalProfil.classList.remove('hidden');
+            // Small delay for fade-in effect
+            setTimeout(() => modalProfil.classList.remove('opacity-0'), 10);
+        });
+
+        // Close Main Profile Modal
+        btnsCloseProfil.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modalProfil.classList.add('opacity-0');
+                setTimeout(() => modalProfil.classList.add('hidden'), 300);
+            });
+        });
+
+        // Open Dosen Modal (and hide Main Profile to keep screen clean)
+        function openDosenModal(modalId) {
+            modalProfil.classList.add('hidden'); // Hide profile modal temp
+            const dosenModal = document.getElementById(modalId);
+            dosenModal.classList.remove('hidden');
+            setTimeout(() => dosenModal.classList.remove('opacity-0'), 10);
+        }
+
+        // Close Dosen Modal (and go back to Main Profile)
+        function closeDosenModal(modalId) {
+            const dosenModal = document.getElementById(modalId);
+            dosenModal.classList.add('opacity-0');
+            setTimeout(() => {
+                dosenModal.classList.add('hidden');
+                // Show profile modal again
+                modalProfil.classList.remove('hidden');
+            }, 300);
+        }
+
+        // --------------------------------------------------
+        // 9. QUESTIONS DATA (DYNAMIC)
+        // --------------------------------------------------
+        const questionsData = [
+            { question: "Apa yang dimaksud dengan transformasi energi?", options: ["Menghilangkan energi", "Membuat energi baru", "Mengubah bentuk energi", "Menyimpan energi"], correctIndex: 2 },
+            { question: "Energi yang tersimpan di dalam makanan dan baterai disebut energi...", options: ["Kimia", "Listrik", "Panas", "Gerak"], correctIndex: 0 },
+            { question: "Pada kipas angin, terjadi perubahan dari energi listrik menjadi energi...", options: ["Panas", "Cahaya", "Bunyi", "Gerak"], correctIndex: 3 },
+            { question: "Energi yang belum digunakan (seperti pada ketapel yang ditarik) disebut...", options: ["Energi Kinetik", "Energi Potensial", "Energi Panas", "Energi Bunyi"], correctIndex: 1 },
+            { question: "Alat apa yang dapat mengubah energi cahaya matahari menjadi energi listrik?", options: ["Pembangkit Air", "Kipas Angin", "Panel Surya", "Kompor Gas"], correctIndex: 2 },
+            { question: "Pada kendaraan bermotor, energi sampingan yang sering tidak dimanfaatkan adalah energi...", options: ["Listrik & Cahaya", "Panas & Bunyi", "Kimia & Potensial", "Gerak & Angin"], correctIndex: 1 }
+        ];
+
+        // --------------------------------------------------
+        // CHARACTER STATES
+        // --------------------------------------------------
+        const characters = {
+            left: { idle: 'left_idle.gif', happy: 'left_happy.gif', wrong: 'left_wrong.gif' },
+            right: { idle: 'right_idle.gif', happy: 'right_happy.gif', wrong: 'right_wrong.gif' }
+        };
+
+        // --------------------------------------------------
+        // GAME STATE
+        // --------------------------------------------------
+        let currentQuestionIndex = 0;
+        let scores = { left: 0, right: 0 };
+        let tugPosition = 50; // 50 is center. 0 = left wins, 100 = right wins.
+        let activeTeam = null; 
+        let gameState = 'waiting_buzz'; // 'waiting_buzz' | 'answering' | 'showing_result' | 'game_over'
+        let audioContext;
+
+        // --------------------------------------------------
+        // AUDIO SYNTHESIS
+        // --------------------------------------------------
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioContext) return;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                osc.frequency.exponentialRampToValueAtTime(1046.50, audioContext.currentTime + 0.1); // C6
+                gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, audioContext.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.4);
+            } else if (type === 'buzz') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(300, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.1);
+            }
+        }
+
+        // --------------------------------------------------
+        // UI ELEMENTS
+        // --------------------------------------------------
+        const elQuestionText = document.getElementById('question-text');
+        const elAnswersContainer = document.getElementById('answers-container');
+        const elProgress = document.getElementById('question-progress');
+        const elScoreLeft = document.getElementById('score-left');
+        const elScoreRight = document.getElementById('score-right');
+        const elTugMarker = document.getElementById('tug-marker');
+        const elBtnBuzzLeft = document.getElementById('btn-buzz-left');
+        const elBtnBuzzRight = document.getElementById('btn-buzz-right');
+        const elTeamLeft = document.getElementById('team-left');
+        const elTeamRight = document.getElementById('team-right');
+        const elTurnIndicator = document.getElementById('turn-indicator');
+        const elOverlay = document.getElementById('screen-overlay');
+        const elLightning = document.getElementById('lightning-container');
+
+        // --------------------------------------------------
+        // CORE LOGIC
+        // --------------------------------------------------
+
+        function startGame() {
+            renderQuestion();
+            updateUIState();
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= questionsData.length) {
+                endGame(scores.left > scores.right ? 'left' : (scores.right > scores.left ? 'right' : 'draw'));
+                return;
+            }
+
+            const q = questionsData[currentQuestionIndex];
+            elQuestionText.innerText = q.question;
+            elProgress.innerText = `Pertanyaan ${currentQuestionIndex + 1} / ${questionsData.length}`;
+            
+            elAnswersContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-3d btn-answer w-full bg-yellow-300 hover:bg-yellow-400 text-gray-800 font-bold text-xl md:text-2xl py-4 px-6 rounded-2xl border-4 border-yellow-500 shadow-md transition-all";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(idx);
+                elAnswersContainer.appendChild(btn);
+            });
+        }
+
+        function handleBuzz(team) {
+            if (gameState !== 'waiting_buzz') return;
+            initAudio(); 
+            playSound('buzz');
+
+            activeTeam = team;
+            gameState = 'answering';
+            updateUIState();
+        }
+
+        function handleAnswer(selectedIndex) {
+            if (gameState !== 'answering' || !activeTeam) return;
+            
+            gameState = 'showing_result';
+            const correctIndex = questionsData[currentQuestionIndex].correctIndex;
+            const isCorrect = (selectedIndex === correctIndex);
+
+            playSound(isCorrect ? 'correct' : 'wrong');
+            
+            const teamCard = activeTeam === 'left' ? elTeamLeft : elTeamRight;
+
+            if (isCorrect) {
+                scores[activeTeam] += 10;
+                tugPosition += (activeTeam === 'right') ? 20 : -20;
+                
+                updateAvatar(activeTeam, 'happy');
+                updateAvatar(activeTeam === 'left' ? 'right' : 'left', 'wrong');
+                
+                elOverlay.className = "fixed inset-0 pointer-events-none z-50 flash-green-overlay";
+                elLightning.classList.remove('opacity-0');
+                elLightning.classList.add('lightning-effect');
+                
+                teamCard.classList.add('animate-pop');
+
+            } else {
+                tugPosition += (activeTeam === 'right') ? -5 : 5;
+                updateAvatar(activeTeam, 'wrong');
+                teamCard.classList.add('animate-shake');
+                
+                elOverlay.className = "fixed inset-0 pointer-events-none z-50 flash-red-overlay";
+            }
+
+            elScoreLeft.innerText = scores.left;
+            elScoreRight.innerText = scores.right;
+            elScoreLeft.classList.add('animate-pop');
+            elScoreRight.classList.add('animate-pop');
+            
+            if(tugPosition <= 0) tugPosition = 0;
+            if(tugPosition >= 100) tugPosition = 100;
+            elTugMarker.style.left = `${tugPosition}%`;
+
+            setTimeout(() => {
+                elOverlay.className = "fixed inset-0 pointer-events-none z-50";
+                elLightning.classList.remove('lightning-effect');
+                elLightning.classList.add('opacity-0');
+                teamCard.classList.remove('animate-shake', 'animate-pop');
+                elScoreLeft.classList.remove('animate-pop');
+                elScoreRight.classList.remove('animate-pop');
+                
+                updateAvatar('left', 'idle');
+                updateAvatar('right', 'idle');
+
+                if (tugPosition <= 0) { endGame('left'); return; }
+                if (tugPosition >= 100) { endGame('right'); return; }
+
+                currentQuestionIndex++;
+                activeTeam = null;
+                gameState = 'waiting_buzz';
+                
+                renderQuestion();
+                updateUIState();
+            }, 1500);
+        }
+
+        // --------------------------------------------------
+        // VISUAL UPDATES
+        // --------------------------------------------------
+        function updateUIState() {
+            elTeamLeft.classList.remove('opacity-50', 'scale-95', 'glow-active');
+            elTeamRight.classList.remove('opacity-50', 'scale-95', 'glow-active');
+            elBtnBuzzLeft.classList.remove('locked');
+            elBtnBuzzRight.classList.remove('locked');
+            elAnswersContainer.classList.add('locked');
+            elTurnIndicator.classList.add('hidden');
+
+            if (gameState === 'answering') {
+                elAnswersContainer.classList.remove('locked');
+                elTurnIndicator.classList.remove('hidden');
+                
+                if (activeTeam === 'left') {
+                    elTeamRight.classList.add('opacity-50', 'scale-95');
+                    elBtnBuzzRight.classList.add('locked');
+                    elBtnBuzzLeft.classList.add('locked');
+                    elTeamLeft.classList.add('glow-active');
+                } else {
+                    elTeamLeft.classList.add('opacity-50', 'scale-95');
+                    elBtnBuzzLeft.classList.add('locked');
+                    elBtnBuzzRight.classList.add('locked'); 
+                    elTeamRight.classList.add('glow-active');
+                }
+            } else if (gameState === 'showing_result') {
+                elAnswersContainer.classList.add('locked');
+                elBtnBuzzLeft.classList.add('locked');
+                elBtnBuzzRight.classList.add('locked');
+            }
+        }
+
+        function updateAvatar(team, state) {
+            const el = document.getElementById(`avatar-${team}`);
+            el.src = characters[team][state]; 
+            
+            el.classList.add('animate-pop');
+            setTimeout(() => el.classList.remove('animate-pop'), 300);
+        }
+
+        function endGame(winner) {
+            gameState = 'game_over';
+            playSound('correct');
+            playSound('correct');
+            
+            const overlay = document.getElementById('win-overlay');
+            const title = document.getElementById('win-title');
+            const avatar = document.getElementById('win-avatar');
+            
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+
+            if (winner === 'left') {
+                title.innerText = "TIM MERAH MENANG!";
+                title.className = "text-5xl md:text-8xl font-black mb-4 animate-bounce text-red-500 drop-shadow-[0_5px_5px_rgba(255,255,255,0.8)]";
+                avatar.src = characters.left.happy;
+                avatar.classList.remove('hidden');
+            } else if (winner === 'right') {
+                title.innerText = "TIM HIJAU MENANG!";
+                title.className = "text-5xl md:text-8xl font-black mb-4 animate-bounce text-green-500 drop-shadow-[0_5px_5px_rgba(255,255,255,0.8)]";
+                avatar.src = characters.right.happy;
+                avatar.classList.remove('hidden');
+            } else {
+                title.innerText = "SERI!";
+                avatar.classList.add('hidden');
+            }
+        }
+
+        // --------------------------------------------------
+        // EVENT LISTENERS
+        // --------------------------------------------------
+        elBtnBuzzLeft.addEventListener('click', () => handleBuzz('left'));
+        elBtnBuzzRight.addEventListener('click', () => handleBuzz('right'));
+        
+        // Video Toggle logic
+        const toggleBtn = document.getElementById('toggle-video');
+        const vidContainer = document.getElementById('video-container');
+        toggleBtn.addEventListener('click', () => {
+            vidContainer.classList.toggle('hidden');
+            toggleBtn.innerText = vidContainer.classList.contains('hidden') ? '📺 Video Bantuan' : '❌ Tutup Video';
+        });
+
+        // --------------------------------------------------
+        // BACKGROUND MUSIC & NAVIGATION LOGIC
+        // --------------------------------------------------
+        let isBgmPlaying = false;
+        const bgmAudio = document.getElementById('bgm-audio');
+        const btnBgm = document.getElementById('btn-toggle-bgm');
+        const btnBackHome = document.getElementById('btn-back-home');
+
+        // BGM Toggle
+        btnBgm.addEventListener('click', () => {
+            if (isBgmPlaying) {
+                bgmAudio.pause();
+                isBgmPlaying = false;
+                btnBgm.innerHTML = '🔈 Musik: OFF';
+            } else {
+                bgmAudio.play().then(() => {
+                    isBgmPlaying = true;
+                    btnBgm.innerHTML = '🔊 Musik: ON';
+                }).catch(e => {
+                    console.log("Audio failed to play (file missing or blocked)", e);
+                    const oldText = btnBgm.innerHTML;
+                    btnBgm.innerHTML = '❌ File bacground.mp3?';
+                    setTimeout(() => btnBgm.innerHTML = oldText, 3000);
+                });
+            }
+        });
+
+        // Back to Home Button
+        btnBackHome.addEventListener('click', () => {
+            // Tampilkan kembali layar utama
+            document.getElementById('start-screen').classList.remove('hidden');
+            btnBackHome.classList.add('hidden');
+            
+            // Sembunyikan overlay win jika ada
+            document.getElementById('win-overlay').classList.add('hidden');
+            
+            // Reset state game
+            currentQuestionIndex = 0;
+            scores = { left: 0, right: 0 };
+            tugPosition = 50;
+            activeTeam = null;
+            gameState = 'waiting_buzz';
+            
+            // Reset UI
+            elScoreLeft.innerText = scores.left;
+            elScoreRight.innerText = scores.right;
+            elTugMarker.style.left = `50%`;
+            updateAvatar('left', 'idle');
+            updateAvatar('right', 'idle');
+            elOverlay.className = "fixed inset-0 pointer-events-none z-50";
+            elTurnIndicator.classList.add('hidden');
+            
+            // Hapus isi jawaban agar bersih saat kembali
+            elAnswersContainer.innerHTML = '';
+            elProgress.innerText = "Siap-siap...";
+            elQuestionText.innerText = "Memuat pertanyaan...";
+        });
+
+        // Initialize Start Screen
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            initAudio(); 
+            playSound('buzz');
+            document.getElementById('start-screen').classList.add('hidden');
+            
+            // Tampilkan tombol back
+            btnBackHome.classList.remove('hidden');
+
+            // Coba putar BGM otomatis jika belum jalan
+            if (!isBgmPlaying) {
+                bgmAudio.play().then(() => {
+                    isBgmPlaying = true;
+                    btnBgm.innerHTML = '🔊 Musik: ON';
+                }).catch(e => console.log("BGM autoplay prevented. User must click play."));
+            }
+
+            startGame();
+        });
+
+    </script>
+</body>
+</html>
